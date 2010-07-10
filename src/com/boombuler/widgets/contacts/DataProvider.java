@@ -18,11 +18,13 @@ package com.boombuler.widgets.contacts;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.UriMatcher;
 import android.database.ContentObserver;
 import android.database.Cursor;
@@ -102,7 +104,13 @@ public class DataProvider extends ContentProvider {
 		int match = URI_MATCHER.match(uri);		
 		switch (match) {
 			case URI_DATA:
-				ExtMatrixCursor mc = loadNewData(this, projection);
+				List<String> pathSegs = uri.getPathSegments();
+				long appWId = Long.parseLong(pathSegs.get(pathSegs.size() - 1));
+				SharedPreferences prefs = ctx.getSharedPreferences(ConfigurationActivity.PREFS_NAME, 0);
+				long GroupId = prefs.getLong(String.format(ConfigurationActivity.PREFS_GROUP_ID_PATTERN, appWId), 0);
+				
+				
+				ExtMatrixCursor mc = loadNewData(this, projection, GroupId);
 				mc.setNotificationUri(ctx.getContentResolver(), RawContacts.CONTENT_URI);				
 				mc.registerContentObserver(new ContObserver());
 				return mc;
@@ -121,7 +129,7 @@ public class DataProvider extends ContentProvider {
 		ctx.getContentResolver().notifyChange(widgetUri, null);
 	}
 
-	public static ExtMatrixCursor loadNewData(ContentProvider mcp, String[] projection) {
+	public static ExtMatrixCursor loadNewData(ContentProvider mcp, String[] projection, long GroupId) {
 		ExtMatrixCursor ret = new ExtMatrixCursor(projection);
 		
 		Log.d(TAG, "... loading data");
@@ -139,13 +147,18 @@ public class DataProvider extends ContentProvider {
         Cursor cur = ctx.getContentResolver().query(uri, src_projection, src_selection, src_selectionArgs, src_sortOrder);
         cur.moveToFirst();
         while (!cur.isAfterLast()) {        	
+        	if (!filterOk(cur, GroupId)) {
+        		cur.moveToNext();
+        		continue;
+        	}
+        	
         	Object[] values = new Object[projection.length];
         	long id = cur.getLong(cur.getColumnIndex(ContactsContract.Contacts._ID));
         	
 			for (int i = 0, count = projection.length; i < count; i++) {
 				String column = projection[i];
 				if (DataProviderColumns._id.toString().equals(column)) {
-					values[i] = id;
+					values[i] = id; 
 				} else if (DataProviderColumns.name.toString().equals(column)) {
 					values[i] = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
 				} else if (DataProviderColumns.photo.toString().equals(column)) {
@@ -161,6 +174,20 @@ public class DataProvider extends ContentProvider {
 		return ret;
 	}
 		
+	private static boolean filterOk(Cursor cur, long groupId) {		
+		Cursor resC = ctx.getContentResolver().query(ContactsContract.Data.CONTENT_URI, 
+				new String[] { ContactsContract.Data.DATA1 }, 
+				ContactsContract.Data.MIMETYPE + "=? AND " +
+				ContactsContract.Data.LOOKUP_KEY + "=? AND " + 
+				ContactsContract.Data.DATA1 + "=?",
+				new String[] { 
+					ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE, 
+					cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY)),
+					String.valueOf(groupId)
+				}, null);
+		return resC.getCount() > 0;
+	}
+
 	public static byte[] getImg(long aId) {
 		Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, aId);
         InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(ctx.getContentResolver(), uri);
