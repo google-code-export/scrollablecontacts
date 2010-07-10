@@ -21,6 +21,8 @@ import android.appwidget.*;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Rect;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.QuickContact;
@@ -80,6 +82,17 @@ public class ContactWidget extends AppWidgetProvider {
 			super.onReceive(context, intent);
 	}
 
+	@Override
+	public void onDeleted(Context context, int[] appWidgetIds) {
+		super.onDeleted(context, appWidgetIds);
+		SharedPreferences prefs = context.getSharedPreferences(ConfigurationActivity.PREFS_NAME, 0);
+		Editor edit = prefs.edit();
+		for(int appWId : appWidgetIds) {
+			edit.remove(String.format(ConfigurationActivity.PREFS_GROUP_ID_PATTERN, appWId));
+		}
+		edit.commit();
+	}
+	
 	/**
 	 * On click of a child view in an item
 	 */
