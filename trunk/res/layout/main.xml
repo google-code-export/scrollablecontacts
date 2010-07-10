@@ -39,7 +39,7 @@
 	        android:layout_width="fill_parent" 
 	        android:layout_height="fill_parent"
 	        android:layout_marginTop="0dip"
-	        android:layout_marginBottom="36dip"
+	        android:layout_marginBottom="0dip"
 			android:orientation="vertical"
 			android:layout_marginLeft="5dip" 
 			android:layout_marginRight="5dip" 
