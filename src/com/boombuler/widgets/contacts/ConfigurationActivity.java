@@ -17,6 +17,9 @@
 
 package com.boombuler.widgets.contacts;
 
+import java.util.ArrayList;
+
+import android.R.anim;
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
@@ -33,6 +36,7 @@ import android.widget.*;
 public class ConfigurationActivity extends Activity {
     public static final String PREFS_NAME = "com.boombuler.widgets.contacts.PREFS";
     private static final String TAG = "boombuler.ConfigurationActivity";
+    public static final String PREFS_GROUP_ID_PATTERN = "GroupId-%d";
 
     private int appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
@@ -57,31 +61,37 @@ public class ConfigurationActivity extends Activity {
         setContentView(R.layout.configuration);
 
         final SharedPreferences config = getSharedPreferences(PREFS_NAME, 0);
-        //final Spinner spSelGroup = (Spinner) findViewById(R.id.selectGroup);
+        final Spinner spSelGroup = (Spinner) findViewById(R.id.selectGroup);
 
-        getContactGroups();
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
+        			android.R.layout.simple_spinner_item, getContactGroups(),
+        			new String[] { ContactsContract.Groups.TITLE },
+        			new int[] { android.R.id.text1 }
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spSelGroup.setAdapter(adapter);
         
-        
-        
-        
-        
-        
-        
-        
-        //spSelGroup.set
-        //updateRateEntry.setText(String.valueOf(config.getInt(String.format(PREFS_UPDATE_RATE_FIELD_PATTERN, appWidgetId), PREFS_UPDATE_RATE_DEFAULT)));
-
         Button saveButton = (Button) findViewById(R.id.btnSave);
+        Button cancelButton = (Button) findViewById(R.id.btnCancel);
+
+        cancelButton.setOnClickListener(new OnClickListener() {			
+			public void onClick(View v) {
+				finish();				
+			}
+		});
+        
 
         saveButton.setOnClickListener(new OnClickListener() {
-
             public void onClick(View v) {
+            	long selItemId = spSelGroup.getSelectedItemId();
+            	Log.d(TAG, String.valueOf(selItemId));
+            	
                 //int updateRateSeconds = Integer.parseInt(updateRateEntry.getText().toString());
 
                 // store off the user setting for update timing
                 SharedPreferences.Editor configEditor = config.edit();
 
-                //configEditor.putInt(String.format(PREFS_UPDATE_RATE_FIELD_PATTERN, appWidgetId), updateRateSeconds);
+                configEditor.putLong(String.format(PREFS_GROUP_ID_PATTERN, appWidgetId), selItemId);
                 configEditor.commit();
 
                 if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
@@ -102,27 +112,19 @@ public class ConfigurationActivity extends Activity {
         });
     }
     
-    private void getContactGroups()
-    {
+    private Cursor getContactGroups()
+    {	
     	Log.d(TAG, "start getContactGroups");
     	Uri uri = ContactsContract.Groups.CONTENT_URI;
     	String[] projection = new String[] {
+    			ContactsContract.Groups._ID,
     			ContactsContract.Groups.TITLE
     	};
-    	String selection = null;
+    	String selection = ContactsContract.Groups.SYSTEM_ID + " is null";
     	String[] selectionArgs = null;
     	String sortOrder = null;
-    	
-    	
-    	Cursor crs = this.managedQuery(uri, projection, selection, selectionArgs, sortOrder);
-    	crs.moveToFirst();
-    	Log.i(TAG, "query of groups complete");
-    	while (! crs.isAfterLast())
-    	{
-    		String title = crs.getString(crs.getColumnIndex(ContactsContract.Groups.TITLE));
-    		Log.i(TAG, title);
-    		crs.moveToNext();
-    	}
+    	    	
+    	return this.managedQuery(uri, projection, selection, selectionArgs, sortOrder);    	
     }
     
 }
