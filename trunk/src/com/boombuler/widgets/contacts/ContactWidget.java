@@ -74,8 +74,8 @@ public class ContactWidget extends AppWidgetProvider {
 			// onClickListener
 			onClick(context, intent);
 		} else if (TextUtils.equals(action, LauncherIntent.Error.ERROR_SCROLL_CURSOR)) {
-			// An error occured
-		    Log.d(TAG, intent.getStringExtra(LauncherIntent.Extra.EXTRA_ERROR_MESSAGE) + "");
+			// An error occurred
+		    Log.d(TAG, intent.getStringExtra(LauncherIntent.Extra.EXTRA_ERROR_MESSAGE));
 		} else
 			super.onReceive(context, intent);
 	}
@@ -87,13 +87,11 @@ public class ContactWidget extends AppWidgetProvider {
 		String itemId = intent.getStringExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_POS);
 		int viewId = intent.getIntExtra(LauncherIntent.Extra.EXTRA_VIEW_ID, -1);
 
-		int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
-				AppWidgetManager.INVALID_APPWIDGET_ID);
-
-		Log.d(TAG, "appWidgetId = " + appWidgetId + " / ContactId = " + itemId + " / viewId = " + viewId);
-		Log.d(TAG, "photoid: "+R.id.photo);
+//		int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
+//				AppWidgetManager.INVALID_APPWIDGET_ID);		
 		if (viewId == R.id.photo) {
 			Rect r = new Rect();
+			// TODO: determine the right position to display
 			QuickContact.showQuickContact(context,r , 
 									ContactsContract.Contacts.CONTENT_LOOKUP_URI.buildUpon().appendPath(itemId).build(), 
 									QuickContact.MODE_MEDIUM, null);

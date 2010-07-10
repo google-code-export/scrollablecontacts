@@ -32,8 +32,6 @@ import android.widget.*;
 
 public class ConfigurationActivity extends Activity {
     public static final String PREFS_NAME = "com.boombuler.widgets.contacts.PREFS";
-    //public static final String PREFS_UPDATE_RATE_FIELD_PATTERN = "UpdateRate-%d";
-    //private static final int PREFS_UPDATE_RATE_DEFAULT = 5;
     private static final String TAG = "boombuler.ConfigurationActivity";
 
     private int appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
