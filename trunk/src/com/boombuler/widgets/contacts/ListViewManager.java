@@ -117,14 +117,14 @@ public class ListViewManager {
 		viewTypes[iItem] = LauncherIntent.Extra.Scroll.Types.IMAGEBLOB;
 		layoutIds[iItem] = R.id.photo;
 		clickable[iItem] = true;
-		defResources[iItem] = R.drawable.icon;
+		defResources[iItem] = R.drawable.identity;
 
 		iItem++;
 		
 		cursorIndices[iItem] = DataProvider.DataProviderColumns.name.ordinal();
 		viewTypes[iItem] = LauncherIntent.Extra.Scroll.Types.TEXTVIEW;
 		layoutIds[iItem] = R.id.displayname;
-		clickable[iItem] = true;
+		clickable[iItem] = false;
 		defResources[iItem] = 0;
 
 		intent.putExtra(LauncherIntent.Extra.Scroll.Mapping.EXTRA_VIEW_IDS, layoutIds);

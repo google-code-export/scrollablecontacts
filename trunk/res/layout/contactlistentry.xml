@@ -25,16 +25,15 @@
        android:layout_height="70dip"
        android:layout_marginLeft="4dip"
        android:layout_marginTop="5dip"
-        android:scaleType="centerCrop"
+       android:scaleType="centerCrop"
 		/>  
 	<TextView
         android:id="@+id/displayname"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dip"
         android:includeFontPadding="true"
-       	android:maxLines="1"
-    	android:singleLine="true"
-        android:ellipsize="end"
-        
+    	android:singleLine="false"
+        android:ellipsize="end"        
+        android:layout_margin="5dip"        
         />
 </LinearLayout>
