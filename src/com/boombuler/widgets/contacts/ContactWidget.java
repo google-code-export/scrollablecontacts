@@ -27,6 +27,7 @@ import android.graphics.Rect;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.QuickContact;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -44,7 +45,7 @@ public class ContactWidget extends AppWidgetProvider {
 
         // Construct views
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.main);
-
+        
         // Tell the widget manager
         final int N = appWidgetIds.length;
         for (int i = 0; i < N; i++) {
@@ -104,10 +105,17 @@ public class ContactWidget extends AppWidgetProvider {
 //				AppWidgetManager.INVALID_APPWIDGET_ID);		
 		if (viewId == R.id.photo) {
 			Rect r = new Rect();
+			
+			DisplayMetrics dm = context.getResources().getDisplayMetrics();
+			r.right = dm.widthPixels;
+			r.bottom = dm.heightPixels;
+			r.top = 0;
+			r.left = 0;
+			
 			// TODO: determine the right position to display
 			QuickContact.showQuickContact(context,r , 
 									ContactsContract.Contacts.CONTENT_LOOKUP_URI.buildUpon().appendPath(itemId).build(), 
-									QuickContact.MODE_MEDIUM, null);
+									QuickContact.MODE_LARGE, null);
 			
 		}
 	}
