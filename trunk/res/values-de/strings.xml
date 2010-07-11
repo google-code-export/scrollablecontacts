@@ -15,11 +15,11 @@
  limitations under the License.
  -->
 <resources>
-    <!-- English -->
-    <string name="app_name">Contact Widget</string>
-    <string name="loading">Loading...</string>
-    <string name="save">Save</string>
-    <string name="select_contact_group">Contact group:</string>
-    <string name="cancel">Cancel</string>
-    <string name="allcontacts">All Contacts</string>
+    <!-- German -->
+    <string name="app_name">Kontakt Widget</string>
+    <string name="loading">Lade...</string>
+    <string name="save">Speichern</string>
+    <string name="select_contact_group">Kontakt Gruppe:</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="allcontacts">Alle Kontakte</string>
 </resources>
