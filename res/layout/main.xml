@@ -25,7 +25,7 @@
 		 android:layout_height="fill_parent" 
 		 android:layout_width="fill_parent"
 		 android:scaleType="fitXY"
-		 android:background="@drawable/widget_bg_normal"/>
+		 android:background="@drawable/darkbg"/>
 		 	
    <RelativeLayout
         android:layout_width="fill_parent" 
@@ -38,11 +38,11 @@
        		android:id="@+id/widget_content"
 	        android:layout_width="fill_parent" 
 	        android:layout_height="fill_parent"
-	        android:layout_marginTop="0dip"
-	        android:layout_marginBottom="0dip"
+	        android:layout_marginTop="5dip"
+	        android:layout_marginBottom="5dip"
+	        android:layout_marginRight="10dip"
+	        android:layout_marginLeft="10dip"
 			android:orientation="vertical"
-			android:layout_marginLeft="5dip" 
-			android:layout_marginRight="5dip" 
 	        >
 	        <TextView android:text="@string/loading" 
 	                  android:layout_width="fill_parent"
