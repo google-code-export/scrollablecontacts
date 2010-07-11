@@ -175,6 +175,9 @@ public class DataProvider extends ContentProvider {
 	}
 		
 	private static boolean filterOk(Cursor cur, long groupId) {		
+		if (groupId == 0)
+			return true;
+		
 		Cursor resC = ctx.getContentResolver().query(ContactsContract.Data.CONTENT_URI, 
 				new String[] { ContactsContract.Data.DATA1 }, 
 				ContactsContract.Data.MIMETYPE + "=? AND " +

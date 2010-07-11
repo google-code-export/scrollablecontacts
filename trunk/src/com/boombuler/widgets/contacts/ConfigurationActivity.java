@@ -17,9 +17,6 @@
 
 package com.boombuler.widgets.contacts;
 
-import java.util.ArrayList;
-
-import android.R.anim;
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
@@ -123,8 +120,25 @@ public class ConfigurationActivity extends Activity {
     	String selection = ContactsContract.Groups.SYSTEM_ID + " is null";
     	String[] selectionArgs = null;
     	String sortOrder = null;
+    	Cursor orgCs = this.managedQuery(uri, projection, selection, selectionArgs, sortOrder);
+    	
+    	ExtMatrixCursor mc = new ExtMatrixCursor(orgCs.getColumnNames());
+    	// Add "AllContacts" Row
+    	Object[] row = new Object[orgCs.getColumnCount()];
+    	row[orgCs.getColumnIndex(ContactsContract.Groups._ID)] = 0;
+    	row[orgCs.getColumnIndex(ContactsContract.Groups.TITLE)] = getString(R.string.allcontacts);
+    	mc.addRow(row);
+    	orgCs.moveToFirst();
+    	while (!orgCs.isAfterLast()) {
+    		row = new Object[orgCs.getColumnCount()];
+    		for (int i = 0; i < orgCs.getColumnCount(); i++) {
+    			row[i] = orgCs.getString(i);
+    		}
+    		mc.addRow(row);
+    	}
     	    	
-    	return this.managedQuery(uri, projection, selection, selectionArgs, sortOrder);    	
+    	this.startManagingCursor(mc);
+    	return mc;    	
     }
     
 }
