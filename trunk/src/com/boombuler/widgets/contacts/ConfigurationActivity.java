@@ -131,10 +131,10 @@ public class ConfigurationActivity extends Activity {
     	orgCs.moveToFirst();
     	while (!orgCs.isAfterLast()) {
     		row = new Object[orgCs.getColumnCount()];
-    		for (int i = 0; i < orgCs.getColumnCount(); i++) {
-    			row[i] = orgCs.getString(i);
-    		}
+    		row[orgCs.getColumnIndex(ContactsContract.Groups._ID)] = orgCs.getLong(orgCs.getColumnIndex(ContactsContract.Groups._ID));
+        	row[orgCs.getColumnIndex(ContactsContract.Groups.TITLE)] = orgCs.getString(orgCs.getColumnIndex(ContactsContract.Groups.TITLE));
     		mc.addRow(row);
+    		orgCs.moveToNext();
     	}
     	    	
     	this.startManagingCursor(mc);
