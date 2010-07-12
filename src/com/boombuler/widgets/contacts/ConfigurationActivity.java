@@ -136,7 +136,8 @@ public class ConfigurationActivity extends Activity {
     		mc.addRow(row);
     		orgCs.moveToNext();
     	}
-    	    	
+    	    
+		orgCs.close();
     	this.startManagingCursor(mc);
     	return mc;    	
     }
