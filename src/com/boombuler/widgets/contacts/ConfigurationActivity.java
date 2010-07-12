@@ -117,7 +117,7 @@ public class ConfigurationActivity extends Activity {
     			ContactsContract.Groups._ID,
     			ContactsContract.Groups.TITLE
     	};
-    	String selection = ContactsContract.Groups.SYSTEM_ID + " is null";
+    	String selection = null;
     	String[] selectionArgs = null;
     	String sortOrder = null;
     	Cursor orgCs = this.managedQuery(uri, projection, selection, selectionArgs, sortOrder);
