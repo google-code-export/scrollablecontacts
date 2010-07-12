@@ -166,7 +166,8 @@ public class DataProvider extends ContentProvider {
 					} else if (DataProviderColumns.photo.toString().equals(column)) {
 						values[i] = getImg(id);
 					} else if (DataProviderColumns.lookupkey.toString().equals(column)) {
-						values[i] = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY));
+						values[i] = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID)) + "\r\n" +
+							cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY));
 					}
 				}        	
 				ret.addRow(values);
