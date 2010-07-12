@@ -18,12 +18,15 @@ package com.boombuler.widgets.contacts;
 
 import mobi.intuitit.android.content.LauncherIntent;
 import android.appwidget.*;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Rect;
+import android.net.Uri;
+import android.os.Environment;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.QuickContact;
 import android.text.TextUtils;
@@ -104,6 +107,7 @@ public class ContactWidget extends AppWidgetProvider {
 	 */
 	private void onClick(Context context, Intent intent) {
 		String itemId = intent.getStringExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_POS);
+		String[] ids = itemId.split("\r\n");
 		int viewId = intent.getIntExtra(LauncherIntent.Extra.EXTRA_VIEW_ID, -1);
 	
 		if (viewId == R.id.photo) {
@@ -115,10 +119,21 @@ public class ContactWidget extends AppWidgetProvider {
 			r.top = 0;
 			r.left = 0;
 			
-			// TODO: determine the right position to display
-			QuickContact.showQuickContact(context,r , 
-									ContactsContract.Contacts.CONTENT_LOOKUP_URI.buildUpon().appendPath(itemId).build(), 
-									QuickContact.MODE_LARGE, null);
+			try
+			{
+				// TODO: determine the right position to display
+				QuickContact.showQuickContact(context,r , 
+						ContactsContract.Contacts.CONTENT_LOOKUP_URI.buildUpon().appendPath(ids[1]).build(), 
+						QuickContact.MODE_LARGE, null);
+			}
+			catch(ActivityNotFoundException expt)
+			{ // 2.1 is foobar...
+				Log.w(TAG, "QuickContact failed!");
+				Uri uri = ContactsContract.Contacts.CONTENT_URI.buildUpon().appendEncodedPath(ids[0]).build();
+				Intent launch = new Intent(Intent.ACTION_VIEW, uri);
+				launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				context.startActivity(launch);				
+			}
 			
 		}
 	}
