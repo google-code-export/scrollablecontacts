@@ -175,6 +175,12 @@ public class ExtMatrixCursor extends AbstractCursor {
             System.arraycopy(oldData, 0, this.data, 0, oldData.length);
         }
     }
+    
+    @Override
+    public void close() {
+    	super.close();
+    	this.data = null;
+    }
 
     /**
      * Builds a row, starting from the left-most column and adding one column
