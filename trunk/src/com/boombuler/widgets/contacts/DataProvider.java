@@ -146,30 +146,37 @@ public class DataProvider extends ContentProvider {
 
         Cursor cur = ctx.getContentResolver().query(uri, src_projection, src_selection, src_selectionArgs, src_sortOrder);
         cur.moveToFirst();
-        while (!cur.isAfterLast()) {        	
-        	if (!filterOk(cur, GroupId)) {
-        		cur.moveToNext();
-        		continue;
-        	}
-        	
-        	Object[] values = new Object[projection.length];
-        	long id = cur.getLong(cur.getColumnIndex(ContactsContract.Contacts._ID));
-        	
-			for (int i = 0, count = projection.length; i < count; i++) {
-				String column = projection[i];
-				if (DataProviderColumns._id.toString().equals(column)) {
-					values[i] = id; 
-				} else if (DataProviderColumns.name.toString().equals(column)) {
-					values[i] = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-				} else if (DataProviderColumns.photo.toString().equals(column)) {
-					values[i] = getImg(id);
-				} else if (DataProviderColumns.lookupkey.toString().equals(column)) {
-					values[i] = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY));
+		try
+		{
+			while (!cur.isAfterLast()) {        	
+				if (!filterOk(cur, GroupId)) {
+					cur.moveToNext();
+					continue;
 				}
-			}        	
-        	ret.addRow(values);
-        	cur.moveToNext();         	
-        }		
+				
+				Object[] values = new Object[projection.length];
+				long id = cur.getLong(cur.getColumnIndex(ContactsContract.Contacts._ID));
+				
+				for (int i = 0, count = projection.length; i < count; i++) {
+					String column = projection[i];
+					if (DataProviderColumns._id.toString().equals(column)) {
+						values[i] = id; 
+					} else if (DataProviderColumns.name.toString().equals(column)) {
+						values[i] = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+					} else if (DataProviderColumns.photo.toString().equals(column)) {
+						values[i] = getImg(id);
+					} else if (DataProviderColumns.lookupkey.toString().equals(column)) {
+						values[i] = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY));
+					}
+				}        	
+				ret.addRow(values);
+				cur.moveToNext();         	
+			}
+		}
+		finally
+		{
+			cur.close();
+		}
         Log.d(TAG, "... loading data complete");
 		return ret;
 	}
@@ -187,8 +194,10 @@ public class DataProvider extends ContentProvider {
 					ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE, 
 					cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY)),
 					String.valueOf(groupId)
-				}, null);
-		return resC.getCount() > 0;
+				}, null);		
+		boolean result = resC.getCount() > 0;
+		resC.close();
+		return result;
 	}
 
 	public static byte[] getImg(long aId) {
