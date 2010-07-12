@@ -23,6 +23,7 @@ import android.util.Log;
 import mobi.intuitit.android.content.LauncherIntent;
 
 public class ListViewManager {
+	private static final String TAG = "boombuler.ListViewManager";
 	/**
 	 * Receive ready intent from Launcher, prepare scroll view resources
 	 */
@@ -37,35 +38,38 @@ public class ListViewManager {
 		if (appWidgetId < 0) {
 			return;
 		}
+		Intent replaceDummy = CreateMakeScrollableIntent(appWidgetId);
 
-		Log.i("boombuler.CW.LVM", "new widget");
-		
-		Intent replaceDummy = new Intent(LauncherIntent.Action.ACTION_SCROLL_WIDGET_START);
+		// Send it out
+		context.sendBroadcast(replaceDummy);
+	}
+	
+	public static Intent CreateMakeScrollableIntent(int appWidgetId) {
+		Log.d(TAG, "creating ACTION_SCROLL_WIDGET_START intent");
+		Intent result = new Intent(LauncherIntent.Action.ACTION_SCROLL_WIDGET_START);
 
 		// Put widget info
-		replaceDummy.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-		replaceDummy.putExtra(LauncherIntent.Extra.EXTRA_VIEW_ID, R.id.widget_content);
+		result.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+		result.putExtra(LauncherIntent.Extra.EXTRA_VIEW_ID, R.id.widget_content);
 
-		replaceDummy.putExtra(LauncherIntent.Extra.Scroll.EXTRA_DATA_PROVIDER_ALLOW_REQUERY, true);
+		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_DATA_PROVIDER_ALLOW_REQUERY, true);
 
 		// Give a layout resource to be inflated. If this is not given, Home++
 		// will create one
 
 		// Put adapter info
-		replaceDummy.putExtra(LauncherIntent.Extra.Scroll.EXTRA_LISTVIEW_LAYOUT_ID,
+		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_LISTVIEW_LAYOUT_ID,
 				R.layout.listview);
-		replaceDummy.putExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_LAYOUT_ID, R.layout.contactlistentry);
-		putProvider(replaceDummy, DataProvider.CONTENT_URI_MESSAGES.buildUpon().appendEncodedPath(
+		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_LAYOUT_ID, R.layout.contactlistentry);
+		putProvider(result, DataProvider.CONTENT_URI_MESSAGES.buildUpon().appendEncodedPath(
 				Integer.toString(appWidgetId)).toString());
-		putMapping(replaceDummy);
+		putMapping(result);
 
 		// Launcher can set onClickListener for each children of an item. Without
-		// explictly put this
+		// explicitly put this
 		// extra, it will just set onItemClickListener by default
-		replaceDummy.putExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_CHILDREN_CLICKABLE, true);
-
-		// Send it out
-		context.sendBroadcast(replaceDummy);
+		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_CHILDREN_CLICKABLE, true);
+		return result;
 	}
 	
 	/**

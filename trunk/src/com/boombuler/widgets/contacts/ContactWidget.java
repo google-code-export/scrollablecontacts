@@ -50,7 +50,7 @@ public class ContactWidget extends AppWidgetProvider {
         final int N = appWidgetIds.length;
         for (int i = 0; i < N; i++) {
             int appWidgetId = appWidgetIds[i];
-            appWidgetManager.updateAppWidget(appWidgetId, views);
+            appWidgetManager.updateAppWidget(appWidgetId, views);            
         }	
 	}
 	
@@ -92,7 +92,7 @@ public class ContactWidget extends AppWidgetProvider {
 			edit.remove(String.format(ConfigurationActivity.PREFS_GROUP_ID_PATTERN, appWId));
 		}
 		edit.commit();
-	}
+	}	
 	
 	/**
 	 * On click of a child view in an item
@@ -100,9 +100,7 @@ public class ContactWidget extends AppWidgetProvider {
 	private void onClick(Context context, Intent intent) {
 		String itemId = intent.getStringExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_POS);
 		int viewId = intent.getIntExtra(LauncherIntent.Extra.EXTRA_VIEW_ID, -1);
-
-//		int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
-//				AppWidgetManager.INVALID_APPWIDGET_ID);		
+	
 		if (viewId == R.id.photo) {
 			Rect r = new Rect();
 			

@@ -81,9 +81,6 @@ public class ConfigurationActivity extends Activity {
         saveButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
             	long selItemId = spSelGroup.getSelectedItemId();
-            	Log.d(TAG, String.valueOf(selItemId));
-            	
-                //int updateRateSeconds = Integer.parseInt(updateRateEntry.getText().toString());
 
                 // store off the user setting for update timing
                 SharedPreferences.Editor configEditor = config.edit();
@@ -94,13 +91,9 @@ public class ConfigurationActivity extends Activity {
                 if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
 
                     // tell the app widget manager that we're now configured
-                    Intent resultValue = new Intent();
+                    Intent resultValue = new Intent();                    
                     resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
                     setResult(RESULT_OK, resultValue);
-
-                    Intent widgetUpdate = new Intent();
-                    widgetUpdate.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-                    widgetUpdate.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[] { appWidgetId });
                 }
 
                 // activity is now done
