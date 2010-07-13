@@ -24,9 +24,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.database.Cursor;
 import android.graphics.Rect;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.QuickContact;
 import android.text.TextUtils;
@@ -45,16 +45,37 @@ public class ContactWidget extends AppWidgetProvider {
 			appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, ContactWidget.class));
 		}
 		Log.d(TAG, "recieved onUpdate");
-
-        // Construct views
-        RemoteViews views = new RemoteViews(context.getPackageName(), getMainLayoutId());
         
-        // Tell the widget manager
         final int N = appWidgetIds.length;
         for (int i = 0; i < N; i++) {
-            int appWidgetId = appWidgetIds[i];
-            appWidgetManager.updateAppWidget(appWidgetId, views);            
+            // Construct views
+        	int appWidgetId = appWidgetIds[i];
+            updateGroupTitle(context, appWidgetId);           
         }	
+	}
+	
+	public void updateGroupTitle(Context context, int appWidgetId) {
+        RemoteViews views = new RemoteViews(context.getPackageName(), getMainLayoutId());        	
+        
+        SharedPreferences prefs = context.getSharedPreferences(ConfigurationActivity.PREFS_NAME, 0);
+        String prefName = String.format(ConfigurationActivity.PREFS_GROUP_ID_PATTERN, appWidgetId);
+        long groupId = prefs.getLong(prefName, 0);
+        Log.d(TAG, prefName +" -> "+ String.valueOf(groupId));
+        if (groupId == 0) 
+        	views.setTextViewText(R.id.group_caption, context.getString(R.string.allcontacts));
+        else
+        {
+            Cursor crs = context.getContentResolver().query(ContactsContract.Groups.CONTENT_URI, 
+            		new String[] { ContactsContract.Groups.TITLE }, 
+            		ContactsContract.Groups._ID + "= " + String.valueOf(groupId), null, null); 
+            if (crs.getCount() > 0) {
+            	crs.moveToFirst();
+            	views.setTextViewText(R.id.group_caption, crs.getString(0));	
+            }
+            crs.close();
+        }
+        AppWidgetManager awm = AppWidgetManager.getInstance(context);
+        awm.updateAppWidget(appWidgetId, views); 
 	}
 	
 	public int getMainLayoutId()
@@ -160,6 +181,7 @@ public class ContactWidget extends AppWidgetProvider {
 		if (appWidgetId < 0) {
 			return;
 		}
+		updateGroupTitle(context, appWidgetId);
 		Intent replaceDummy = CreateMakeScrollableIntent(appWidgetId);
 
 		// Send it out

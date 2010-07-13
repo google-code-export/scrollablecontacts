@@ -27,12 +27,21 @@
 		 android:scaleType="fitXY"
 		 android:background="@drawable/darkbg"/>
 		 	
-   <RelativeLayout
+   <LinearLayout
         android:layout_width="fill_parent" 
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginTop="3dip"
+        android:orientation="vertical"
         >
+        
+        <TextView            
+			android:id="@+id/group_caption"
+			android:gravity="center_horizontal"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="12dip"
+			android:layout_marginRight="12dip"
+	        android:layout_marginLeft="12dip" />        
     
 		<LinearLayout
        		android:id="@+id/widget_content"
@@ -50,7 +59,7 @@
 	        android:layout_height="fill_parent"/>
 		</LinearLayout>
 		
-	</RelativeLayout>
+	</LinearLayout>
 	
 						
 </RelativeLayout>
