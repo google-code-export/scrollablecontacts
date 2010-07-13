@@ -22,8 +22,6 @@ import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.graphics.Rect;
 import android.net.Uri;
@@ -57,10 +55,7 @@ public class ContactWidget extends AppWidgetProvider {
 	public void updateGroupTitle(Context context, int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), getMainLayoutId());        	
         
-        SharedPreferences prefs = context.getSharedPreferences(ConfigurationActivity.PREFS_NAME, 0);
-        String prefName = String.format(ConfigurationActivity.PREFS_GROUP_ID_PATTERN, appWidgetId);
-        long groupId = prefs.getLong(prefName, 0);
-        Log.d(TAG, prefName +" -> "+ String.valueOf(groupId));
+        long groupId = Preferences.getGroupId(context, appWidgetId);
         if (groupId == 0) 
         	views.setTextViewText(R.id.group_caption, context.getString(R.string.allcontacts));
         else
@@ -115,12 +110,7 @@ public class ContactWidget extends AppWidgetProvider {
 	@Override
 	public void onDeleted(Context context, int[] appWidgetIds) {
 		super.onDeleted(context, appWidgetIds);
-		SharedPreferences prefs = context.getSharedPreferences(ConfigurationActivity.PREFS_NAME, 0);
-		Editor edit = prefs.edit();
-		for(int appWId : appWidgetIds) {
-			edit.remove(String.format(ConfigurationActivity.PREFS_GROUP_ID_PATTERN, appWId));
-		}
-		edit.commit();
+		Preferences.DropSettings(context, appWidgetIds);
 	}	
 	
 	/**
@@ -144,15 +134,10 @@ public class ContactWidget extends AppWidgetProvider {
 			
 			try
 			{
-				SharedPreferences prefs = context.getSharedPreferences(ConfigurationActivity.PREFS_NAME, 0);
-				String prefName = String.format(ConfigurationActivity.PREFS_QUICKCONTACT_SIZE_PATTERN, appWidgetId);				
-				int mode = prefs.getInt(prefName, QuickContact.MODE_LARGE);
-				
-				
 				// TODO: determine the right position to display
 				QuickContact.showQuickContact(context,r , 
 						ContactsContract.Contacts.CONTENT_LOOKUP_URI.buildUpon().appendPath(ids[1]).appendPath(ids[0]).build(), 
-						mode, null);
+						Preferences.getQuickContactSize(context, appWidgetId), null);
 			}
 			catch(ActivityNotFoundException expt)
 			{ // 2.1 is foobar...

@@ -17,35 +17,30 @@
 
 package com.boombuler.widgets.contacts;
 
-import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.ListPreference;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
+import android.preference.Preference.OnPreferenceChangeListener;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.provider.ContactsContract;
-import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.*;
 
-public class ConfigurationActivity extends Activity {
-    public static final String PREFS_NAME = "com.boombuler.widgets.contacts.PREFS";
-    private static final String TAG = "boombuler.ConfigurationActivity";
-    public static final String PREFS_GROUP_ID_PATTERN = "GroupId-%d";
-    public static final String PREFS_QUICKCONTACT_SIZE_PATTERN = "QCBarSize-%d";
+public class ConfigurationActivity extends PreferenceActivity {
 
+    
     private int appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // get any data we were launched with
-        Intent launchIntent = getIntent();
-        Log.d(TAG, "got intent: "+launchIntent.toString());
-        Bundle extras = launchIntent.getExtras();
+    
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {	
+		super.onCreate(savedInstanceState);
+		addPreferencesFromResource(R.xml.preferences);
+		
+		Intent launchIntent = getIntent();
+		Bundle extras = launchIntent.getExtras();
         if (extras != null) {
             appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 
@@ -55,116 +50,91 @@ public class ConfigurationActivity extends Activity {
         } else {
             finish();
         }
+        prepareContactGroups();
+		prepareQCBSizes();
+		prepareSaveBtn();
+	}
+		
+	private void prepareContactGroups() {
 
-        setContentView(R.layout.configuration);
+		ListPreference selectGroup = (ListPreference)findPreference(Preferences.GROUP_ID);
+		selectGroup.setKey(Preferences.get(Preferences.GROUP_ID, appWidgetId));
 
-        final SharedPreferences config = getSharedPreferences(PREFS_NAME, 0);
-        final Spinner spSelGroup = (Spinner) findViewById(R.id.selectGroup);
-
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
-        			android.R.layout.simple_spinner_item, getContactGroups(),
-        			new String[] { ContactsContract.Groups.TITLE },
-        			new int[] { android.R.id.text1 }
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spSelGroup.setAdapter(adapter);
-        
-        final Spinner spSelQCBSize = (Spinner)findViewById(R.id.selectQCBSize);
-        adapter = new SimpleCursorAdapter(this,
-    			android.R.layout.simple_spinner_item, getQCBSizes(),
-    			new String[] { ContactsContract.Groups.TITLE },
-    			new int[] { android.R.id.text1 }
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spSelQCBSize.setAdapter(adapter);        
-        
-        Button saveButton = (Button) findViewById(R.id.btnSave);
-        Button cancelButton = (Button) findViewById(R.id.btnCancel);
-
-        cancelButton.setOnClickListener(new OnClickListener() {			
-			public void onClick(View v) {
-				finish();				
-			}
-		});
-        
-
-        saveButton.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-            	
-                SharedPreferences.Editor configEditor = config.edit();
-                long selItemId = spSelGroup.getSelectedItemId();
-                configEditor.putLong(String.format(PREFS_GROUP_ID_PATTERN, appWidgetId), selItemId);
-                int qcbSize = (int)spSelQCBSize.getSelectedItemId();
-                configEditor.putInt(String.format(PREFS_QUICKCONTACT_SIZE_PATTERN, appWidgetId), qcbSize);
-                configEditor.commit();
-
-                if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
-
-                    // tell the app widget manager that we're now configured
-                    Intent resultValue = new Intent();                    
-                    resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-                    setResult(RESULT_OK, resultValue);
-                }
-
-                // activity is now done
-                finish();
-            }
-        });
-    }
-    
-    private Cursor getQCBSizes()
-    {	
-    	ExtMatrixCursor result = new ExtMatrixCursor(new String[] { ContactsContract.Groups._ID, ContactsContract.Groups.TITLE });
-    	
-    	Object[] row = new Object[2];
-    	
-    	row[0] = ContactsContract.QuickContact.MODE_LARGE;
-    	row[1] = getString(R.string.qcsLarge);
-    	result.addRow(row);
-
-    	row[0] = ContactsContract.QuickContact.MODE_MEDIUM;
-    	row[1] = getString(R.string.qcsMedium);
-    	result.addRow(row);
-    	
-    	/*
-    	row[0] = ContactsContract.QuickContact.MODE_SMALL;
-    	row[1] = getString(R.string.qcsSmall);
-    	result.addRow(row);    	
-    	*/
-    	return result;
-    }
-    
-    private Cursor getContactGroups()
-    {	
-    	Log.d(TAG, "start getContactGroups");
+		
     	Uri uri = ContactsContract.Groups.CONTENT_URI;
     	String[] projection = new String[] {
     			ContactsContract.Groups._ID,
     			ContactsContract.Groups.TITLE
     	};
-    	String selection = null;
-    	String[] selectionArgs = null;
-    	String sortOrder = null;
-    	Cursor orgCs = this.managedQuery(uri, projection, selection, selectionArgs, sortOrder);
+    	Cursor orgCs = this.managedQuery(uri, projection, null, null, null);
     	
-    	ExtMatrixCursor mc = new ExtMatrixCursor(orgCs.getColumnNames());
-    	// Add "AllContacts" Row
-    	Object[] row = new Object[orgCs.getColumnCount()];
-    	row[orgCs.getColumnIndex(ContactsContract.Groups._ID)] = 0;
-    	row[orgCs.getColumnIndex(ContactsContract.Groups.TITLE)] = getString(R.string.allcontacts);
-    	mc.addRow(row);
+    	CharSequence[] Titles = new CharSequence[orgCs.getCount()+1];
+    	CharSequence[] Values = new CharSequence[orgCs.getCount()+1];
+    	
+    	int pos = 0;
+    	
+    	Titles[pos] = getString(R.string.allcontacts);
+    	Values[pos++] = "0";
+    	
     	orgCs.moveToFirst();
     	while (!orgCs.isAfterLast()) {
-    		row = new Object[orgCs.getColumnCount()];
-    		row[orgCs.getColumnIndex(ContactsContract.Groups._ID)] = orgCs.getLong(orgCs.getColumnIndex(ContactsContract.Groups._ID));
-        	row[orgCs.getColumnIndex(ContactsContract.Groups.TITLE)] = orgCs.getString(orgCs.getColumnIndex(ContactsContract.Groups.TITLE));
-    		mc.addRow(row);
+    		Values[pos] = orgCs.getString(orgCs.getColumnIndex(ContactsContract.Groups._ID));
+        	Titles[pos++] = orgCs.getString(orgCs.getColumnIndex(ContactsContract.Groups.TITLE));
     		orgCs.moveToNext();
-    	}
-    	    
+    	}    	    
 		orgCs.close();
-    	this.startManagingCursor(mc);
-    	return mc;    	
-    }
-    
+
+		selectGroup.setOnPreferenceChangeListener(new SetCurValue(Titles, Values));		
+		
+		selectGroup.setEntries(Titles);
+		selectGroup.setEntryValues(Values);
+	}
+
+	private void prepareQCBSizes(){
+		ListPreference qcbSizes = (ListPreference)findPreference(Preferences.QUICKCONTACT_SIZE);
+		qcbSizes.setKey(Preferences.get(Preferences.QUICKCONTACT_SIZE, appWidgetId));
+		CharSequence[] Titles = new CharSequence[] { getString(R.string.qcsLarge), getString(R.string.qcsMedium) };
+		CharSequence[] Values = new CharSequence[] { String.valueOf(ContactsContract.QuickContact.MODE_LARGE), 
+				String.valueOf(ContactsContract.QuickContact.MODE_MEDIUM) };
+		qcbSizes.setOnPreferenceChangeListener(new SetCurValue(Titles, Values));				
+		qcbSizes.setEntries(Titles);
+		qcbSizes.setEntryValues(Values);
+		qcbSizes.setValue(String.valueOf(ContactsContract.QuickContact.MODE_LARGE));
+	}
+
+	private void prepareSaveBtn() {
+		Preference pref = findPreference("SAVE");
+		pref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			public boolean onPreferenceClick(final Preference preference) {
+				Intent resultValue = new Intent();                    
+                resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+                setResult(RESULT_OK, resultValue);
+                finish();
+                return false;
+			}
+		});		
+	}
+
+	private class SetCurValue implements OnPreferenceChangeListener {
+		private CharSequence[] fValues, fTitles;
+		public SetCurValue(CharSequence[] Titles, CharSequence[] Values) {
+			fValues = Values;
+			fTitles = Titles;
+		}
+	
+		public boolean onPreferenceChange(Preference preference, Object newValue) {
+			CharSequence curVal = null;
+			ListPreference lp = (ListPreference)preference;
+		
+			for(int i = 0; i < fValues.length; i++) {
+				if (fValues[i].equals(newValue)) {
+					curVal = fTitles[i];
+					break;
+				}
+			}
+			preference.setSummary(curVal);
+			lp.setValue(newValue.toString());
+			return false;
+		}
+	}
 }
