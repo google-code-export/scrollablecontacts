@@ -11,6 +11,8 @@
   		android:key="QCBarSize-%d"
   		android:summary="@string/qcsLarge"
   		android:title="@string/quickcontactsize" />
+  <EditTextPreference android:key="DisplayLabel-%d"
+  		android:title="Foobar" />
   		
   <Preference android:title="@string/save" android:key="SAVE"/>
 </PreferenceScreen>

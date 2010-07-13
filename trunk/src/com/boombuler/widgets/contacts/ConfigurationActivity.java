@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -50,11 +51,19 @@ public class ConfigurationActivity extends PreferenceActivity {
         } else {
             finish();
         }
+        prepareDisplayLabel();
         prepareContactGroups();
 		prepareQCBSizes();
+		
 		prepareSaveBtn();
 	}
 		
+	private void prepareDisplayLabel() {
+		EditTextPreference displayLabel = (EditTextPreference)findPreference(Preferences.DISPLAY_LABEL);
+		displayLabel.setKey(Preferences.get(Preferences.DISPLAY_LABEL, appWidgetId));
+		displayLabel.setOnPreferenceChangeListener(new SetCurValue(null, null));
+	}
+	
 	private void prepareContactGroups() {
 
 		ListPreference selectGroup = (ListPreference)findPreference(Preferences.GROUP_ID);
@@ -124,16 +133,24 @@ public class ConfigurationActivity extends PreferenceActivity {
 	
 		public boolean onPreferenceChange(Preference preference, Object newValue) {
 			CharSequence curVal = null;
-			ListPreference lp = (ListPreference)preference;
-		
-			for(int i = 0; i < fValues.length; i++) {
-				if (fValues[i].equals(newValue)) {
-					curVal = fTitles[i];
-					break;
-				}
+			if (preference instanceof ListPreference) {
+				ListPreference lp = (ListPreference)preference;
+
+				for(int i = 0; i < fValues.length; i++) {
+					if (fValues[i].equals(newValue)) {
+						curVal = fTitles[i];
+						break;
+					}
+				}				
+				lp.setValue(newValue.toString());
+				preference.setSummary(curVal);
 			}
-			preference.setSummary(curVal);
-			lp.setValue(newValue.toString());
+			else if (preference instanceof EditTextPreference) {
+				EditTextPreference etp = (EditTextPreference)preference;
+				etp.setText(newValue.toString());
+				etp.setSummary(newValue.toString());				
+			}
+			
 			return false;
 		}
 	}
