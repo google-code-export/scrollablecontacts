@@ -24,7 +24,6 @@ import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.UriMatcher;
 import android.database.ContentObserver;
 import android.database.Cursor;
@@ -105,9 +104,8 @@ public class DataProvider extends ContentProvider {
 		switch (match) {
 			case URI_DATA:
 				List<String> pathSegs = uri.getPathSegments();
-				long appWId = Long.parseLong(pathSegs.get(pathSegs.size() - 1));
-				SharedPreferences prefs = ctx.getSharedPreferences(ConfigurationActivity.PREFS_NAME, 0);
-				long GroupId = prefs.getLong(String.format(ConfigurationActivity.PREFS_GROUP_ID_PATTERN, appWId), 0);
+				int appWId = Integer.parseInt(pathSegs.get(pathSegs.size() - 1));
+				long GroupId = Preferences.getGroupId(ctx, appWId);
 				
 				
 				ExtMatrixCursor mc = loadNewData(this, projection, GroupId);

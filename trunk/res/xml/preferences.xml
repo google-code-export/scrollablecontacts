@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  
+  <ListPreference 
+  		android:key="GroupId-%d"
+  		android:summary="@string/allcontacts"
+  		android:defaultValue="0"
+  		android:title="@string/select_contact_group" />
+  <ListPreference
+  		android:key="QCBarSize-%d"
+  		android:summary="@string/qcsLarge"
+  		android:title="@string/quickcontactsize" />
+  		
+  <Preference android:title="@string/save" android:key="SAVE"/>
+</PreferenceScreen>
