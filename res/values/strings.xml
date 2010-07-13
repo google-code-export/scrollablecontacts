@@ -26,4 +26,8 @@
     <string name="select_contact_group">Contact group:</string>
     <string name="cancel">Cancel</string>
     <string name="allcontacts">All Contacts</string>
+    <string name="quickcontactsize">QuickContact size</string>
+    <string name="qcsLarge">Large</string>
+    <string name="qcsMedium">Medium</string>
+    <string name="qcsSmall">Small</string>
 </resources>

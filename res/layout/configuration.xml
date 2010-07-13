@@ -25,14 +25,27 @@
               android:layout_width="fill_parent" 
               android:layout_height="wrap_content" />
     <Spinner android:id="@+id/selectGroup" 
+    		 android:prompt="@string/select_contact_group"
              android:layout_below="@id/select_group_lbl"
-             android:layout_width="fill_parent" 
+             android:layout_width="fill_parent"              
              android:layout_height="wrap_content" />
+    <TextView android:text="@string/quickcontactsize"
+    		  android:layout_below="@id/selectGroup"
+    		  android:id="@+id/quick_contact_size_lbl"
+    		  android:layout_width="fill_parent"
+    		  android:layout_height="wrap_content" />
+    <Spinner android:id="@+id/selectQCBSize"
+    		 android:prompt="@string/quickcontactsize" 
+             android:layout_below="@id/quick_contact_size_lbl"
+             android:layout_width="fill_parent" 
+             android:layout_height="wrap_content">
+    	         
+    </Spinner>
 
     <Button android:text="@string/save" 
             android:id="@+id/btnSave"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/selectGroup"
+            android:layout_below="@id/selectQCBSize"
             android:layout_width="wrap_content" 
             android:layout_height="wrap_content"/>
     <Button android:text="@string/cancel"
