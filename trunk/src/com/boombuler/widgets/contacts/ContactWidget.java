@@ -106,6 +106,8 @@ public class ContactWidget extends AppWidgetProvider {
 	 * On click of a child view in an item
 	 */
 	private void onClick(Context context, Intent intent) {
+		int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+		
 		String itemId = intent.getStringExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_POS);
 		String[] ids = itemId.split("\r\n");
 		int viewId = intent.getIntExtra(LauncherIntent.Extra.EXTRA_VIEW_ID, -1);
@@ -121,10 +123,15 @@ public class ContactWidget extends AppWidgetProvider {
 			
 			try
 			{
+				SharedPreferences prefs = context.getSharedPreferences(ConfigurationActivity.PREFS_NAME, 0);
+				String prefName = String.format(ConfigurationActivity.PREFS_QUICKCONTACT_SIZE_PATTERN, appWidgetId);				
+				int mode = prefs.getInt(prefName, QuickContact.MODE_LARGE);
+				
+				
 				// TODO: determine the right position to display
 				QuickContact.showQuickContact(context,r , 
 						ContactsContract.Contacts.CONTENT_LOOKUP_URI.buildUpon().appendPath(ids[1]).appendPath(ids[0]).build(), 
-						QuickContact.MODE_LARGE, null);
+						mode, null);
 			}
 			catch(ActivityNotFoundException expt)
 			{ // 2.1 is foobar...
