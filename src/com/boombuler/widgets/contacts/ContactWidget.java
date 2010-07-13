@@ -123,7 +123,7 @@ public class ContactWidget extends AppWidgetProvider {
 			{
 				// TODO: determine the right position to display
 				QuickContact.showQuickContact(context,r , 
-						ContactsContract.Contacts.CONTENT_LOOKUP_URI.buildUpon().appendPath(ids[1]).build(), 
+						ContactsContract.Contacts.CONTENT_LOOKUP_URI.buildUpon().appendPath(ids[1]).appendPath(ids[0]).build(), 
 						QuickContact.MODE_LARGE, null);
 			}
 			catch(ActivityNotFoundException expt)
