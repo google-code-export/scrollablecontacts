@@ -22,7 +22,6 @@ import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.provider.ContactsContract;
@@ -30,6 +29,7 @@ import android.provider.ContactsContract.QuickContact;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 
 
@@ -54,21 +54,9 @@ public class ContactWidget extends AppWidgetProvider {
 	
 	public void updateGroupTitle(Context context, int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), getMainLayoutId());        	
-        
-        long groupId = Preferences.getGroupId(context, appWidgetId);
-        if (groupId == 0) 
-        	views.setTextViewText(R.id.group_caption, context.getString(R.string.allcontacts));
-        else
-        {
-            Cursor crs = context.getContentResolver().query(ContactsContract.Groups.CONTENT_URI, 
-            		new String[] { ContactsContract.Groups.TITLE }, 
-            		ContactsContract.Groups._ID + "= " + String.valueOf(groupId), null, null); 
-            if (crs.getCount() > 0) {
-            	crs.moveToFirst();
-            	views.setTextViewText(R.id.group_caption, crs.getString(0));	
-            }
-            crs.close();
-        }
+        String text = Preferences.getDisplayLabel(context, appWidgetId);
+        views.setTextViewText(R.id.group_caption, text);
+        views.setViewVisibility(R.id.group_caption, text != "" ? View.VISIBLE : View.INVISIBLE);
         AppWidgetManager awm = AppWidgetManager.getInstance(context);
         awm.updateAppWidget(appWidgetId, views); 
 	}

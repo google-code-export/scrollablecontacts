@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 public class Preferences {
     public static final String GROUP_ID = "GroupId-%d";
     public static final String QUICKCONTACT_SIZE = "QCBarSize-%d";
+    public static final String DISPLAY_LABEL = "DisplayLabel-%d";
     
     public static String get(String aPref, int aAppWidgetId) {
     	return String.format(aPref, aAppWidgetId);    	
@@ -21,6 +22,11 @@ public class Preferences {
     public static int getQuickContactSize(Context context, int aAppWidgetId) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		return Integer.parseInt(prefs.getString(Preferences.get(Preferences.QUICKCONTACT_SIZE, aAppWidgetId), "0"));    	
+    }
+    
+    public static String getDisplayLabel(Context context, int aAppWidgetId) {
+    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		return prefs.getString(Preferences.get(Preferences.DISPLAY_LABEL, aAppWidgetId), "");
     }
     
     public static void DropSettings(Context context, int[] appWidgetIds) {
