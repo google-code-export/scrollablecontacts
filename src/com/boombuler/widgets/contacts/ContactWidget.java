@@ -34,6 +34,7 @@ import android.widget.RemoteViews;
 
 
 public class ContactWidget extends AppWidgetProvider {
+	// Tag for logging
 	private static final String TAG = "boombuler.ContactWidget";
 	
 	@Override
@@ -55,8 +56,11 @@ public class ContactWidget extends AppWidgetProvider {
 	public void updateGroupTitle(Context context, int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), getMainLayoutId());        	
         String text = Preferences.getDisplayLabel(context, appWidgetId);
+        // First set the display label
         views.setTextViewText(R.id.group_caption, text);
-        views.setViewVisibility(R.id.group_caption, text != "" ? View.VISIBLE : View.INVISIBLE);
+        // and if it is empty hide it
+        views.setViewVisibility(R.id.group_caption, text != "" ? View.VISIBLE : View.GONE);
+        
         AppWidgetManager awm = AppWidgetManager.getInstance(context);
         awm.updateAppWidget(appWidgetId, views); 
 	}
@@ -98,6 +102,7 @@ public class ContactWidget extends AppWidgetProvider {
 	@Override
 	public void onDeleted(Context context, int[] appWidgetIds) {
 		super.onDeleted(context, appWidgetIds);
+		// Drop the settings if the widget is deleted
 		Preferences.DropSettings(context, appWidgetIds);
 	}	
 	
@@ -107,6 +112,9 @@ public class ContactWidget extends AppWidgetProvider {
 	private void onClick(Context context, Intent intent) {
 		int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 		
+		// Get the ItemIds from the Intent
+		// Provided by the DataProvider in the format: 
+		// "ContactID\r\nLookupKey"
 		String itemId = intent.getStringExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_POS);
 		String[] ids = itemId.split("\r\n");
 		int viewId = intent.getIntExtra(LauncherIntent.Extra.EXTRA_VIEW_ID, -1);
@@ -147,7 +155,6 @@ public class ContactWidget extends AppWidgetProvider {
 		if (intent == null)
 			return;
 
-		// try new method
 		int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
 				AppWidgetManager.INVALID_APPWIDGET_ID);
 
@@ -171,13 +178,10 @@ public class ContactWidget extends AppWidgetProvider {
 
 		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_DATA_PROVIDER_ALLOW_REQUERY, true);
 
-		// Give a layout resource to be inflated. If this is not given, Home++
-		// will create one
-
-		// Put adapter info
-		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_LISTVIEW_LAYOUT_ID,
-				R.layout.listview);
+		// Give a layout resource to be inflated. If this is not given, the launcher will create one
+		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_LISTVIEW_LAYOUT_ID, R.layout.listview);
 		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_LAYOUT_ID, getListEntryLayoutId());
+		
 		putProvider(result, DataProvider.CONTENT_URI_MESSAGES.buildUpon().appendEncodedPath(
 				Integer.toString(appWidgetId)).toString());
 		putMapping(result);

@@ -93,13 +93,7 @@ public class ConfigurationActivity extends PreferenceActivity {
     	}    	    
 		orgCs.close();
 
-		selectGroup.setOnPreferenceChangeListener(new DualOnPreferenceChangeListener(
-			new OnPreferenceChangeListener() {
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					// ToDo: Set DisplayLabel if it is still like the old title...
-					return true;
-				}
-			}, new SetCurValue(Titles, Values)));		
+		selectGroup.setOnPreferenceChangeListener(new SetCurValue(Titles, Values));		
 		
 		selectGroup.setEntries(Titles);
 		selectGroup.setEntryValues(Values);
@@ -130,22 +124,6 @@ public class ConfigurationActivity extends PreferenceActivity {
 		});		
 	}
 
-	private class DualOnPreferenceChangeListener implements OnPreferenceChangeListener {
-		private OnPreferenceChangeListener fFirst, fSecond;
-		
-		public DualOnPreferenceChangeListener(OnPreferenceChangeListener aFirst, OnPreferenceChangeListener aSecond) {
-			fFirst = aFirst;
-			fSecond = aSecond;
-		}
-	
-		public boolean onPreferenceChange(Preference preference, Object newValue) {
-			boolean first = fFirst.onPreferenceChange(preference, newValue);
-			boolean second = fSecond.onPreferenceChange(preference, newValue);
-			return first && second;
-		}
-	
-	}
-	
 	private class SetCurValue implements OnPreferenceChangeListener {
 		private CharSequence[] fValues, fTitles;
 		public SetCurValue(CharSequence[] Titles, CharSequence[] Values) {
@@ -156,8 +134,6 @@ public class ConfigurationActivity extends PreferenceActivity {
 		public boolean onPreferenceChange(Preference preference, Object newValue) {
 			CharSequence curVal = null;
 			if (preference instanceof ListPreference) {
-				ListPreference lp = (ListPreference)preference;
-
 				for(int i = 0; i < fValues.length; i++) {
 					if (fValues[i].equals(newValue)) {
 						curVal = fTitles[i];
@@ -166,7 +142,6 @@ public class ConfigurationActivity extends PreferenceActivity {
 				}								
 			}
 			else if (preference instanceof EditTextPreference) {
-				EditTextPreference etp = (EditTextPreference)preference;
 				curVal = newValue.toString();
 			}
 			preference.setSummary(curVal);

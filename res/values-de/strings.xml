@@ -29,4 +29,5 @@
     <string name="qcsLarge">Groß</string>
     <string name="qcsMedium">Normal</string>
     <string name="qcsSmall">Klein</string>
+    <string name="displayLabel">Widget Bezeichnung</string>
 </resources>
