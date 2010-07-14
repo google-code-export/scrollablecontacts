@@ -93,7 +93,13 @@ public class ConfigurationActivity extends PreferenceActivity {
     	}    	    
 		orgCs.close();
 
-		selectGroup.setOnPreferenceChangeListener(new SetCurValue(Titles, Values));		
+		selectGroup.setOnPreferenceChangeListener(new DualOnPreferenceChangeListener(
+			new OnPreferenceChangeListener() {
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					// ToDo: Set DisplayLabel if it is still like the old title...
+					return true;
+				}
+			}, new SetCurValue(Titles, Values)));		
 		
 		selectGroup.setEntries(Titles);
 		selectGroup.setEntryValues(Values);
@@ -124,6 +130,22 @@ public class ConfigurationActivity extends PreferenceActivity {
 		});		
 	}
 
+	private class DualOnPreferenceChangeListener implements OnPreferenceChangeListener {
+		private OnPreferenceChangeListener fFirst, fSecond;
+		
+		public DualOnPreferenceChangeListener(OnPreferenceChangeListener aFirst, OnPreferenceChangeListener aSecond) {
+			fFirst = aFirst;
+			fSecond = aSecond;
+		}
+	
+		public boolean onPreferenceChange(Preference preference, Object newValue) {
+			boolean first = fFirst.onPreferenceChange(preference, newValue);
+			boolean second = fSecond.onPreferenceChange(preference, newValue);
+			return first && second;
+		}
+	
+	}
+	
 	private class SetCurValue implements OnPreferenceChangeListener {
 		private CharSequence[] fValues, fTitles;
 		public SetCurValue(CharSequence[] Titles, CharSequence[] Values) {
@@ -141,17 +163,14 @@ public class ConfigurationActivity extends PreferenceActivity {
 						curVal = fTitles[i];
 						break;
 					}
-				}				
-				lp.setValue(newValue.toString());
-				preference.setSummary(curVal);
+				}								
 			}
 			else if (preference instanceof EditTextPreference) {
 				EditTextPreference etp = (EditTextPreference)preference;
-				etp.setText(newValue.toString());
-				etp.setSummary(newValue.toString());				
+				curVal = newValue.toString();
 			}
-			
-			return false;
+			preference.setSummary(curVal);
+			return true;
 		}
 	}
 }
