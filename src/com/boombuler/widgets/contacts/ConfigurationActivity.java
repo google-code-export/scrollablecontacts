@@ -38,19 +38,23 @@ public class ConfigurationActivity extends PreferenceActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {	
 		super.onCreate(savedInstanceState);
+		// Build GUI from resource
 		addPreferencesFromResource(R.xml.preferences);
 		
+		// Get the starting Intent
 		Intent launchIntent = getIntent();
 		Bundle extras = launchIntent.getExtras();
         if (extras != null) {
             appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 
+            // Cancel by default
             Intent cancelResultValue = new Intent();
             cancelResultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             setResult(RESULT_CANCELED, cancelResultValue);
         } else {
             finish();
         }
+        // prepare the GUI components
         prepareDisplayLabel();
         prepareContactGroups();
 		prepareQCBSizes();
@@ -59,40 +63,45 @@ public class ConfigurationActivity extends PreferenceActivity {
 	}
 		
 	private void prepareDisplayLabel() {
+		// Find control and set the right preference-key for the AppWidgetId
 		EditTextPreference displayLabel = (EditTextPreference)findPreference(Preferences.DISPLAY_LABEL);
 		displayLabel.setKey(Preferences.get(Preferences.DISPLAY_LABEL, appWidgetId));
+		// Set summary on value changed
 		displayLabel.setOnPreferenceChangeListener(new SetCurValue(null, null));
 	}
 	
 	private void prepareContactGroups() {
-
+		// Find control and set the right preference-key for the AppWidgetId
 		ListPreference selectGroup = (ListPreference)findPreference(Preferences.GROUP_ID);
 		selectGroup.setKey(Preferences.get(Preferences.GROUP_ID, appWidgetId));
 
-		
     	Uri uri = ContactsContract.Groups.CONTENT_URI;
     	String[] projection = new String[] {
     			ContactsContract.Groups._ID,
     			ContactsContract.Groups.TITLE
     	};
+    	// read the ContactGroups
     	Cursor orgCs = this.managedQuery(uri, projection, null, null, null);
     	
     	CharSequence[] Titles = new CharSequence[orgCs.getCount()+1];
     	CharSequence[] Values = new CharSequence[orgCs.getCount()+1];
     	
     	int pos = 0;
-    	
+    	// First add the "virtual" group "All Contacts"
     	Titles[pos] = getString(R.string.allcontacts);
     	Values[pos++] = "0";
     	
+    	
     	orgCs.moveToFirst();
     	while (!orgCs.isAfterLast()) {
+    		// Then add one entry for each contact group
     		Values[pos] = orgCs.getString(orgCs.getColumnIndex(ContactsContract.Groups._ID));
         	Titles[pos++] = orgCs.getString(orgCs.getColumnIndex(ContactsContract.Groups.TITLE));
     		orgCs.moveToNext();
     	}    	    
 		orgCs.close();
 
+		// Set the summary on value change
 		selectGroup.setOnPreferenceChangeListener(new SetCurValue(Titles, Values));		
 		
 		selectGroup.setEntries(Titles);
@@ -100,12 +109,16 @@ public class ConfigurationActivity extends PreferenceActivity {
 	}
 
 	private void prepareQCBSizes(){
+		// Find control and set the right preference-key for the AppWidgetId
 		ListPreference qcbSizes = (ListPreference)findPreference(Preferences.QUICKCONTACT_SIZE);
 		qcbSizes.setKey(Preferences.get(Preferences.QUICKCONTACT_SIZE, appWidgetId));
+		// Add the options for "large" and "medium"
 		CharSequence[] Titles = new CharSequence[] { getString(R.string.qcsLarge), getString(R.string.qcsMedium) };
 		CharSequence[] Values = new CharSequence[] { String.valueOf(ContactsContract.QuickContact.MODE_LARGE), 
 				String.valueOf(ContactsContract.QuickContact.MODE_MEDIUM) };
-		qcbSizes.setOnPreferenceChangeListener(new SetCurValue(Titles, Values));				
+		// set summary on value change
+		qcbSizes.setOnPreferenceChangeListener(new SetCurValue(Titles, Values));
+		
 		qcbSizes.setEntries(Titles);
 		qcbSizes.setEntryValues(Values);
 		qcbSizes.setValue(String.valueOf(ContactsContract.QuickContact.MODE_LARGE));
@@ -113,6 +126,8 @@ public class ConfigurationActivity extends PreferenceActivity {
 
 	private void prepareSaveBtn() {
 		Preference pref = findPreference("SAVE");
+		// Bind the "onClick" for the save preferences to close the activity
+		// and postback "OK"
 		pref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			public boolean onPreferenceClick(final Preference preference) {
 				Intent resultValue = new Intent();                    
@@ -124,6 +139,8 @@ public class ConfigurationActivity extends PreferenceActivity {
 		});		
 	}
 
+	// OnPreferenceChangeListener to set the summary of the preference
+	// to the display text of the new value 
 	private class SetCurValue implements OnPreferenceChangeListener {
 		private CharSequence[] fValues, fTitles;
 		public SetCurValue(CharSequence[] Titles, CharSequence[] Values) {
