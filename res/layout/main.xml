@@ -21,11 +21,12 @@
 	>
 	
  	<ImageView
+ 	     android:id="@+id/backgroundImg"
 		 android:adjustViewBounds="true" 
 		 android:layout_height="fill_parent" 
 		 android:layout_width="fill_parent"
 		 android:scaleType="fitXY"
-		 android:background="@drawable/darkbg"/>
+		 android:src="@drawable/darkbg"/>
 		 	
    <LinearLayout
         android:layout_width="fill_parent" 
