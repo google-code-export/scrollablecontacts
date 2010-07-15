@@ -31,6 +31,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 
 public class ContactWidget extends AppWidgetProvider {
@@ -54,8 +55,17 @@ public class ContactWidget extends AppWidgetProvider {
 	}
 	
 	public void updateGroupTitle(Context context, int appWidgetId) {
-        RemoteViews views = new RemoteViews(context.getPackageName(), getMainLayoutId()); 
-        // LookHere: views.setImageViewResource(R.id.backgroundImg, R.drawable.whitebg);
+        String BG = Preferences.getBGImage(context, appWidgetId);
+        Toast.makeText(context, BG, Toast.LENGTH_SHORT).show();
+        if (BG == "black") {
+        	RemoteViews views = new RemoteViews(context.getPackageName(), getMainLayoutId());
+        	views.setImageViewResource(R.id.backgroundImg, R.drawable.darkbg);
+        } 
+        else {
+        	RemoteViews views = new RemoteViews(context.getPackageName(), getMainLayoutId());
+        	views.setImageViewResource(R.id.backgroundImg, R.drawable.whitebg);
+        }
+        RemoteViews views = new RemoteViews(context.getPackageName(), getMainLayoutId());
         String text = Preferences.getDisplayLabel(context, appWidgetId);
         // First set the display label
         views.setTextViewText(R.id.group_caption, text);

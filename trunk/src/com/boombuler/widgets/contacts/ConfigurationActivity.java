@@ -59,6 +59,7 @@ public class ConfigurationActivity extends PreferenceActivity {
         prepareContactGroups();
 		prepareQCBSizes();
 		
+		prepareBGImage();
 		prepareSaveBtn();
 	}
 		
@@ -124,6 +125,18 @@ public class ConfigurationActivity extends PreferenceActivity {
 		qcbSizes.setValue(String.valueOf(ContactsContract.QuickContact.MODE_LARGE));
 	}
 
+	private void prepareBGImage() {
+		ListPreference bgimage = (ListPreference)findPreference(Preferences.BGIMAGE);
+		bgimage.setKey(Preferences.get(Preferences.BGIMAGE, appWidgetId));
+		CharSequence[] Titles = new CharSequence[] { getString(R.string.black), getString(R.string.white) };
+		CharSequence[] Values = new CharSequence[] { getString(R.string.black), getString(R.string.white) };
+		bgimage.setOnPreferenceChangeListener(new SetCurValue(Titles, Values));
+		
+		bgimage.setEntries(Titles);
+		bgimage.setEntryValues(Values);
+		bgimage.setValue(getString(R.string.black));
+	}
+	
 	private void prepareSaveBtn() {
 		Preference pref = findPreference("SAVE");
 		// Bind the "onClick" for the save preferences to close the activity
