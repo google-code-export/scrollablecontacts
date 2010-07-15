@@ -31,13 +31,12 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 
 public class ContactWidget extends AppWidgetProvider {
 	// Tag for logging
 	private static final String TAG = "boombuler.ContactWidget";
-		
+	
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 		// If no specific widgets requested, collect list of all
@@ -74,7 +73,6 @@ public class ContactWidget extends AppWidgetProvider {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		final String action = intent.getAction();
-				
 		Log.d(TAG, "recieved -> " +  action);
 		if (AppWidgetManager.ACTION_APPWIDGET_DELETED.equals(action)) {
 			final int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
@@ -86,16 +84,8 @@ public class ContactWidget extends AppWidgetProvider {
 			// Receive ready signal
 			Log.d(TAG, "widget ready");
 			onAppWidgetReady(context, intent);
-			
-			//have to find out, how to call a Toast only one time on first Create
-			//and not on every Receive (change Orientation)
-			
-			//--
-			//Toast.makeText(context, R.string.L2reboot, Toast.LENGTH_SHORT).show();
-			//--
-			
 		} else if (TextUtils.equals(action, LauncherIntent.Action.ACTION_FINISH)) {
-								
+
 		} else if (TextUtils.equals(action, LauncherIntent.Action.ACTION_ITEM_CLICK)) {
 			// onItemClickListener
 			onClick(context, intent);
@@ -107,7 +97,6 @@ public class ContactWidget extends AppWidgetProvider {
 		    Log.d(TAG, intent.getStringExtra(LauncherIntent.Extra.EXTRA_ERROR_MESSAGE));
 		} else
 			super.onReceive(context, intent);
-		
 	}
 
 	@Override
