@@ -31,7 +31,7 @@
     <string name="qcsSmall">Small</string>
     <string name="displayLabel">Widget label</string>
     <!--Background-Image-Strings-->
-    <string name="black">black</string>
-    <string name="white">white</string>
-    <string name="background">Select BG-Image</string>
+    <string name="black">Black</string>
+    <string name="white">White</string>
+    <string name="background">Background</string>
 </resources>

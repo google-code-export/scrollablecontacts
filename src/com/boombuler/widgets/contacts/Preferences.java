@@ -11,6 +11,8 @@ public class Preferences {
     public static final String DISPLAY_LABEL = "DisplayLabel-%d";
     
     public static final String BGIMAGE = "BGImage-%d";
+    public static final int BG_BLACK = 0;
+    public static final int BG_WHITE = 1;
     
     public static String get(String aPref, int aAppWidgetId) {
     	return String.format(aPref, aAppWidgetId);    	
@@ -31,9 +33,9 @@ public class Preferences {
 		return prefs.getString(Preferences.get(Preferences.DISPLAY_LABEL, aAppWidgetId), "");
     }
     
-    public static String getBGImage(Context context, int aAppWidgetId) {
+    public static int getBGImage(Context context, int aAppWidgetId) {
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		return prefs.getString(Preferences.get(Preferences.BGIMAGE, aAppWidgetId), "");
+		return Integer.parseInt(prefs.getString(Preferences.get(Preferences.BGIMAGE, aAppWidgetId), "0"));
     }
     
     public static void DropSettings(Context context, int[] appWidgetIds) {
@@ -42,6 +44,7 @@ public class Preferences {
 		for(int appWId : appWidgetIds) {
 			edit.remove(Preferences.get(Preferences.GROUP_ID, appWId));
 			edit.remove(Preferences.get(Preferences.QUICKCONTACT_SIZE, appWId));
+			edit.remove(Preferences.get(Preferences.BGIMAGE, appWId));
 		}
 		edit.commit();
     }

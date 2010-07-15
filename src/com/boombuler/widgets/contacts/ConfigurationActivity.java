@@ -129,7 +129,7 @@ public class ConfigurationActivity extends PreferenceActivity {
 		ListPreference bgimage = (ListPreference)findPreference(Preferences.BGIMAGE);
 		bgimage.setKey(Preferences.get(Preferences.BGIMAGE, appWidgetId));
 		CharSequence[] Titles = new CharSequence[] { getString(R.string.black), getString(R.string.white) };
-		CharSequence[] Values = new CharSequence[] { getString(R.string.black), getString(R.string.white) };
+		CharSequence[] Values = new CharSequence[] { String.valueOf(Preferences.BG_BLACK), String.valueOf(Preferences.BG_WHITE) };
 		bgimage.setOnPreferenceChangeListener(new SetCurValue(Titles, Values));
 		
 		bgimage.setEntries(Titles);

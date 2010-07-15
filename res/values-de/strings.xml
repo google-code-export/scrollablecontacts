@@ -30,4 +30,8 @@
     <string name="qcsMedium">Normal</string>
     <string name="qcsSmall">Klein</string>
     <string name="displayLabel">Widget Bezeichnung</string>
+    <!--Background-Image-Strings-->
+    <string name="black">Schwarz</string>
+    <string name="white">Weiß</string>
+    <string name="background">Hintergrund</string>    
 </resources>
