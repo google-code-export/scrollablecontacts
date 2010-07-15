@@ -134,7 +134,7 @@ public class ConfigurationActivity extends PreferenceActivity {
 		
 		bgimage.setEntries(Titles);
 		bgimage.setEntryValues(Values);
-		bgimage.setValue(getString(R.string.black));
+		bgimage.setValue(String.valueOf(Preferences.BG_BLACK));
 	}
 	
 	private void prepareSaveBtn() {
