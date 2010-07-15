@@ -11,9 +11,16 @@
   		android:key="QCBarSize-%d"
   		android:summary="@string/qcsLarge"
   		android:title="@string/quickcontactsize" />
+  		
+  <ListPreference
+  		android:key="BGImage-%d"
+  		android:summary="@string/black"
+  		android:title="@string/background" />
+  		
   <EditTextPreference android:key="DisplayLabel-%d"
   		android:title="@string/displayLabel" 
   		android:defaultValue=""/>
   		
   <Preference android:title="@string/save" android:key="SAVE"/>
+
 </PreferenceScreen>

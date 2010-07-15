@@ -10,6 +10,8 @@ public class Preferences {
     public static final String QUICKCONTACT_SIZE = "QCBarSize-%d";
     public static final String DISPLAY_LABEL = "DisplayLabel-%d";
     
+    public static final String BGIMAGE = "BGImage-%d";
+    
     public static String get(String aPref, int aAppWidgetId) {
     	return String.format(aPref, aAppWidgetId);    	
     }
@@ -27,6 +29,11 @@ public class Preferences {
     public static String getDisplayLabel(Context context, int aAppWidgetId) {
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		return prefs.getString(Preferences.get(Preferences.DISPLAY_LABEL, aAppWidgetId), "");
+    }
+    
+    public static String getBGImage(Context context, int aAppWidgetId) {
+    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		return prefs.getString(Preferences.get(Preferences.BGIMAGE, aAppWidgetId), "");
     }
     
     public static void DropSettings(Context context, int[] appWidgetIds) {
