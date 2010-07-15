@@ -54,7 +54,8 @@ public class ContactWidget extends AppWidgetProvider {
 	}
 	
 	public void updateGroupTitle(Context context, int appWidgetId) {
-        RemoteViews views = new RemoteViews(context.getPackageName(), getMainLayoutId());        	
+        RemoteViews views = new RemoteViews(context.getPackageName(), getMainLayoutId()); 
+        // LookHere: views.setImageViewResource(R.id.backgroundImg, R.drawable.whitebg);
         String text = Preferences.getDisplayLabel(context, appWidgetId);
         // First set the display label
         views.setTextViewText(R.id.group_caption, text);
