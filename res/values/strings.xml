@@ -30,4 +30,5 @@
     <string name="qcsMedium">Medium</string>
     <string name="qcsSmall">Small</string>
     <string name="displayLabel">Widget label</string>
+    <string name="L2reboot">Too use this Widget \n Launcher2 reboot is required</string>
 </resources>
