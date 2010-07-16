@@ -21,12 +21,12 @@
 	>
 	
  	<ImageView
- 	     android:id="@+id/backgroundImg"
+ 	     android:id="@id/backgroundImg"
 		 android:adjustViewBounds="true" 
 		 android:layout_height="fill_parent" 
 		 android:layout_width="fill_parent"
 		 android:scaleType="fitXY"
-		 android:src="@drawable/darkbg"/>
+		 android:src="@drawable/whitebg"/>
 		 	
    <LinearLayout
         android:layout_width="fill_parent" 
@@ -43,8 +43,8 @@
 			android:layout_marginTop="12dip"
 			android:layout_marginRight="12dip"
 	        android:layout_marginLeft="12dip" 
-	        android:textColor="#fff"
-	        android:textColorHighlight="#fff"
+	        android:textColor="#000"
+	        android:textColorHighlight="#000"
 	        />        
     
 		<LinearLayout

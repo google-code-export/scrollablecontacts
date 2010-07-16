@@ -54,14 +54,7 @@ public class ContactWidget extends AppWidgetProvider {
 	}
 	
 	public void updateGroupTitle(Context context, int appWidgetId) {
-        RemoteViews views = new RemoteViews(context.getPackageName(), getMainLayoutId());
-        if (Preferences.getBGImage(context, appWidgetId) == Preferences.BG_BLACK) {
-        	views.setImageViewResource(R.id.backgroundImg, R.drawable.darkbg);
-        } 
-        else {
-        	views.setImageViewResource(R.id.backgroundImg, R.drawable.whitebg);
-        }
-        
+        RemoteViews views = new RemoteViews(context.getPackageName(), getMainLayoutId(context, appWidgetId));
         String text = Preferences.getDisplayLabel(context, appWidgetId);
         // First set the display label
         views.setTextViewText(R.id.group_caption, text);
@@ -72,9 +65,14 @@ public class ContactWidget extends AppWidgetProvider {
         awm.updateAppWidget(appWidgetId, views); 
 	}
 	
-	public int getMainLayoutId()
+	public int getMainLayoutId(Context aContext, int aAppWidgetId)
 	{
-		return R.layout.main;
+        if (Preferences.getBGImage(aContext, aAppWidgetId) == Preferences.BG_BLACK) {
+        	return R.layout.main;
+        } 
+        else {
+        	return R.layout.main_white;
+        }		
 	}
 	
 	@Override
@@ -169,13 +167,13 @@ public class ContactWidget extends AppWidgetProvider {
 			return;
 		}
 		updateGroupTitle(context, appWidgetId);
-		Intent replaceDummy = CreateMakeScrollableIntent(appWidgetId);
+		Intent replaceDummy = CreateMakeScrollableIntent(context, appWidgetId);
 
 		// Send it out
 		context.sendBroadcast(replaceDummy);
 	}
 	
-	public Intent CreateMakeScrollableIntent(int appWidgetId) {
+	public Intent CreateMakeScrollableIntent(Context aContext, int appWidgetId) {
 		Log.d(TAG, "creating ACTION_SCROLL_WIDGET_START intent");
 		Intent result = new Intent(LauncherIntent.Action.ACTION_SCROLL_WIDGET_START);
 
@@ -187,7 +185,7 @@ public class ContactWidget extends AppWidgetProvider {
 
 		// Give a layout resource to be inflated. If this is not given, the launcher will create one
 		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_LISTVIEW_LAYOUT_ID, R.layout.listview);
-		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_LAYOUT_ID, getListEntryLayoutId());
+		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_LAYOUT_ID, getListEntryLayoutId(aContext, appWidgetId));
 		
 		putProvider(result, DataProvider.CONTENT_URI_MESSAGES.buildUpon().appendEncodedPath(
 				Integer.toString(appWidgetId)).toString());
@@ -200,8 +198,12 @@ public class ContactWidget extends AppWidgetProvider {
 		return result;
 	}
 	
-	public int getListEntryLayoutId() {
-		return R.layout.contactlistentry;
+	public int getListEntryLayoutId(Context aContext, int aAppWidgetId) {
+		if (Preferences.getBGImage(aContext, aAppWidgetId) == Preferences.BG_BLACK) {		
+			return R.layout.contactlistentry;
+		} else {
+			return R.layout.contactlistentry_white;
+		}
 	}
 	
 	/**
