@@ -16,12 +16,13 @@
 package com.boombuler.widgets.contacts;
 
 import mobi.intuitit.android.content.LauncherIntent;
+import android.content.Context;
 import android.content.Intent;
 
 public class ContactWidget14 extends ContactWidget{
 
 	@Override
-	public int getListEntryLayoutId() {
+	public int getListEntryLayoutId(Context aContext, int aAppWidgetId) {
 		return R.layout.contactlistentry_noname;
 	}
 	
