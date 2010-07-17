@@ -124,18 +124,20 @@ public class ContactWidget extends AppWidgetProvider {
 		String[] ids = itemId.split("\r\n");
 		int viewId = intent.getIntExtra(LauncherIntent.Extra.EXTRA_VIEW_ID, -1);
 	
-		if (viewId == R.id.photo) {
-			Rect r = new Rect();
-			
-			DisplayMetrics dm = context.getResources().getDisplayMetrics();
-			r.right = dm.widthPixels;
-			r.bottom = dm.heightPixels;
-			r.top = 0;
-			r.left = 0;
-			
+		if (viewId == R.id.photo) {			
+			Rect r;
+			if (intent.hasExtra(LauncherIntent.Extra.Scroll.EXTRA_SOURCE_BOUNDS)) {
+				r = (Rect)intent.getParcelableExtra(LauncherIntent.Extra.Scroll.EXTRA_SOURCE_BOUNDS);
+			} else { // Fallback for older launcher versions			
+				r = new Rect();			
+				DisplayMetrics dm = context.getResources().getDisplayMetrics();
+				r.right = dm.widthPixels;
+				r.bottom = dm.heightPixels;
+				r.top = 0;
+				r.left = 0;
+			}
 			try
 			{
-				// TODO: determine the right position to display
 				QuickContact.showQuickContact(context,r , 
 						ContactsContract.Contacts.CONTENT_LOOKUP_URI.buildUpon().appendPath(ids[1]).appendPath(ids[0]).build(), 
 						Preferences.getQuickContactSize(context, appWidgetId), null);
