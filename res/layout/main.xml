@@ -20,13 +20,17 @@
     android:focusable="true"
 	>
 	
+	
  	<ImageView
  	     android:id="@+id/backgroundImg"
 		 android:adjustViewBounds="true" 
 		 android:layout_height="fill_parent" 
 		 android:layout_width="fill_parent"
 		 android:scaleType="fitXY"
-		 android:src="@drawable/darkbg"/>
+		 android:background="@drawable/round"
+		 android:src="@drawable/glas_layer"
+		 />
+	
 		 	
    <LinearLayout
         android:layout_width="fill_parent" 

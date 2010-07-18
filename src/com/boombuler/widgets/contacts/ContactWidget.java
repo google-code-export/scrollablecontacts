@@ -22,6 +22,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.provider.ContactsContract;
@@ -55,25 +56,27 @@ public class ContactWidget extends AppWidgetProvider {
 	
 	public void updateGroupTitle(Context context, int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), getMainLayoutId(context, appWidgetId));
+        RemoteViews BGColor = new RemoteViews(context.getPackageName(), R.drawable.round);
         String text = Preferences.getDisplayLabel(context, appWidgetId);
+        
+        if (Preferences.getBGImage(context, appWidgetId) == Preferences.BG_BLACK) {
+        	BGColor.setImageViewResource(R.id.bgColor, Color.BLACK);
+        }
+        else { BGColor.setImageViewResource(R.id.bgColor, Color.WHITE); }
+        	
         // First set the display label
         views.setTextViewText(R.id.group_caption, text);
         // and if it is empty hide it
         views.setViewVisibility(R.id.group_caption, text != "" ? View.VISIBLE : View.GONE);
         
         AppWidgetManager awm = AppWidgetManager.getInstance(context);
+        awm.updateAppWidget(appWidgetId, BGColor);
         awm.updateAppWidget(appWidgetId, views); 
 	}
 	
-	public int getMainLayoutId(Context aContext, int aAppWidgetId)
-	{
-        if (Preferences.getBGImage(aContext, aAppWidgetId) == Preferences.BG_BLACK) {
-        	return R.layout.main;
-        } 
-        else {
-        	return R.layout.main_white;
-        }		
-	}
+	public int getMainLayoutId(Context aContext, int aAppWidgetId) {
+	  	return R.layout.main;
+    }
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
