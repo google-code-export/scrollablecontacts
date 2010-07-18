@@ -201,18 +201,18 @@ public class DataProvider extends ContentProvider {
 
 	public static byte[] getImg(long aId) {
 		Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, aId);
-        InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(ctx.getContentResolver(), uri);
+        InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(ctx.getContentResolver(), uri);        
         if (input == null)
         	return null;
         try
         {
         	byte[] res = new byte[input.available()];
         	input.read(res);
+        	input.close();
         	return res;
         }
         catch(IOException expt) {
-        	Log.e(TAG, expt.getMessage());
-        	
+        	Log.e(TAG, expt.getMessage());        	
         }
 		return null;
 	}
