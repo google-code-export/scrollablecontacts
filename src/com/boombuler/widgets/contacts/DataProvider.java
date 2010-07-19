@@ -143,6 +143,11 @@ public class DataProvider extends ContentProvider {
         String src_sortOrder = ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC";
 
         Cursor cur = ctx.getContentResolver().query(uri, src_projection, src_selection, src_selectionArgs, src_sortOrder);
+		if (cur == null) {
+			Log.d(TAG, "can not get the contact cursor!");
+			return ret;
+		}
+		Log.d(TAG, String.format("got cursor with %d records", cur.getCount()));
         cur.moveToFirst();
 		try
 		{
@@ -202,8 +207,10 @@ public class DataProvider extends ContentProvider {
 	public static byte[] getImg(long aId) {
 		Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, aId);
         InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(ctx.getContentResolver(), uri);        
-        if (input == null)
+        if (input == null) {
+			Log.d(TAG, "No image found for contactId: " + String.valueOf(aId));
         	return null;
+		}
         try
         {
         	byte[] res = new byte[input.available()];
@@ -212,7 +219,7 @@ public class DataProvider extends ContentProvider {
         	return res;
         }
         catch(IOException expt) {
-        	Log.e(TAG, expt.getMessage());        	
+        	Log.e(TAG, "Failed to get image: " + expt.getMessage());        	
         }
 		return null;
 	}
