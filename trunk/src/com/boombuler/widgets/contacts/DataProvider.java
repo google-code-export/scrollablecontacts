@@ -126,6 +126,7 @@ public class DataProvider extends ContentProvider {
 		Uri widgetUri = CONTENT_URI_MESSAGES.buildUpon().appendEncodedPath(Integer.toString(widgetId)).build();
 		ctx.getContentResolver().notifyChange(widgetUri, null);
 	}
+	
 
 	public static ExtMatrixCursor loadNewData(ContentProvider mcp, String[] projection, long GroupId) {
 		ExtMatrixCursor ret = new ExtMatrixCursor(projection);
@@ -138,11 +139,10 @@ public class DataProvider extends ContentProvider {
                 ContactsContract.Contacts.DISPLAY_NAME,
                 ContactsContract.Contacts.LOOKUP_KEY,
         };
-        String src_selection = ContactsContract.Contacts.IN_VISIBLE_GROUP + " = '1'";
-        String[] src_selectionArgs = null;
+        AdressFilter flt = new AdressFilter(ctx, GroupId);
         String src_sortOrder = ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC";
 
-        Cursor cur = ctx.getContentResolver().query(uri, src_projection, src_selection, src_selectionArgs, src_sortOrder);
+        Cursor cur = ctx.getContentResolver().query(uri, src_projection, flt.getFilter(), flt.getFilterParams(), src_sortOrder);
 		if (cur == null) {
 			Log.d(TAG, "can not get the contact cursor!");
 			return ret;
@@ -152,10 +152,10 @@ public class DataProvider extends ContentProvider {
 		try
 		{
 			while (!cur.isAfterLast()) {        	
-				if (!filterOk(cur, GroupId)) {
-					cur.moveToNext();
-					continue;
-				}
+				//if (!filterOk(cur, GroupId)) {
+				//	cur.moveToNext();
+				//	continue;
+				//}
 				
 				Object[] values = new Object[projection.length];
 				long id = cur.getLong(cur.getColumnIndex(ContactsContract.Contacts._ID));
@@ -183,25 +183,6 @@ public class DataProvider extends ContentProvider {
 		}
         Log.d(TAG, "... loading data complete");
 		return ret;
-	}
-		
-	private static boolean filterOk(Cursor cur, long groupId) {		
-		if (groupId == 0)
-			return true;
-		
-		Cursor resC = ctx.getContentResolver().query(ContactsContract.Data.CONTENT_URI, 
-				new String[] { ContactsContract.Data.DATA1 }, 
-				ContactsContract.Data.MIMETYPE + "=? AND " +
-				ContactsContract.Data.LOOKUP_KEY + "=? AND " + 
-				ContactsContract.Data.DATA1 + "=?",
-				new String[] { 
-					ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE, 
-					cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY)),
-					String.valueOf(groupId)
-				}, null);		
-		boolean result = resC.getCount() > 0;
-		resC.close();
-		return result;
 	}
 
 	public static byte[] getImg(long aId) {
