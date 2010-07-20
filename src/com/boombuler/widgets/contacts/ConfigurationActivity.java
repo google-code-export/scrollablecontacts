@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -58,11 +59,18 @@ public class ConfigurationActivity extends PreferenceActivity {
         prepareDisplayLabel();
         prepareContactGroups();
 		prepareQCBSizes();
+		prepareShowName();
 		
 		prepareBGImage();
 		prepareSaveBtn();
 	}
-		
+
+	private void prepareShowName() {
+		// Find control and set the right preference-key for the AppWidgetId
+		CheckBoxPreference showName = (CheckBoxPreference)findPreference(Preferences.SHOW_NAME);
+		showName.setKey(Preferences.get(Preferences.SHOW_NAME, appWidgetId));
+	}	
+	
 	private void prepareDisplayLabel() {
 		// Find control and set the right preference-key for the AppWidgetId
 		EditTextPreference displayLabel = (EditTextPreference)findPreference(Preferences.DISPLAY_LABEL);

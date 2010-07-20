@@ -16,11 +16,15 @@
   		android:key="BGImage-%d"
   		android:summary="@string/black"
   		android:title="@string/background" />
+
+  <CheckBoxPreference android:key="ShowName-%d"
+  		android:title="@string/showName"
+  		android:defaultValue="true" />
   		
   <EditTextPreference android:key="DisplayLabel-%d"
   		android:title="@string/displayLabel" 
   		android:defaultValue=""/>
-  		
+  		  		
   <Preference android:title="@string/save" android:key="SAVE"/>
 
 </PreferenceScreen>

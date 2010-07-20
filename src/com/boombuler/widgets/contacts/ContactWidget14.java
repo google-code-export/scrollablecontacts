@@ -15,45 +15,18 @@
  */
 package com.boombuler.widgets.contacts;
 
-import mobi.intuitit.android.content.LauncherIntent;
 import android.content.Context;
-import android.content.Intent;
 
 public class ContactWidget14 extends ContactWidget{
 
 	@Override
 	public int getListEntryLayoutId(Context aContext, int aAppWidgetId) {
-		return R.layout.contactlistentry_noname;
-	}
-	
-	@Override
-	public void putMapping(Intent intent) {
-		if (intent == null)
-			return;
-
-		final int NB_ITEMS_TO_FILL = 1;
-
-		int[] cursorIndices = new int[NB_ITEMS_TO_FILL];
-		int[] viewTypes = new int[NB_ITEMS_TO_FILL];
-		int[] layoutIds = new int[NB_ITEMS_TO_FILL];
-		boolean[] clickable = new boolean[NB_ITEMS_TO_FILL];
-		int[] defResources = new int[NB_ITEMS_TO_FILL];
-
-		int iItem = 0;
-		
-		intent.putExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_ACTION_VIEW_URI_INDEX, 
-				DataProvider.DataProviderColumns.lookupkey.ordinal());
-		
-		cursorIndices[iItem] = DataProvider.DataProviderColumns.photo.ordinal();
-		viewTypes[iItem] = LauncherIntent.Extra.Scroll.Types.IMAGEBLOB;
-		layoutIds[iItem] = R.id.photo;
-		clickable[iItem] = true;
-		defResources[iItem] = R.drawable.identity;
-
-		intent.putExtra(LauncherIntent.Extra.Scroll.Mapping.EXTRA_VIEW_IDS, layoutIds);
-		intent.putExtra(LauncherIntent.Extra.Scroll.Mapping.EXTRA_VIEW_TYPES, viewTypes);
-		intent.putExtra(LauncherIntent.Extra.Scroll.Mapping.EXTRA_VIEW_CLICKABLE, clickable);
-		intent.putExtra(LauncherIntent.Extra.Scroll.Mapping.EXTRA_CURSOR_INDICES, cursorIndices);
-		intent.putExtra(LauncherIntent.Extra.Scroll.Mapping.EXTRA_DEFAULT_RESOURCES, defResources);
+		if (Preferences.getShowName(aContext, aAppWidgetId)) {
+			if (Preferences.getBGImage(aContext, aAppWidgetId) == Preferences.BG_BLACK)
+				return R.layout.entry_small_black;
+			else
+				return R.layout.entry_small_white;
+		}		
+		return R.layout.entry_small_noname;
 	}
 }

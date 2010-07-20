@@ -175,7 +175,7 @@ public class ContactWidget extends AppWidgetProvider {
 		context.sendBroadcast(replaceDummy);
 	}
 	
-	public Intent CreateMakeScrollableIntent(Context aContext, int appWidgetId) {
+	public Intent CreateMakeScrollableIntent(Context context, int appWidgetId) {
 		Log.d(TAG, "creating ACTION_SCROLL_WIDGET_START intent");
 		Intent result = new Intent(LauncherIntent.Action.ACTION_SCROLL_WIDGET_START);
 
@@ -187,11 +187,11 @@ public class ContactWidget extends AppWidgetProvider {
 
 		// Give a layout resource to be inflated. If this is not given, the launcher will create one
 		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_LISTVIEW_LAYOUT_ID, R.layout.listview);
-		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_LAYOUT_ID, getListEntryLayoutId(aContext, appWidgetId));
+		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_LAYOUT_ID, getListEntryLayoutId(context, appWidgetId));
 		
 		putProvider(result, DataProvider.CONTENT_URI_MESSAGES.buildUpon().appendEncodedPath(
 				Integer.toString(appWidgetId)).toString());
-		putMapping(result);
+		putMapping(context, appWidgetId, result);
 
 		// Launcher can set onClickListener for each children of an item. Without
 		// explicitly put this
@@ -201,11 +201,13 @@ public class ContactWidget extends AppWidgetProvider {
 	}
 	
 	public int getListEntryLayoutId(Context aContext, int aAppWidgetId) {
-		if (Preferences.getBGImage(aContext, aAppWidgetId) == Preferences.BG_BLACK) {		
-			return R.layout.contactlistentry;
-		} else {
-			return R.layout.contactlistentry_white;
-		}
+		if (Preferences.getShowName(aContext, aAppWidgetId)) {
+			if (Preferences.getBGImage(aContext, aAppWidgetId) == Preferences.BG_BLACK)
+				return R.layout.entry_large_black;
+			else
+				return R.layout.entry_large_white;
+		}		
+		return R.layout.entry_large_noname;
 	}
 	
 	/**
@@ -236,11 +238,13 @@ public class ContactWidget extends AppWidgetProvider {
 	/**
 	 * Put mapping info as extras in intent
 	 */
-	public void putMapping(Intent intent) {
+	public void putMapping(Context context, int appWidgetId, Intent intent) {
 		if (intent == null)
 			return;
 
-		final int NB_ITEMS_TO_FILL = 2;
+		int NB_ITEMS_TO_FILL = 2;
+		if (!Preferences.getShowName(context, appWidgetId))
+			NB_ITEMS_TO_FILL = 1;
 
 		int[] cursorIndices = new int[NB_ITEMS_TO_FILL];
 		int[] viewTypes = new int[NB_ITEMS_TO_FILL];
@@ -259,13 +263,15 @@ public class ContactWidget extends AppWidgetProvider {
 		clickable[iItem] = true;
 		defResources[iItem] = R.drawable.identity;
 
-		iItem++;
-		
-		cursorIndices[iItem] = DataProvider.DataProviderColumns.name.ordinal();
-		viewTypes[iItem] = LauncherIntent.Extra.Scroll.Types.TEXTVIEW;
-		layoutIds[iItem] = R.id.displayname;
-		clickable[iItem] = false;
-		defResources[iItem] = 0;
+		if (Preferences.getShowName(context, appWidgetId)) {
+			iItem++;
+			
+			cursorIndices[iItem] = DataProvider.DataProviderColumns.name.ordinal();
+			viewTypes[iItem] = LauncherIntent.Extra.Scroll.Types.TEXTVIEW;
+			layoutIds[iItem] = R.id.displayname;
+			clickable[iItem] = false;
+			defResources[iItem] = 0;
+		}
 
 		intent.putExtra(LauncherIntent.Extra.Scroll.Mapping.EXTRA_VIEW_IDS, layoutIds);
 		intent.putExtra(LauncherIntent.Extra.Scroll.Mapping.EXTRA_VIEW_TYPES, viewTypes);
