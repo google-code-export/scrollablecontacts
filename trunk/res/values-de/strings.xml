@@ -33,5 +33,6 @@
     <!--Background-Image-Strings-->
     <string name="black">Schwarz</string>
     <string name="white">Weiß</string>
-    <string name="background">Hintergrund</string>    
+    <string name="background">Hintergrund</string>
+    <string name="showName">Kontaktnamen anzeigen</string>    
 </resources>

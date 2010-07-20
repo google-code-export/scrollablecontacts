@@ -34,4 +34,5 @@
     <string name="black">Negro</string>
     <string name="white">Blanco</string>
     <string name="background">Fondo</string>
+    <string name="showName">Mostrar nombre de contacto</string>
 </resources>
