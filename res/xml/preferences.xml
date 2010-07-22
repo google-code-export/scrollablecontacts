@@ -30,7 +30,8 @@
 	  		android:defaultValue=""/>
   </PreferenceCategory>
   		  	
-  <PreferenceCategory android:title="@string/pref_grp_general">		  		
+  <PreferenceCategory android:title="@string/pref_grp_general">
+  		<Preference android:title="@string/help" android:summary="@string/help_summary" android:key="HELP" />		  		
   		<Preference android:title="@string/save" android:key="SAVE"/>
   </PreferenceCategory>
 
