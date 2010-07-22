@@ -30,9 +30,11 @@
     <string name="qcsMedium">Medium</string>
     <string name="qcsSmall">Small</string>
     <string name="displayLabel">Widget label</string>
-    <!--Background-Image-Strings-->
     <string name="black">Black</string>
     <string name="white">White</string>
     <string name="background">Background</string>
     <string name="showName">Show contact name</string>
+    <string name="pref_grp_data">Data</string>
+    <string name="pref_grp_layout">Layout</string>
+    <string name="pref_grp_general">General</string>
 </resources>
