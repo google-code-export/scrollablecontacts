@@ -17,7 +17,10 @@
 
 package com.boombuler.widgets.contacts;
 
+import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -63,6 +66,9 @@ public class ConfigurationActivity extends PreferenceActivity {
 		
 		prepareBGImage();
 		prepareSaveBtn();
+		prepareHelpBtn();
+		
+
 	}
 
 	private void prepareShowName() {
@@ -143,6 +149,35 @@ public class ConfigurationActivity extends PreferenceActivity {
 		bgimage.setEntries(Titles);
 		bgimage.setEntryValues(Values);
 		bgimage.setValue(String.valueOf(Preferences.BG_BLACK));
+	}
+	
+	private void prepareHelpBtn() {
+		Preference pref = findPreference("HELP");
+		pref.setOnPreferenceClickListener(new HelpButtonClick(this));
+		
+	}
+	
+	private class HelpButtonClick implements OnPreferenceClickListener {
+		private Context fContext;
+		
+		public HelpButtonClick(Context context) {
+			fContext = context;
+		}
+		
+		public boolean onPreferenceClick(Preference preference) {
+			AlertDialog alertDialog;
+			alertDialog = new AlertDialog.Builder(fContext).create();
+			alertDialog.setTitle(fContext.getString(R.string.help));
+			alertDialog.setMessage(fContext.getString(R.string.helptext));
+			alertDialog.setButton(fContext.getString(R.string.okbtn), new DialogInterface.OnClickListener() {			
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.cancel();
+				}
+			});
+			alertDialog.show();
+			return false;
+		}
+		
 	}
 	
 	private void prepareSaveBtn() {

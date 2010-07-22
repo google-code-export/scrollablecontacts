@@ -37,4 +37,12 @@
     <string name="pref_grp_data">Daten</string>
     <string name="pref_grp_layout">Ansicht</string>
     <string name="pref_grp_general">Allgemein</string>
+    <string name="help">Hilfe</string>
+    <string name="help_summary">Das Widget funktioniert nicht?</string>
+    <string name="okbtn">Ok</string>
+    <string name="helptext">Wenn Sie Probleme haben weil das Widget nur \"lade...\" anzeigt, 
+stellen Sie sicher, dass Sie einen Launcher haben, welcher \"Scrollable Widgets\" unterstützt und das Sie
+die neuste Version dieses Launchers haben!\n\n
+Einige Launcher haben eine Einstellung für \"Scrollable Widgets\". Stellen Sie sicher, dass diese Einstellungen aktiviert sind\n\n 
+Wenn Sie immer noch Probleme haben, können Sie auch den Entwickler kontaktieren (boombuler@googlemail.com)</string>
 </resources>

@@ -37,4 +37,12 @@
     <string name="pref_grp_data">Data</string>
     <string name="pref_grp_layout">Layout</string>
     <string name="pref_grp_general">General</string>
+    <string name="help">Help</string>
+    <string name="help_summary">Widget does not work?</string>
+    <string name="okbtn">Ok</string>
+<string name="helptext">If you have any problems with this widget
+make sure you have a launcher that supports scrollable widgets
+and that you are using the latest update of that launcher!\n\n
+Some launchers have options to disable scrollable widgets (make sure scrollable widgets are enabled)\n\n
+If there are still problems feel free to contact the developer! (boombuler@googlemail.com)</string>
 </resources>
