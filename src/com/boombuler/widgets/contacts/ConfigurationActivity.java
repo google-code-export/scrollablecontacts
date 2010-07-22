@@ -31,15 +31,17 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.provider.ContactsContract;
 
+
 public class ConfigurationActivity extends PreferenceActivity {
 
-    
-    private int appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
-    
+	private int appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
+	  
+		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {	
 		super.onCreate(savedInstanceState);
-		// Build GUI from resource
+		
+        // Build GUI from resource
 		addPreferencesFromResource(R.xml.preferences);
 		
 		// Get the starting Intent
@@ -55,13 +57,18 @@ public class ConfigurationActivity extends PreferenceActivity {
         } else {
             finish();
         }
+        
+
+        
         // prepare the GUI components
+        prepareShowName();
         prepareDisplayLabel();
         prepareContactGroups();
 		prepareQCBSizes();
-		prepareShowName();
-		
+				
 		prepareBGImage();
+		
+		prepareFBContacts();
 		prepareSaveBtn();
 	}
 
@@ -133,6 +140,19 @@ public class ConfigurationActivity extends PreferenceActivity {
 		qcbSizes.setValue(String.valueOf(ContactsContract.QuickContact.MODE_LARGE));
 	}
 
+	private void prepareFBContacts() {
+		Preference FB = findPreference("FACEBOOK");
+		// Bind the "onClick" for the save preferences to close the activity
+		// and postback "OK"
+		FB.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			public boolean onPreferenceClick(Preference preference) {
+			                Intent myIntent = new Intent(preference.getContext(), FBLogin.class);
+			                startActivityForResult(myIntent, 0);
+			            	return true;
+			}
+		});
+	}
+	
 	private void prepareBGImage() {
 		ListPreference bgimage = (ListPreference)findPreference(Preferences.BGIMAGE);
 		bgimage.setKey(Preferences.get(Preferences.BGIMAGE, appWidgetId));
@@ -157,9 +177,14 @@ public class ConfigurationActivity extends PreferenceActivity {
                 finish();
                 return false;
 			}
-		});		
+		});
+		
+		
 	}
-
+	
+	
+	
+	
 	// OnPreferenceChangeListener to set the summary of the preference
 	// to the display text of the new value 
 	private class SetCurValue implements OnPreferenceChangeListener {
@@ -186,4 +211,7 @@ public class ConfigurationActivity extends PreferenceActivity {
 			return true;
 		}
 	}
+
+
+
 }

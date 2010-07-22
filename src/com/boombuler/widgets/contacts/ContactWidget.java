@@ -261,7 +261,7 @@ public class ContactWidget extends AppWidgetProvider {
 		viewTypes[iItem] = LauncherIntent.Extra.Scroll.Types.IMAGEBLOB;
 		layoutIds[iItem] = R.id.photo;
 		clickable[iItem] = true;
-		defResources[iItem] = R.drawable.no_image;
+		defResources[iItem] = R.drawable.identity;
 
 		if (Preferences.getShowName(context, appWidgetId)) {
 			iItem++;

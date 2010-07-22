@@ -53,6 +53,7 @@ public class Preferences {
 			edit.remove(Preferences.get(Preferences.BGIMAGE, appWId));
 			edit.remove(Preferences.get(Preferences.SHOW_NAME, appWId));
 			edit.remove(Preferences.get(Preferences.DISPLAY_LABEL, appWId));
+			
 		}
 		edit.commit();
     }
