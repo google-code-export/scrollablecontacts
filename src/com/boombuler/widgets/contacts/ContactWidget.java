@@ -22,6 +22,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.provider.ContactsContract;
@@ -56,10 +57,23 @@ public class ContactWidget extends AppWidgetProvider {
 	public void updateGroupTitle(Context context, int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), getMainLayoutId(context, appWidgetId));
         String text = Preferences.getDisplayLabel(context, appWidgetId);
+        
+        boolean withHeader = text != ""; 
+        
+        if (Preferences.getBGImage(context, appWidgetId) == Preferences.BG_BLACK) {        	
+            views.setImageViewResource(R.id.backgroundImg, withHeader ? R.drawable.background_dark_header : R.drawable.background_dark);
+            views.setTextColor(R.id.group_caption, Color.WHITE);
+        }
+        else { 
+        	views.setImageViewResource(R.id.backgroundImg, withHeader ? R.drawable.background_light_header : R.drawable.background_light);
+        	views.setTextColor(R.id.group_caption, Color.BLACK);
+        }
+        
+        
         // First set the display label
         views.setTextViewText(R.id.group_caption, text);
         // and if it is empty hide it
-        views.setViewVisibility(R.id.group_caption, text != "" ? View.VISIBLE : View.GONE);
+        views.setViewVisibility(R.id.group_caption, withHeader ? View.VISIBLE : View.GONE);
         
         AppWidgetManager awm = AppWidgetManager.getInstance(context);
         awm.updateAppWidget(appWidgetId, views); 
@@ -67,12 +81,7 @@ public class ContactWidget extends AppWidgetProvider {
 	
 	public int getMainLayoutId(Context aContext, int aAppWidgetId)
 	{
-        if (Preferences.getBGImage(aContext, aAppWidgetId) == Preferences.BG_BLACK) {
-        	return R.layout.main;
-        } 
-        else {
-        	return R.layout.main_white;
-        }		
+		return R.layout.main;
 	}
 	
 	@Override
@@ -115,40 +124,54 @@ public class ContactWidget extends AppWidgetProvider {
 	 * On click of a child view in an item
 	 */
 	private void onClick(Context context, Intent intent) {
+		Log.d(TAG, "starting onClick");
 		int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-		
+		Log.d(TAG, "got appWidgetId: "+ appWidgetId);
 		// Get the ItemIds from the Intent
 		// Provided by the DataProvider in the format: 
 		// "ContactID\r\nLookupKey"
 		String itemId = intent.getStringExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_POS);
+		Log.d(TAG, "item position: "+ itemId);
 		String[] ids = itemId.split("\r\n");
+		Log.d(TAG, "itemIDs count:" + ids == null ? "NULL" : String.valueOf(ids.length));
 		int viewId = intent.getIntExtra(LauncherIntent.Extra.EXTRA_VIEW_ID, -1);
-	
+		Log.d(TAG, "viewId: "+viewId);
+		
 		if (viewId == R.id.photo) {			
 			Rect r;
 			if (intent.hasExtra(LauncherIntent.Extra.Scroll.EXTRA_SOURCE_BOUNDS)) {
+				Log.d(TAG, "got rect from launcher");
 				r = (Rect)intent.getParcelableExtra(LauncherIntent.Extra.Scroll.EXTRA_SOURCE_BOUNDS);
 			} else { // Fallback for older launcher versions			
-				r = new Rect();			
+				r = new Rect();
+				Log.d(TAG, "determine display size");
 				DisplayMetrics dm = context.getResources().getDisplayMetrics();
 				r.right = dm.widthPixels;
 				r.bottom = dm.heightPixels;
 				r.top = 0;
 				r.left = 0;
+				Log.d(TAG, "displaysizerect: "+r);
 			}
 			try
 			{
+				Log.d(TAG, "building URI");
+				Uri uri = ContactsContract.Contacts.CONTENT_LOOKUP_URI.buildUpon().appendPath(ids[1]).appendPath(ids[0]).build();
+				Log.d(TAG, "lookup URI: "+uri);
 				QuickContact.showQuickContact(context,r , 
-						ContactsContract.Contacts.CONTENT_LOOKUP_URI.buildUpon().appendPath(ids[1]).appendPath(ids[0]).build(), 
+						uri, 
 						Preferences.getQuickContactSize(context, appWidgetId), null);
+				Log.d(TAG, "quickcontact should now be visible!");
 			}
 			catch(ActivityNotFoundException expt)
 			{ // 2.1 is foobar...
 				Log.w(TAG, "QuickContact failed!");
 				Uri uri = ContactsContract.Contacts.CONTENT_URI.buildUpon().appendEncodedPath(ids[0]).build();
+				Log.d(TAG, "alternative lookupuri: "+uri);
 				Intent launch = new Intent(Intent.ACTION_VIEW, uri);
 				launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				context.startActivity(launch);				
+				Log.d(TAG, "will start contact activity");
+				context.startActivity(launch);			
+				Log.d(TAG, "contact activity launched");
 			}
 			
 		}
