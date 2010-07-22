@@ -30,9 +30,19 @@
     <string name="qcsMedium">Medio</string>
     <string name="qcsSmall">Pequeño</string>
     <string name="displayLabel">Etiqueta del Widget</string>
-    <!--Background-Image-Strings-->
     <string name="black">Negro</string>
     <string name="white">Blanco</string>
     <string name="background">Fondo</string>
-    <string name="showName">Mostrar nombre de contacto</string>
+    <string name="showName">Mostrar nombre del contacto</string>
+    <string name="pref_grp_data">Datos</string>
+    <string name="pref_grp_layout">Layout</string>
+    <string name="pref_grp_general">General</string>
+    <string name="help">Ayuda</string>
+    <string name="help_summary">El Widget no funciona?</string>
+    <string name="okbtn">Ok</string>
+<string name="helptext">Si tiene algún problema con este Widget,
+asegúrese de que dispone de un escritorio que soporte widgets con scroll, y de que está usando
+la última actualización de dicho escritorio!\n\n
+Algunos escritorios tienen opciones para desactivar el scroll en los widgets (asegúrese de haber habilitado la opción de scroll en los widgets)\n\n
+Si sigue teniendo problemas, siéntase libre de contactar con el desarrollador! (boombuler@googlemail.com)</string>
 </resources>
