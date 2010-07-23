@@ -1,5 +1,12 @@
 package com.boombuler.widgets.contacts;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,6 +18,7 @@ import com.facebook.android.Facebook;
 import com.facebook.android.FacebookError;
 import com.facebook.android.Util;
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -36,6 +44,65 @@ public class FBActivity extends Activity{
     private Facebook mFacebook;
     private AsyncFacebookRunner mAsyncRunner;
 
+    
+
+ // Save settings 
+      public void WriteSettings(Context context, String data){ 
+     	 FileOutputStream fOut = null; 
+     	 OutputStreamWriter osw = null;
+     	 
+     	 try{
+     	  fOut = openFileOutput("settings.dat",MODE_PRIVATE);       
+           osw = new OutputStreamWriter(fOut); 
+           osw.write(data); 
+           osw.flush(); 
+           //Toast.makeText(context, "Settings saved",Toast.LENGTH_SHORT).show();
+           } 
+           catch (Exception e) {       
+           e.printStackTrace(); 
+           //Toast.makeText(context, "Settings not saved",Toast.LENGTH_SHORT).show();
+           } 
+           finally { 
+              try { 
+                     osw.close(); 
+                     fOut.close(); 
+                     } catch (IOException e) { 
+                     e.printStackTrace(); 
+                     } 
+           } 
+      }
+      
+
+   // Read settings 
+        public String ReadSettings(Context context){ 
+       	 FileInputStream fIn = null; 
+       	 InputStreamReader isr = null;
+       	 
+       	 char[] inputBuffer = new char[255]; 
+       	 String data = null;
+       	 
+       	 try{
+       	  fIn = openFileInput("settings.dat");       
+             isr = new InputStreamReader(fIn); 
+             isr.read(inputBuffer); 
+             data = new String(inputBuffer);
+             //Toast.makeText(context, "Settings read",Toast.LENGTH_SHORT).show();
+             } 
+             catch (Exception e) {       
+             e.printStackTrace(); 
+             //Toast.makeText(context, "Settings not read",Toast.LENGTH_SHORT).show();
+             } 
+             finally { 
+                try { 
+                       isr.close(); 
+                       fIn.close(); 
+                       } catch (IOException e) { 
+                       e.printStackTrace(); 
+                       } 
+             }
+   		return data; 
+        }
+      
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,7 +130,7 @@ public class FBActivity extends Activity{
         
         mRequestButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-            	mAsyncRunner.request("me", new SampleRequestListener());
+            	mAsyncRunner.request("me/friends", new SampleRequestListener());
             }
         });
         mRequestButton.setVisibility(mFacebook.isSessionValid() ?
@@ -76,6 +143,7 @@ public class FBActivity extends Activity{
                         new SampleDialogListener());          
             }
         });
+        
         mPostButton.setVisibility(mFacebook.isSessionValid() ?
                 View.VISIBLE : 
                 View.INVISIBLE);
@@ -109,11 +177,18 @@ public class FBActivity extends Activity{
     public class SampleRequestListener extends BaseRequestListener {
 
         public void onComplete(final String response) {
-            try {
+        	String datalist = "";
+        	try {
                 // process the response here: executed in background thread
                 Log.d("Facebook-Example", "Response: " + response.toString());
-                JSONObject json = Util.parseJson(response);
-                final String name = json.getString("name");
+                JSONArray data = new JSONObject(response.toString()).getJSONArray("data");
+				for (int i = 0; i < data.length(); i++) {
+                JSONObject curData = data.getJSONObject(i);
+                datalist = curData + "\n" + datalist;
+                Log.d("Facebook-Example", "Response: " + curData.toString());
+                }
+				WriteSettings(FBActivity.this, datalist);
+                
                 
                 // then post the processed result back to the UI thread
                 // if we do not do this, an runtime exception will be generated
@@ -121,15 +196,14 @@ public class FBActivity extends Activity{
                 // thread that created a view hierarchy can touch its views."
                 FBActivity.this.runOnUiThread(new Runnable() {
                     public void run() {
-                        mText.setText("Hello there, " + name + "!");
+                
                     }
                 });
-            } catch (JSONException e) {
-                Log.w("Facebook-Example", "JSON Error in response");
-            } catch (FacebookError e) {
-                Log.w("Facebook-Example", "Facebook Error: " + e.getMessage());
-            }
+				} catch (JSONException e) {
+					Log.w("Facebook-Example", "JSON Error in response");
+				}
         }
+				
     }
     
     public class WallPostRequestListener extends BaseRequestListener {
