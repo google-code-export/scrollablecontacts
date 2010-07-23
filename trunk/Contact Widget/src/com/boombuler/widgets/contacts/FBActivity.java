@@ -1,10 +1,14 @@
 package com.boombuler.widgets.contacts;
 
+import java.io.DataInputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,16 +19,18 @@ import com.boombuler.widgets.contacts.SessionEvents.LogoutListener;
 import com.boombuler.widgets.contacts.LoginButton;
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.Facebook;
-import com.facebook.android.FacebookError;
 import com.facebook.android.Util;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 public class FBActivity extends Activity{
     /** Called when the activity is first created. */
@@ -36,11 +42,9 @@ public class FBActivity extends Activity{
     private static final String[] PERMISSIONS =
         new String[] {"publish_stream", "read_stream", "offline_access"};
     private LoginButton mLoginButton;
-    private TextView mText;
     private Button mRequestButton;
-    private Button mPostButton;
-    private Button mDeleteButton;
-    
+    private Button mGetPicturesBtn;
+        
     private Facebook mFacebook;
     private AsyncFacebookRunner mAsyncRunner;
 
@@ -78,7 +82,7 @@ public class FBActivity extends Activity{
        	 FileInputStream fIn = null; 
        	 InputStreamReader isr = null;
        	 
-       	 char[] inputBuffer = new char[255]; 
+       	 char[] inputBuffer = new char[1000]; 
        	 String data = null;
        	 
        	 try{
@@ -115,10 +119,8 @@ public class FBActivity extends Activity{
         
         setContentView(R.layout.facebook);
         mLoginButton = (LoginButton) findViewById(R.id.login);
-        mText = (TextView) FBActivity.this.findViewById(R.id.txt);
         mRequestButton = (Button) findViewById(R.id.requestButton);
-        mPostButton = (Button) findViewById(R.id.postButton);
-        mDeleteButton = (Button) findViewById(R.id.deletePostButton);
+        mGetPicturesBtn = (Button) findViewById(R.id.postButton);
         
        	mFacebook = new Facebook();
        	mAsyncRunner = new AsyncFacebookRunner(mFacebook);
@@ -137,14 +139,57 @@ public class FBActivity extends Activity{
                 View.VISIBLE :
                 View.INVISIBLE);
         
-        mPostButton.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                mFacebook.dialog(FBActivity.this, "stream.publish", 
-                        new SampleDialogListener());          
-            }
-        });
+        mGetPicturesBtn.setOnClickListener(new OnClickListener() {
+            public void onClick(View view) {
+            	String myText = "";
+            	FileInputStream fis = null;            
+            	            	
+            	try {
+					fis = openFileInput("settings.dat");
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            	String line;
+            	
+            	DataInputStream dis = new DataInputStream(fis);
+            	try {
+					while((line=dis.readLine())!=null)
+						Log.v("Outp", line);
+					//JSONObject json = line;
+	                //final String name = json.getString("id"); 
+					myText = myText+line;
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            	
+            	            	
+            	String photo_url_str = "http://graph.facebook.com/"/*+FaceBookID+*/+"/picture";
+            	Bitmap mIcon_val;
+            	ImageView imgView; 
+            	URL newurl;
+				try {
+					newurl = new URL(photo_url_str);
+					try {
+						mIcon_val = BitmapFactory.decodeStream(newurl.openConnection().getInputStream());
+						imgView = (ImageView)findViewById(R.id.image1);
+		            	imgView.setImageBitmap(mIcon_val);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} 
+	            	
+				} catch (MalformedURLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
+            	
+            	
+            	} 
+        	});
         
-        mPostButton.setVisibility(mFacebook.isSessionValid() ?
+        mGetPicturesBtn.setVisibility(mFacebook.isSessionValid() ?
                 View.VISIBLE : 
                 View.INVISIBLE);
     }
@@ -152,25 +197,25 @@ public class FBActivity extends Activity{
     public class SampleAuthListener implements AuthListener {
         
         public void onAuthSucceed() {
-            mText.setText("You have logged in! ");
+        	Toast.makeText(FBActivity.this,"You have logged in! ", Toast.LENGTH_SHORT);
             mRequestButton.setVisibility(View.VISIBLE);
-            mPostButton.setVisibility(View.VISIBLE);
+            
         }
 
         public void onAuthFail(String error) {
-            mText.setText("Login Failed: " + error);
+            Toast.makeText(FBActivity.this,"Login Failed: " + error, Toast.LENGTH_SHORT);
         }
     }
     
     public class SampleLogoutListener implements LogoutListener {
         public void onLogoutBegin() {
-            mText.setText("Logging out...");
+            Toast.makeText(FBActivity.this,"Logging out...", Toast.LENGTH_SHORT);
         }
         
         public void onLogoutFinish() {
-            mText.setText("You have logged out! ");
+        	Toast.makeText(FBActivity.this,"You have logged out! ", Toast.LENGTH_SHORT);
             mRequestButton.setVisibility(View.INVISIBLE);
-            mPostButton.setVisibility(View.INVISIBLE);
+            mGetPicturesBtn.setVisibility(View.INVISIBLE);
         }
     }
     
@@ -188,80 +233,12 @@ public class FBActivity extends Activity{
                 Log.d("Facebook-Example", "Response: " + curData.toString());
                 }
 				WriteSettings(FBActivity.this, datalist);
-                
-                
-                // then post the processed result back to the UI thread
-                // if we do not do this, an runtime exception will be generated
-                // e.g. "CalledFromWrongThreadException: Only the original 
-                // thread that created a view hierarchy can touch its views."
-                FBActivity.this.runOnUiThread(new Runnable() {
-                    public void run() {
-                
-                    }
-                });
-				} catch (JSONException e) {
+				mGetPicturesBtn.setVisibility(View.VISIBLE);
+                } catch (JSONException e) {
 					Log.w("Facebook-Example", "JSON Error in response");
 				}
         }
 				
     }
     
-    public class WallPostRequestListener extends BaseRequestListener {
-        
-        public void onComplete(final String response) {
-            Log.d("Facebook-Example", "Got response: " + response);
-            String message = "<empty>";
-            try {
-                JSONObject json = Util.parseJson(response);
-                message = json.getString("message");
-            } catch (JSONException e) {
-                Log.w("Facebook-Example", "JSON Error in response");
-            } catch (FacebookError e) {
-                Log.w("Facebook-Example", "Facebook Error: " + e.getMessage());
-            }
-            final String text = "Your Wall Post: " + message;
-            FBActivity.this.runOnUiThread(new Runnable() {
-                public void run() {
-                    mText.setText(text);
-                }
-            });
-        }
-    }
-    
-    public class WallPostDeleteListener extends BaseRequestListener {
-        
-        public void onComplete(final String response) {
-            if (response.equals("true")) {
-                Log.d("Facebook-Example", "Successfully deleted wall post");
-                FBActivity.this.runOnUiThread(new Runnable() {
-                    public void run() {
-                        mDeleteButton.setVisibility(View.INVISIBLE);
-                        mText.setText("Deleted Wall Post");
-                    }
-                });
-            } else {
-                Log.d("Facebook-Example", "Could not delete wall post");
-            }
-        }
-    }
-    
-    public class SampleDialogListener extends BaseDialogListener {
-
-        public void onComplete(Bundle values) {
-            final String postId = values.getString("post_id");
-            if (postId != null) {
-                Log.d("Facebook-Example", "Dialog Success! post_id=" + postId);
-                mAsyncRunner.request(postId, new WallPostRequestListener());
-                mDeleteButton.setOnClickListener(new OnClickListener() {
-                    public void onClick(View v) {
-                        mAsyncRunner.request(postId, new Bundle(), "DELETE", 
-                                new WallPostDeleteListener());
-                    }
-                });
-                mDeleteButton.setVisibility(View.VISIBLE);
-            } else {
-                Log.d("Facebook-Example", "No wall post made");
-            }
-        }
-    }
 }
