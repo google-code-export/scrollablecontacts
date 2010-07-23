@@ -17,10 +17,13 @@
 <resources>
     <!-- Spanish -->
     <string name="app_name">Widget Contactos</string>
-    <string name="widget2x4">Widget Contactos 2x4</string>
-    <string name="widget2x2">Widget Contactos 2x2</string>
-    <string name="widget1x4">Widget Contactos 1x4</string>
     <string name="widget1x2">Widget Contactos 1x2</string>
+    <string name="widget1x3">Widget Contactos 2x3</string>    
+    <string name="widget1x4">Widget Contactos 1x4</string>    
+    <string name="widget2x2">Widget Contactos 2x2</string>
+    <string name="widget2x3">Widget Contactos 2x3</string>    
+    <string name="widget2x4">Widget Contactos 2x4</string>
+
     <string name="loading">Cargando...</string>
     <string name="save">Guardar</string>
     <string name="select_contact_group">Grupo de Contactos</string>
