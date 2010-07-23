@@ -26,16 +26,16 @@
             android:grantUriPermissions="true"
             />
 		<!-- Broadcast Receiver that will process AppWidget updates -->
-		<receiver android:name=".ContactWidget" android:label="@string/widget2x4">
+		<receiver android:name=".sizes.ContactWidget_2_4" android:label="@string/widget2x4">
 			<intent-filter>
 				<action   
 					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 			</intent-filter>
 			<meta-data android:name="android.appwidget.provider"
-				android:resource="@xml/contact_widget_provider" />
+				android:resource="@xml/contact_widget_provider2x4" />
 		</receiver>
 
-		<receiver android:name=".ContactWidget22" android:label="@string/widget2x2">
+		<receiver android:name=".sizes.ContactWidget_2_2" android:label="@string/widget2x2">
 			<intent-filter>
 				<action   
 					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -44,7 +44,7 @@
 				android:resource="@xml/contact_widget_provider2x2" />
 		</receiver>
 		
-		<receiver android:name=".ContactWidget14" android:label="@string/widget1x4">
+		<receiver android:name=".sizes.ContactWidget_1_4" android:label="@string/widget1x4">
 			<intent-filter>
 				<action   
 					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -53,7 +53,7 @@
 				android:resource="@xml/contact_widget_provider1x4" />
 		</receiver>
 
-		<receiver android:name=".ContactWidget12" android:label="@string/widget1x2">
+		<receiver android:name=".sizes.ContactWidget_1_2" android:label="@string/widget1x2">
 			<intent-filter>
 				<action   
 					android:name="android.appwidget.action.APPWIDGET_UPDATE" />

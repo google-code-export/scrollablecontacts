@@ -34,7 +34,7 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 
-public class ContactWidget extends AppWidgetProvider {
+public abstract class ContactWidget extends AppWidgetProvider {
 	// Tag for logging
 	private static final String TAG = "boombuler.ContactWidget";
 	
@@ -223,15 +223,7 @@ public class ContactWidget extends AppWidgetProvider {
 		return result;
 	}
 	
-	public int getListEntryLayoutId(Context aContext, int aAppWidgetId) {
-		if (Preferences.getShowName(aContext, aAppWidgetId)) {
-			if (Preferences.getBGImage(aContext, aAppWidgetId) == Preferences.BG_BLACK)
-				return R.layout.entry_large_black;
-			else
-				return R.layout.entry_large_white;
-		}		
-		return R.layout.entry_large_noname;
-	}
+	public abstract int getListEntryLayoutId(Context aContext, int aAppWidgetId);
 	
 	/**
 	 * Put provider info as extras in the specified intent
