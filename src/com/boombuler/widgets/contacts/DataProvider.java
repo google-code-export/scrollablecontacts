@@ -45,11 +45,11 @@ public class DataProvider extends ContentProvider {
 	private static final int URI_DATA = 0;
 	
 	public enum DataProviderColumns {
-		_id, photo, name, lookupkey
+		_id, photo, name, contacturi
 	}
 
 	public static final String[] PROJECTION_APPWIDGETS = new String[] { DataProviderColumns._id.toString(),
-			DataProviderColumns.photo.toString(), DataProviderColumns.name.toString(), DataProviderColumns.lookupkey.toString()};
+			DataProviderColumns.photo.toString(), DataProviderColumns.name.toString(), DataProviderColumns.contacturi.toString()};
 
 	private class ContObserver extends ContentObserver {
 
@@ -152,11 +152,6 @@ public class DataProvider extends ContentProvider {
 		try
 		{
 			while (!cur.isAfterLast()) {        	
-				//if (!filterOk(cur, GroupId)) {
-				//	cur.moveToNext();
-				//	continue;
-				//}
-				
 				Object[] values = new Object[projection.length];
 				long id = cur.getLong(cur.getColumnIndex(ContactsContract.Contacts._ID));
 				
@@ -168,9 +163,9 @@ public class DataProvider extends ContentProvider {
 						values[i] = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
 					} else if (DataProviderColumns.photo.toString().equals(column)) {
 						values[i] = getImg(id);
-					} else if (DataProviderColumns.lookupkey.toString().equals(column)) {
-						values[i] = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID)) + "\r\n" +
-							cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY));
+					} else if (DataProviderColumns.contacturi.toString().equals(column)) {
+						values[i] = ContactsContract.Contacts.CONTENT_LOOKUP_URI.buildUpon().appendPath(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY))).appendPath(cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID))).build().toString();
+						
 					}
 				}        	
 				ret.addRow(values);
