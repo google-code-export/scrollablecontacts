@@ -49,11 +49,11 @@ public abstract class ContactWidget extends AppWidgetProvider {
         for (int i = 0; i < N; i++) {
             // Construct views
         	int appWidgetId = appWidgetIds[i];
-            updateGroupTitle(context, appWidgetId);           
+        	updateGroupTitleAndBackground(context, appWidgetId);           
         }	
 	}
 	
-	public void updateGroupTitle(Context context, int appWidgetId) {
+	protected void updateGroupTitleAndBackground(Context context, int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), getMainLayoutId(context, appWidgetId));
         String text = Preferences.getDisplayLabel(context, appWidgetId);
         
@@ -78,10 +78,18 @@ public abstract class ContactWidget extends AppWidgetProvider {
         awm.updateAppWidget(appWidgetId, views); 
 	}
 	
-	public int getMainLayoutId(Context aContext, int aAppWidgetId)
+	/**
+	 * Gets the layout resource id for the widget
+	 */
+	protected int getMainLayoutId(Context aContext, int aAppWidgetId)
 	{
 		return R.layout.main;
 	}
+	
+	/**
+	 * Gets the layout resource id for the list entries
+	 */
+	protected abstract int getListEntryLayoutId(Context aContext, int aAppWidgetId);
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -112,6 +120,9 @@ public abstract class ContactWidget extends AppWidgetProvider {
 			super.onReceive(context, intent);
 	}
 
+	/**
+	 * Will be executed when the widget is removed from the homescreen 
+	 */
 	@Override
 	public void onDeleted(Context context, int[] appWidgetIds) {
 		super.onDeleted(context, appWidgetIds);
@@ -131,45 +142,41 @@ public abstract class ContactWidget extends AppWidgetProvider {
 			
 		int viewId = intent.getIntExtra(LauncherIntent.Extra.EXTRA_VIEW_ID, -1);
 		Log.d(TAG, "viewId: "+viewId);
-		
-		if (viewId == R.id.photo) {			
-			Rect r;
-			if (intent.hasExtra(LauncherIntent.Extra.Scroll.EXTRA_SOURCE_BOUNDS)) {
-				Log.d(TAG, "got rect from launcher");
-				r = (Rect)intent.getParcelableExtra(LauncherIntent.Extra.Scroll.EXTRA_SOURCE_BOUNDS);
-			} else { // Fallback for older launcher versions			
-				r = new Rect();
-				Log.d(TAG, "determine display size");
-				DisplayMetrics dm = context.getResources().getDisplayMetrics();
-				r.right = dm.widthPixels;
-				r.bottom = dm.heightPixels;
-				r.top = 0;
-				r.left = 0;
-				Log.d(TAG, "displaysizerect: "+r);
-			}
-			try
-			{
-				Log.d(TAG, "lookup URI: "+uri);
-				QuickContact.showQuickContact(context,r , 
-						uri, 
-						Preferences.getQuickContactSize(context, appWidgetId), null);
-				Log.d(TAG, "quickcontact should now be visible!");
-			}
-			catch(ActivityNotFoundException expt)
-			{ // 2.1 is foobar...
-				Log.w(TAG, "QuickContact failed!");
 				
-				Intent launch = new Intent(Intent.ACTION_VIEW, uri);
-				launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				Log.d(TAG, "will start contact activity");
-				context.startActivity(launch);			
-				Log.d(TAG, "contact activity launched");
-			}
+		Rect r;
+		if (intent.hasExtra(LauncherIntent.Extra.Scroll.EXTRA_SOURCE_BOUNDS)) {
+			Log.d(TAG, "got rect from launcher");
+			r = (Rect)intent.getParcelableExtra(LauncherIntent.Extra.Scroll.EXTRA_SOURCE_BOUNDS);
+		} else { // Fallback for older launcher versions			
+			r = new Rect();
+			Log.d(TAG, "determine display size");
+			DisplayMetrics dm = context.getResources().getDisplayMetrics();
+			r.right = dm.widthPixels;
+			r.bottom = dm.heightPixels;
+			r.top = 0;
+			r.left = 0;
+			Log.d(TAG, "displaysizerect: "+r);
+		}
+		try
+		{
+			Log.d(TAG, "lookup URI: "+uri);
+			QuickContact.showQuickContact(context,r , 
+					uri, 
+					Preferences.getQuickContactSize(context, appWidgetId), null);
+			Log.d(TAG, "quickcontact should now be visible!");
+		}
+		catch(ActivityNotFoundException expt)
+		{ // 2.1 is foobar...
+			Log.w(TAG, "QuickContact failed!");
 			
+			Intent launch = new Intent(Intent.ACTION_VIEW, uri);
+			launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			Log.d(TAG, "will start contact activity");
+			context.startActivity(launch);			
+			Log.d(TAG, "contact activity launched");
 		}
 	}
-	
-	
+		
 	/**
 	 * Receive ready intent from Launcher, prepare scroll view resources
 	 */
@@ -183,13 +190,16 @@ public abstract class ContactWidget extends AppWidgetProvider {
 		if (appWidgetId < 0) {
 			return;
 		}
-		updateGroupTitle(context, appWidgetId);
+		updateGroupTitleAndBackground(context, appWidgetId);
 		Intent replaceDummy = CreateMakeScrollableIntent(context, appWidgetId);
 
 		// Send it out
 		context.sendBroadcast(replaceDummy);
 	}
 	
+	/**
+	 * Constructs a Intent that tells the launcher to replace the dummy with the ListView
+	 */
 	public Intent CreateMakeScrollableIntent(Context context, int appWidgetId) {
 		Log.d(TAG, "creating ACTION_SCROLL_WIDGET_START intent");
 		Intent result = new Intent(LauncherIntent.Action.ACTION_SCROLL_WIDGET_START);
@@ -200,7 +210,7 @@ public abstract class ContactWidget extends AppWidgetProvider {
 
 		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_DATA_PROVIDER_ALLOW_REQUERY, true);
 
-		// Give a layout resource to be inflated. If this is not given, the launcher will create one
+		// Give a layout resource to be inflated. If this is not given, the launcher will create one		
 		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_LISTVIEW_LAYOUT_ID, R.layout.listview);
 		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_LAYOUT_ID, getListEntryLayoutId(context, appWidgetId));
 		
@@ -214,15 +224,13 @@ public abstract class ContactWidget extends AppWidgetProvider {
 		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_CHILDREN_CLICKABLE, true);
 		return result;
 	}
-	
-	public abstract int getListEntryLayoutId(Context aContext, int aAppWidgetId);
-	
+			
 	/**
 	 * Put provider info as extras in the specified intent
 	 * 
 	 * @param intent
 	 */
-	public void putProvider(Intent intent, String widgetUri) {
+	protected void putProvider(Intent intent, String widgetUri) {
 		if (intent == null)
 			return;
 
@@ -245,7 +253,7 @@ public abstract class ContactWidget extends AppWidgetProvider {
 	/**
 	 * Put mapping info as extras in intent
 	 */
-	public void putMapping(Context context, int appWidgetId, Intent intent) {
+	protected void putMapping(Context context, int appWidgetId, Intent intent) {
 		if (intent == null)
 			return;
 
@@ -276,7 +284,7 @@ public abstract class ContactWidget extends AppWidgetProvider {
 			cursorIndices[iItem] = DataProvider.DataProviderColumns.name.ordinal();
 			viewTypes[iItem] = LauncherIntent.Extra.Scroll.Types.TEXTVIEW;
 			layoutIds[iItem] = R.id.displayname;
-			clickable[iItem] = false;
+			clickable[iItem] = true;
 			defResources[iItem] = 0;
 		}
 
