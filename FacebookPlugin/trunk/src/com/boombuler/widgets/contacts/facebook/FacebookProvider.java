@@ -52,9 +52,10 @@ public class FacebookProvider extends ContentProvider{
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
-		MatrixCursor result = new MatrixCursor(new String[] {"FOOBAR"});
 		
-		Object[] row = new Object[] {"test" };
+		MatrixCursor result = new MatrixCursor(projection);
+		
+		Object[] row = new Object[] {0, null, "test", "content://contactURI" };
 		result.addRow(row);
 		
 		return result;
