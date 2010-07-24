@@ -108,9 +108,12 @@ public class DataProvider extends ContentProvider {
 				List<String> pathSegs = uri.getPathSegments();
 				int appWId = Integer.parseInt(pathSegs.get(pathSegs.size() - 1));
 				long GroupId = Preferences.getGroupId(ctx, appWId);
-				if (GroupId == FACEBOOK_GROUP && FacebookPluginBridge.IsFacebookPluginInstalled(ctx))
-					return ctx.getContentResolver().query(FacebookPluginBridge.CONTENTURI, projection, selection, selectionArgs, sortOrder);
-				
+				if (GroupId == FACEBOOK_GROUP){
+					if (FacebookPluginBridge.IsFacebookPluginInstalled(ctx))
+						return cloneCursorAndClose(ctx.getContentResolver().query(FacebookPluginBridge.CONTENTURI, projection, selection, selectionArgs, sortOrder));
+					else
+						GroupId = 0;
+				}	
 				ExtMatrixCursor mc = loadNewData(this, projection, GroupId);
 				mc.setNotificationUri(ctx.getContentResolver(), RawContacts.CONTENT_URI);				
 				mc.registerContentObserver(new ContObserver());
@@ -118,6 +121,33 @@ public class DataProvider extends ContentProvider {
 			default:
 				throw new IllegalStateException("Unrecognized URI:" + uri);
 		}
+	}
+	
+	private Cursor cloneCursorAndClose(Cursor crs) {
+		String[] colNames = crs.getColumnNames();
+		ExtMatrixCursor result = new ExtMatrixCursor(colNames);
+		crs.moveToFirst();
+		
+		while (!crs.isAfterLast()) {
+			Object[] values = new Object[colNames.length];
+			for (int i = 0, count = colNames.length; i < count; i++) {
+				String column = colNames[i];
+				if (DataProviderColumns._id.toString().equals(column)) {
+					values[i] = crs.getInt(i); 
+				} else if (DataProviderColumns.name.toString().equals(column)) {
+					values[i] = crs.getString(i);
+				} else if (DataProviderColumns.photo.toString().equals(column)) {
+					values[i] = crs.getBlob(i);
+				} else if (DataProviderColumns.contacturi.toString().equals(column)) {
+					values[i] = crs.getString(i);					
+				}
+			}  
+			Log.d(TAG, "record copied");
+			result.addRow(values);
+			crs.moveToNext();
+		}		
+		crs.close();
+		return result;
 	}
 
 	@Override
