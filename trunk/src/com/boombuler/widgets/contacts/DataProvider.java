@@ -41,6 +41,8 @@ public class DataProvider extends ContentProvider {
 	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 	public static final Uri CONTENT_URI_MESSAGES = CONTENT_URI.buildUpon().appendEncodedPath("data").build();
 	
+	public static final long FACEBOOK_GROUP = Long.MAX_VALUE;
+	
 	private static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 	private static final int URI_DATA = 0;
 	
@@ -106,7 +108,8 @@ public class DataProvider extends ContentProvider {
 				List<String> pathSegs = uri.getPathSegments();
 				int appWId = Integer.parseInt(pathSegs.get(pathSegs.size() - 1));
 				long GroupId = Preferences.getGroupId(ctx, appWId);
-				
+				if (GroupId == FACEBOOK_GROUP && FacebookPluginBridge.IsFacebookPluginInstalled(ctx))
+					return ctx.getContentResolver().query(FacebookPluginBridge.CONTENTURI, projection, selection, selectionArgs, sortOrder);
 				
 				ExtMatrixCursor mc = loadNewData(this, projection, GroupId);
 				mc.setNotificationUri(ctx.getContentResolver(), RawContacts.CONTENT_URI);				
