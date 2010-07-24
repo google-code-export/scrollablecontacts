@@ -91,6 +91,10 @@ public abstract class ContactWidget extends AppWidgetProvider {
 	 */
 	protected abstract int getListEntryLayoutId(Context aContext, int aAppWidgetId);
 	
+	protected int getListViewLayoutId(Context aContext, int aAppWidgetId) {
+		return R.layout.listview;
+	}
+	
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		final String action = intent.getAction();
@@ -211,7 +215,7 @@ public abstract class ContactWidget extends AppWidgetProvider {
 		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_DATA_PROVIDER_ALLOW_REQUERY, true);
 
 		// Give a layout resource to be inflated. If this is not given, the launcher will create one		
-		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_LISTVIEW_LAYOUT_ID, R.layout.listview);
+		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_LISTVIEW_LAYOUT_ID, getListViewLayoutId(context, appWidgetId));
 		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_LAYOUT_ID, getListEntryLayoutId(context, appWidgetId));
 		
 		putProvider(result, DataProvider.CONTENT_URI_MESSAGES.buildUpon().appendEncodedPath(
