@@ -98,13 +98,21 @@ public class ConfigurationActivity extends PreferenceActivity {
     	// read the ContactGroups
     	Cursor orgCs = this.managedQuery(uri, projection, null, null, null);
     	
-    	CharSequence[] Titles = new CharSequence[orgCs.getCount()+1];
-    	CharSequence[] Values = new CharSequence[orgCs.getCount()+1];
+    	boolean facebook = FacebookPluginBridge.IsFacebookPluginInstalled(this);
+    	int virtualGroups = facebook ? 2 : 1;
+    	
+    	CharSequence[] Titles = new CharSequence[orgCs.getCount()+virtualGroups];
+    	CharSequence[] Values = new CharSequence[orgCs.getCount()+virtualGroups];
     	
     	int pos = 0;
     	// First add the "virtual" group "All Contacts"
     	Titles[pos] = getString(R.string.allcontacts);
     	Values[pos++] = "0";
+    	
+    	if (facebook) {
+    		Titles[pos] = getString(R.string.facebook);
+    		Values[pos++] = String.valueOf(DataProvider.FACEBOOK_GROUP);
+    	}
     	
     	
     	orgCs.moveToFirst();
