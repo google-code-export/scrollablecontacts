@@ -68,8 +68,10 @@ public abstract class ContactWidget extends AppWidgetProvider {
         	views.setTextColor(R.id.group_caption, Color.BLACK);
         }
         else {        	
-            views.setTextColor(R.id.group_caption, Color.WHITE);
+        	views.setImageViewResource(R.id.backgroundImg, Color.TRANSPARENT);
+        	views.setTextColor(R.id.group_caption, Color.WHITE);
         }
+        
         
         
         // First set the display label
