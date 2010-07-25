@@ -67,6 +67,7 @@ public class ConfigurationActivity extends PreferenceActivity {
 		prepareBGImage();
 		prepareSaveBtn();
 		prepareHelpBtn();
+		prepareAboutBtn();
 		
 
 	}
@@ -150,33 +151,51 @@ public class ConfigurationActivity extends PreferenceActivity {
 	private void prepareBGImage() {
 		ListPreference bgimage = (ListPreference)findPreference(Preferences.BGIMAGE);
 		bgimage.setKey(Preferences.get(Preferences.BGIMAGE, appWidgetId));
-		CharSequence[] Titles = new CharSequence[] { getString(R.string.transparent), getString(R.string.black), getString(R.string.white) };
-		CharSequence[] Values = new CharSequence[] { String.valueOf(Preferences.BG_TRANS), String.valueOf(Preferences.BG_BLACK), String.valueOf(Preferences.BG_WHITE) };
+		CharSequence[] Titles = new CharSequence[] { 
+				getString(R.string.black), 
+				getString(R.string.white),
+				getString(R.string.transparent)};
+		CharSequence[] Values = new CharSequence[] { 
+				String.valueOf(Preferences.BG_BLACK), 
+				String.valueOf(Preferences.BG_WHITE),
+				String.valueOf(Preferences.BG_TRANS)};
 		bgimage.setOnPreferenceChangeListener(new SetCurValue(Titles, Values));
 		
 		bgimage.setEntries(Titles);
 		bgimage.setEntryValues(Values);
-		bgimage.setValue(String.valueOf(Preferences.BG_TRANS));
+		bgimage.setValue(String.valueOf(Preferences.BG_BLACK));
 	}
 	
 	private void prepareHelpBtn() {
 		Preference pref = findPreference("HELP");
-		pref.setOnPreferenceClickListener(new HelpButtonClick(this));
-		
+		pref.setOnPreferenceClickListener(new HelpButtonClick(this, true));
+	}
+	
+	private void prepareAboutBtn() {
+		Preference pref = findPreference("ABOUT");
+		pref.setOnPreferenceClickListener(new HelpButtonClick(this, false));
 	}
 	
 	private class HelpButtonClick implements OnPreferenceClickListener {
 		private Context fContext;
+		private boolean fShowHelp;
 		
-		public HelpButtonClick(Context context) {
+		public HelpButtonClick(Context context, boolean showHelp) {
 			fContext = context;
+			fShowHelp = showHelp;
 		}
 		
 		public boolean onPreferenceClick(Preference preference) {
 			AlertDialog alertDialog;
 			alertDialog = new AlertDialog.Builder(fContext).create();
-			alertDialog.setTitle(fContext.getString(R.string.help));
-			alertDialog.setMessage(fContext.getString(R.string.helptext));
+			if (fShowHelp) {
+				alertDialog.setTitle(fContext.getString(R.string.help));
+				alertDialog.setMessage(fContext.getString(R.string.helptext));
+			}
+			else {
+				alertDialog.setTitle(fContext.getString(R.string.about));
+				alertDialog.setMessage(fContext.getString(R.string.abouttext));
+			}
 			alertDialog.setButton(fContext.getString(R.string.okbtn), new DialogInterface.OnClickListener() {			
 				public void onClick(DialogInterface dialog, int which) {
 					dialog.cancel();

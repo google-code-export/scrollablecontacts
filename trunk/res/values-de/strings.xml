@@ -50,4 +50,12 @@ stellen Sie sicher, dass Sie einen Launcher haben, welcher \"Scrollable Widgets\
 die neuste Version dieses Launchers haben!\n\n
 Einige Launcher haben eine Einstellung für \"Scrollable Widgets\". Stellen Sie sicher, dass diese Einstellungen aktiviert sind\n\n 
 Wenn Sie immer noch Probleme haben, können Sie auch den Entwickler kontaktieren (boombuler@googlemail.com)</string>
+	<string name="about">Info</string>
+	<string name="abouttext">Ich möchte folgenden Leuten für ihre Hilfe an diesem Projekt danken:\n\n
+Grafik:\n
+* Ian Grams\n\n
+Übersetzungen:\n
+* \"EAGINsoftware\"\n\n
+Coding:\n
+* Christian Bastian</string>
 </resources>
