@@ -18,7 +18,7 @@
 	  		
 	  <ListPreference
 	  		android:key="BGImage-%d"
-	  		android:summary="@string/black"
+	  		android:summary="@string/transparent"
 	  		android:title="@string/background" />
 	
 	  <CheckBoxPreference android:key="ShowName-%d"

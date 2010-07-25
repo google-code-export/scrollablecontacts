@@ -12,8 +12,9 @@ public class Preferences {
     public static final String SHOW_NAME = "ShowName-%d";
     
     public static final String BGIMAGE = "BGImage-%d";
-    public static final int BG_BLACK = 0;
-    public static final int BG_WHITE = 1;
+    public static final int BG_TRANS = 0;
+    public static final int BG_BLACK = 1;
+    public static final int BG_WHITE = 2;
     
     public static String get(String aPref, int aAppWidgetId) {
     	return String.format(aPref, aAppWidgetId);    	

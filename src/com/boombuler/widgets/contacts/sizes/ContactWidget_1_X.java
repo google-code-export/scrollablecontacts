@@ -11,7 +11,7 @@ public class ContactWidget_1_X extends ContactWidget {
 	@Override
 	public int getListEntryLayoutId(Context aContext, int aAppWidgetId) {
 		if (Preferences.getShowName(aContext, aAppWidgetId)) {
-			if (Preferences.getBGImage(aContext, aAppWidgetId) == Preferences.BG_BLACK)
+			if (Preferences.getBGImage(aContext, aAppWidgetId) == Preferences.BG_BLACK || Preferences.getBGImage(aContext, aAppWidgetId) == Preferences.BG_TRANS)
 				return R.layout.entry_small_black;
 			else
 				return R.layout.entry_small_white;
