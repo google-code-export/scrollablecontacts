@@ -51,4 +51,12 @@ make sure you have a launcher that supports scrollable widgets
 and that you are using the latest update of that launcher!\n\n
 Some launchers have options to disable scrollable widgets (make sure scrollable widgets are enabled)\n\n
 If there are still problems feel free to contact the developer! (boombuler@googlemail.com)</string>
+	<string name="about">About</string>
+	<string name="abouttext">I want to thank the following people for their contribution on this project:\n\n
+Graphics:\n
+* Ian Grams\n\n
+Translations:\n
+* \"EAGINsoftware\"\n\n
+Coding:\n
+* Christian Bastian</string>
 </resources>

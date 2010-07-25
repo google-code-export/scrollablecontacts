@@ -18,7 +18,7 @@
 	  		
 	  <ListPreference
 	  		android:key="BGImage-%d"
-	  		android:summary="@string/transparent"
+	  		android:summary="@string/black"
 	  		android:title="@string/background" />
 	
 	  <CheckBoxPreference android:key="ShowName-%d"
@@ -31,8 +31,9 @@
   </PreferenceCategory>
   		  	
   <PreferenceCategory android:title="@string/pref_grp_general">
-  		<Preference android:title="@string/help" android:summary="@string/help_summary" android:key="HELP" />		  		
   		<Preference android:title="@string/save" android:key="SAVE"/>
+		<Preference android:title="@string/help" android:summary="@string/help_summary" android:key="HELP" />
+		<Preference android:title="@string/about" android:key="ABOUT" />  		
   </PreferenceCategory>
 
 </PreferenceScreen>
