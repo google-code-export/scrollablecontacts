@@ -150,13 +150,13 @@ public class ConfigurationActivity extends PreferenceActivity {
 	private void prepareBGImage() {
 		ListPreference bgimage = (ListPreference)findPreference(Preferences.BGIMAGE);
 		bgimage.setKey(Preferences.get(Preferences.BGIMAGE, appWidgetId));
-		CharSequence[] Titles = new CharSequence[] { getString(R.string.black), getString(R.string.white) };
-		CharSequence[] Values = new CharSequence[] { String.valueOf(Preferences.BG_BLACK), String.valueOf(Preferences.BG_WHITE) };
+		CharSequence[] Titles = new CharSequence[] { getString(R.string.transparent), getString(R.string.black), getString(R.string.white) };
+		CharSequence[] Values = new CharSequence[] { String.valueOf(Preferences.BG_TRANS), String.valueOf(Preferences.BG_BLACK), String.valueOf(Preferences.BG_WHITE) };
 		bgimage.setOnPreferenceChangeListener(new SetCurValue(Titles, Values));
 		
 		bgimage.setEntries(Titles);
 		bgimage.setEntryValues(Values);
-		bgimage.setValue(String.valueOf(Preferences.BG_BLACK));
+		bgimage.setValue(String.valueOf(Preferences.BG_TRANS));
 	}
 	
 	private void prepareHelpBtn() {
