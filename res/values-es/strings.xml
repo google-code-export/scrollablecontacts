@@ -24,10 +24,12 @@
     <string name="widget2x3">Widget Contactos 2x3</string>    
     <string name="widget2x4">Widget Contactos 2x4</string>
 
+    
     <string name="loading">Cargando...</string>
     <string name="save">Guardar</string>
     <string name="select_contact_group">Grupo de Contactos</string>
     <string name="allcontacts">Todos los Contactos</string>
+    <string name="facebook">Mis amigos de Facebook</string>
     <string name="quickcontactsize">Tamaño QuickContact</string>
     <string name="qcsLarge">Grande</string>
     <string name="qcsMedium">Medio</string>
@@ -44,9 +46,18 @@
     <string name="help">Ayuda</string>
     <string name="help_summary">El Widget no funciona?</string>
     <string name="okbtn">Ok</string>
-<string name="helptext">Si tiene algún problema con este Widget,
+	<string name="helptext">Si tiene algún problema con este Widget,
 asegúrese de que dispone de un escritorio que soporte widgets con scroll, y de que está usando
 la última actualización de dicho escritorio!\n\n
 Algunos escritorios tienen opciones para desactivar el scroll en los widgets (asegúrese de haber habilitado la opción de scroll en los widgets)\n\n
 Si sigue teniendo problemas, siéntase libre de contactar con el desarrollador! (boombuler@googlemail.com)</string>
+	<string name="about">Acerca de</string>
+	<string name="abouttext">Quisiera dar las gracias a las siguientes personas por su colaboración en este proyecto:\n\n
+Gráficos:\n
+* Danny Hensel\n
+* Ian Grams\n\n
+Traducciones:\n
+* \"EAGINsoftware\"\n\n
+Código:\n
+* ChrBas</string>
 </resources>

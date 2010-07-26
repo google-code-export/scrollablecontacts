@@ -54,9 +54,10 @@ If there are still problems feel free to contact the developer! (boombuler@googl
 	<string name="about">About</string>
 	<string name="abouttext">I want to thank the following people for their contribution on this project:\n\n
 Graphics:\n
+* Danny Hensel\n
 * Ian Grams\n\n
 Translations:\n
 * \"EAGINsoftware\"\n\n
 Coding:\n
-* Christian Bastian</string>
+* ChrBas</string>
 </resources>
