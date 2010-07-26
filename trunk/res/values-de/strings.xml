@@ -53,9 +53,10 @@ Wenn Sie immer noch Probleme haben, können Sie auch den Entwickler kontaktieren
 	<string name="about">Info</string>
 	<string name="abouttext">Ich möchte folgenden Leuten für ihre Hilfe an diesem Projekt danken:\n\n
 Grafik:\n
+* Danny Hensel\n
 * Ian Grams\n\n
 Übersetzungen:\n
 * \"EAGINsoftware\"\n\n
 Coding:\n
-* Christian Bastian</string>
+* ChrBas</string>
 </resources>
