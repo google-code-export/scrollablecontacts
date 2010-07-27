@@ -6,6 +6,13 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
 public class Preferences {
+	public static final long GROUP_FACEBOOK = -1;
+	public static final long GROUP_ALLCONTACTS = 0;
+	public static final long GROUP_STARRED = -2;
+	
+	public static final int VIRTUAL_GROUP_COUNT = 3;
+	
+	
     public static final String GROUP_ID = "GroupId-%d";
     public static final String QUICKCONTACT_SIZE = "QCBarSize-%d";
     public static final String DISPLAY_LABEL = "DisplayLabel-%d";
