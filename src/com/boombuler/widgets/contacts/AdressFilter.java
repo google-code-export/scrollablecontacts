@@ -14,9 +14,13 @@ public class AdressFilter {
 	
 	public AdressFilter(Context context, long aGroupId) {
 		fFilter = ContactsContract.Contacts.IN_VISIBLE_GROUP + " = '1'";
-		if (aGroupId == 0) {
+		if (aGroupId == Preferences.GROUP_ALLCONTACTS) {
 			fParams = null;
 			return;
+		}
+		if (aGroupId == Preferences.GROUP_STARRED) {
+			fParams = null;
+			fFilter += " AND (STARRED = '1')";
 		}
 
 		Cursor resC = context.getContentResolver().query(ContactsContract.Data.CONTENT_URI, 

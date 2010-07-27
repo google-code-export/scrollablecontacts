@@ -18,11 +18,13 @@
     <!-- Spanish -->
     <string name="app_name">Widget Contactos</string>
     <string name="widget1x2">Widget Contactos 1x2</string>
-    <string name="widget1x3">Widget Contactos 2x3</string>    
-    <string name="widget1x4">Widget Contactos 1x4</string>    
+    <string name="widget1x3">Widget Contactos 1x3</string>
+    <string name="widget1x4">Widget Contactos 1x4</string>
     <string name="widget2x2">Widget Contactos 2x2</string>
-    <string name="widget2x3">Widget Contactos 2x3</string>    
+    <string name="widget2x3">Widget Contactos 2x3</string>
     <string name="widget2x4">Widget Contactos 2x4</string>
+	<string name="widget4x4">Widget Contactos 4x4</string>
+
 
     
     <string name="loading">Cargando...</string>
