@@ -24,6 +24,11 @@
 	  <CheckBoxPreference android:key="ShowName-%d"
 	  		android:title="@string/showName"
 	  		android:defaultValue="true" />
+	  <ListPreference
+	  		android:key="NameKind-%d"
+	  		android:summary="@string/displayname"
+	  		android:title="@string/namekind"
+	  		/>
 	  		
 	  <EditTextPreference android:key="DisplayLabel-%d"
 	  		android:title="@string/displayLabel" 

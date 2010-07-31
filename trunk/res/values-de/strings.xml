@@ -24,6 +24,12 @@
     <string name="widget2x3">Kontakt Widget 2x3</string>
     <string name="widget2x4">Kontakt Widget 2x4</string>
     <string name="widget4x4">Kontakt Widget 4x4</string>
+    
+    <string name="namekind">Namen anzeigen</string>
+    <string name="givenname">Vornamen</string>
+    <string name="familyname">Nachnamen</string>
+    <string name="displayname">Anzeigenamen</string>    
+    
     <string name="loading">Lade...</string>
     <string name="save">Speichern</string>
     <string name="select_contact_group">Kontakt Gruppe</string>

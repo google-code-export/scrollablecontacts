@@ -25,7 +25,10 @@
     <string name="widget2x4">Widget Contactos 2x4</string>
 	<string name="widget4x4">Widget Contactos 4x4</string>
 
-
+    <string name="namekind">Nombre a mostrar</string>
+    <string name="givenname">given name</string>
+    <string name="familyname">family name</string>
+    <string name="displayname">display name</string>
     
     <string name="loading">Cargando...</string>
     <string name="save">Guardar</string>

@@ -63,6 +63,7 @@ public class ConfigurationActivity extends PreferenceActivity {
         prepareContactGroups();
 		prepareQCBSizes();
 		prepareShowName();
+		prepareNameKinds();
 		
 		prepareBGImage();
 		prepareSaveBtn();
@@ -77,6 +78,26 @@ public class ConfigurationActivity extends PreferenceActivity {
 		CheckBoxPreference showName = (CheckBoxPreference)findPreference(Preferences.SHOW_NAME);
 		showName.setKey(Preferences.get(Preferences.SHOW_NAME, appWidgetId));
 	}	
+	
+	private void prepareNameKinds() {
+		ListPreference nameKinds = (ListPreference)findPreference(Preferences.NAME_KIND);
+		nameKinds.setKey(Preferences.get(Preferences.NAME_KIND, appWidgetId));
+		nameKinds.setDependency(Preferences.get(Preferences.SHOW_NAME, appWidgetId));
+		
+		CharSequence[] Titles = new CharSequence[] { 
+				getString(R.string.displayname), 
+				getString(R.string.givenname),
+				getString(R.string.familyname)};
+		CharSequence[] Values = new CharSequence[] { 
+				String.valueOf(Preferences.NAME_DISPLAY_NAME), 
+				String.valueOf(Preferences.NAME_GIVEN_NAME),
+				String.valueOf(Preferences.NAME_FAMILY_NAME)};
+		nameKinds.setOnPreferenceChangeListener(new SetCurValue(Titles, Values));
+		
+		nameKinds.setEntries(Titles);
+		nameKinds.setEntryValues(Values);
+		nameKinds.setValue(String.valueOf(Preferences.NAME_DISPLAY_NAME));		
+	}
 	
 	private void prepareDisplayLabel() {
 		// Find control and set the right preference-key for the AppWidgetId
