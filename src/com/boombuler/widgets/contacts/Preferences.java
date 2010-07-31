@@ -19,11 +19,16 @@ public class Preferences {
 	
 	public static final int VIRTUAL_GROUP_COUNT = 3;
 	
+	public static final int NAME_DISPLAY_NAME = 0;
+	public static final int NAME_GIVEN_NAME = 1;
+	public static final int NAME_FAMILY_NAME = 2;
+	
 	
     public static final String GROUP_ID = "GroupId-%d";
     public static final String QUICKCONTACT_SIZE = "QCBarSize-%d";
     public static final String DISPLAY_LABEL = "DisplayLabel-%d";
     public static final String SHOW_NAME = "ShowName-%d";
+    public static final String NAME_KIND = "NameKind-%d";
     
     public static final String BGIMAGE = "BGImage-%d";
     public static final int BG_BLACK = 0;
@@ -52,6 +57,11 @@ public class Preferences {
     public static int getBGImage(Context context, int aAppWidgetId) {
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		return Integer.parseInt(prefs.getString(Preferences.get(Preferences.BGIMAGE, aAppWidgetId), "0"));
+    }
+    
+    public static int getNameKind(Context context, int aAppWidgetId) {
+    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		return Integer.parseInt(prefs.getString(Preferences.get(Preferences.NAME_KIND, aAppWidgetId), "0"));    	
     }
     
     public static boolean getShowName(Context context, int aAppWidgetId) {

@@ -116,13 +116,14 @@ public class DataProvider extends ContentProvider {
 				List<String> pathSegs = uri.getPathSegments();
 				int appWId = Integer.parseInt(pathSegs.get(pathSegs.size() - 1));
 				long GroupId = Preferences.getGroupId(ctx, appWId);
+				int NameKind = Preferences.getNameKind(ctx, appWId);
 				if (GroupId == Preferences.GROUP_FACEBOOK){
 					if (FacebookPluginBridge.IsFacebookPluginInstalled(ctx))
 						return cloneCursorAndClose(ctx.getContentResolver().query(FacebookPluginBridge.CONTENTURI, projection, selection, selectionArgs, sortOrder));
 					else
 						GroupId = 0;
 				}	
-				return loadNewData(this, projection, GroupId);
+				return loadNewData(this, projection, GroupId, NameKind);
 			default:
 				throw new IllegalStateException("Unrecognized URI:" + uri);
 		}
@@ -167,7 +168,7 @@ public class DataProvider extends ContentProvider {
 	}
 	
 
-	public static ExtMatrixCursor loadNewData(ContentProvider mcp, String[] projection, long GroupId) {
+	public static ExtMatrixCursor loadNewData(ContentProvider mcp, String[] projection, long GroupId, int NameKind) {
 		ExtMatrixCursor ret = new ExtMatrixCursor(projection);
 		
 		Log.d(TAG, "... loading data");
@@ -178,8 +179,10 @@ public class DataProvider extends ContentProvider {
                 ContactsContract.Contacts.DISPLAY_NAME,
                 ContactsContract.Contacts.LOOKUP_KEY,
         };
-        AdressFilter flt = new AdressFilter(ctx, GroupId);
+        AdressFilter flt = new AdressFilter(ctx, GroupId, NameKind);        
         String src_sortOrder = ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC";
+        
+        AdressFilter.NameResolver nameResolver = flt.getNameResolver();
 
         Cursor cur = ctx.getContentResolver().query(uri, src_projection, flt.getFilter(), flt.getFilterParams(), src_sortOrder);
 		if (cur == null) {
@@ -199,7 +202,9 @@ public class DataProvider extends ContentProvider {
 					if (DataProviderColumns._id.toString().equals(column)) {
 						values[i] = id; 
 					} else if (DataProviderColumns.name.toString().equals(column)) {
-						values[i] = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+						values[i] = nameResolver.updateName(
+								    cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY)), 
+									cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
 					} else if (DataProviderColumns.photo.toString().equals(column)) {
 						values[i] = getImg(id);
 					} else if (DataProviderColumns.contacturi.toString().equals(column)) {
@@ -215,6 +220,7 @@ public class DataProvider extends ContentProvider {
 		}
 		finally
 		{
+			nameResolver.close();
 			cur.close();
 		}
         Log.d(TAG, "... loading data complete");

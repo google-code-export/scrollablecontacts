@@ -1,5 +1,6 @@
 package com.boombuler.widgets.contacts;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
@@ -11,16 +12,24 @@ public class AdressFilter {
 	
 	private String fFilter;
 	private String[] fParams;
+	private NameResolver fNameResolver = null;
+	private int fNameKind;
+	private long fGroupId;
 	
-	public AdressFilter(Context context, long aGroupId) {
-		fFilter = ContactsContract.Contacts.IN_VISIBLE_GROUP + " = '1'";
+	public AdressFilter(Context context, long aGroupId, int NameKind) {
+		fNameKind = NameKind;
+		fGroupId = aGroupId;
+		fFilter = "";
 		if (aGroupId == Preferences.GROUP_ALLCONTACTS) {
 			fParams = null;
+			fNameResolver = new NameResolver(context);
 			return;
 		}
 		if (aGroupId == Preferences.GROUP_STARRED) {
 			fParams = null;
 			fFilter += " AND (STARRED = '1')";
+			fNameResolver = new NameResolver(context);
+			return;
 		}
 
 		Cursor resC = context.getContentResolver().query(ContactsContract.Data.CONTENT_URI, 
@@ -48,15 +57,77 @@ public class AdressFilter {
 			resC.moveToNext();
 		}
 		fFilter += ")";
+		fNameResolver = new NameResolver(context);
 	}
 	
 	public String getFilter()
 	{
-		return fFilter;		
+		return ContactsContract.Contacts.IN_VISIBLE_GROUP + " = '1'" + fFilter;		
 	}
 	
 	public String[] getFilterParams() {
 		return fParams;
+	}
+	
+	public NameResolver getNameResolver() {
+		return fNameResolver;
+	}
+	
+	public class NameResolver {
+		private Cursor fCursor = null;
+		
+		private NameResolver(Context context) {
+			if (AdressFilter.this.fNameKind == Preferences.NAME_DISPLAY_NAME)
+				return;
+				
+			
+			ContentResolver resolver = context.getContentResolver();
+			
+			String name = ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME;
+			if (AdressFilter.this.fNameKind == Preferences.NAME_FAMILY_NAME)
+				name = ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME;
+			
+			String filter = "";
+			String[] params = null;
+			if (AdressFilter.this.fGroupId > 0) {
+				filter = AdressFilter.this.fFilter;
+				params = AdressFilter.this.fParams;
+			}
+			
+			filter = ContactsContract.CommonDataKinds.StructuredName.MIMETYPE + " = '"+ ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE+"' " + filter;
+			
+			fCursor = resolver.query(ContactsContract.Data.CONTENT_URI, 
+							 new String[] { ContactsContract.CommonDataKinds.StructuredName.LOOKUP_KEY, name},
+							 filter, params, null);
+			
+		}
+	
+		public void close() {
+			if (fCursor != null)
+				fCursor.close();
+			fCursor = null;
+		}
+	
+		public String updateName(String lookupKey, String DisplayName) {
+			if (AdressFilter.this.fNameKind == Preferences.NAME_DISPLAY_NAME)
+				return DisplayName;
+			else
+			{
+				fCursor.moveToFirst();
+				while(!fCursor.isAfterLast()) {
+					if (fCursor.getString(0).equals(lookupKey))
+					{
+						if (fCursor.isNull(1))
+							return DisplayName;
+						return fCursor.getString(1);
+					}
+					
+					fCursor.moveToNext();
+				}
+				Log.d(TAG, "will return displayname:" + DisplayName);
+				return DisplayName;
+			}
+		}
 	}
 	
 }
