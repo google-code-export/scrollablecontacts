@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -30,6 +32,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.RawContacts;
+import android.provider.ContactsContract.Contacts.Data;
 import android.util.Log;
 
 public class DataProvider extends ContentProvider {
@@ -45,11 +48,11 @@ public class DataProvider extends ContentProvider {
 	private static final int URI_DATA = 0;
 	
 	public enum DataProviderColumns {
-		_id, photo, name, contacturi
+		_id, photo, name, lookupkey
 	}
 
 	public static final String[] PROJECTION_APPWIDGETS = new String[] { DataProviderColumns._id.toString(),
-			DataProviderColumns.photo.toString(), DataProviderColumns.name.toString(), DataProviderColumns.contacturi.toString()};
+			DataProviderColumns.photo.toString(), DataProviderColumns.name.toString(), DataProviderColumns.lookupkey.toString()};
 
 	private class ContObserver extends ContentObserver {
 
@@ -65,12 +68,17 @@ public class DataProvider extends ContentProvider {
 		@Override
 		public void onChange(boolean selfChange) {
 			super.onChange(selfChange);
-			Log.d(TAG, "**********Contacts Changed**********");
+			Log.d("BOOMBULER", "-- Contacts Changed --");
+			
+			int[] appWidgetIds = Preferences.getAllWidgetIds(ctx);
+			
+			for (int id : appWidgetIds)
+				notifyDatabaseModification(id);
 		}
 		
 	}
 	
-	private static Context ctx = null;	
+	private static Context ctx = null;
 
 	static {
 		URI_MATCHER.addURI(AUTHORITY, "data/*", URI_DATA);
@@ -78,7 +86,12 @@ public class DataProvider extends ContentProvider {
 
 	@Override
 	public boolean onCreate() {
-		ctx = getContext();
+		if (ctx == null) {
+			ctx = getContext();
+			
+			ctx.getContentResolver().registerContentObserver(RawContacts.CONTENT_URI, 
+					true, new ContObserver());
+		}
 
 		return false;
 	}
@@ -112,10 +125,7 @@ public class DataProvider extends ContentProvider {
 					else
 						GroupId = 0;
 				}	
-				ExtMatrixCursor mc = loadNewData(this, projection, GroupId);
-				mc.setNotificationUri(ctx.getContentResolver(), RawContacts.CONTENT_URI);				
-				mc.registerContentObserver(new ContObserver());
-				return mc;
+				return loadNewData(this, projection, GroupId);
 			default:
 				throw new IllegalStateException("Unrecognized URI:" + uri);
 		}
@@ -136,8 +146,9 @@ public class DataProvider extends ContentProvider {
 					values[i] = crs.getString(i);
 				} else if (DataProviderColumns.photo.toString().equals(column)) {
 					values[i] = crs.getBlob(i);
-				} else if (DataProviderColumns.contacturi.toString().equals(column)) {
-					values[i] = crs.getString(i);					
+				} else if (DataProviderColumns.lookupkey.toString().equals(column)) {	
+					values[i] = crs.getString(crs.getColumnIndex(ContactsContract.Contacts._ID)) + "\r\n" +							
+							    crs.getString(crs.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY));					
 				}
 			}  
 			Log.d(TAG, "record copied");
@@ -155,6 +166,7 @@ public class DataProvider extends ContentProvider {
 
 	public static void notifyDatabaseModification(int widgetId) {		
 		Uri widgetUri = CONTENT_URI_MESSAGES.buildUpon().appendEncodedPath(Integer.toString(widgetId)).build();
+		Log.d(TAG, "notifyDatabaseModification -> UPDATE widgetUri : " + widgetUri);
 		ctx.getContentResolver().notifyChange(widgetUri, null);
 	}
 	
@@ -194,8 +206,9 @@ public class DataProvider extends ContentProvider {
 						values[i] = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
 					} else if (DataProviderColumns.photo.toString().equals(column)) {
 						values[i] = getImg(id);
-					} else if (DataProviderColumns.contacturi.toString().equals(column)) {
-						values[i] = ContactsContract.Contacts.CONTENT_LOOKUP_URI.buildUpon().appendPath(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY))).appendPath(cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID))).build().toString();
+					} else if (DataProviderColumns.lookupkey.toString().equals(column)) {
+						values[i] = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID)) + "\r\n" +
+									cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY));
 						
 					}
 				}        	
