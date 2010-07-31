@@ -19,13 +19,11 @@ package com.boombuler.widgets.contacts;
 import mobi.intuitit.android.content.LauncherIntent;
 import android.appwidget.*;
 import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
-import android.provider.ContactsContract;
 import android.provider.ContactsContract.QuickContact;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -43,7 +41,7 @@ public abstract class ContactWidget extends AppWidgetProvider {
 		// If no specific widgets requested, collect list of all		
 		
 		if (appWidgetIds == null) {
-			appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, ContactWidget.class));
+			appWidgetIds = Preferences.getAllWidgetIds(context);
 		}
 		Log.d(TAG, "recieved onUpdate");
         
@@ -149,13 +147,7 @@ public abstract class ContactWidget extends AppWidgetProvider {
 		int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 		Log.d(TAG, "got appWidgetId: "+ appWidgetId);
 	
-		// Get the ItemIds from the Intent	129	
-		// Provided by the DataProvider in the format:	
-		// "ContactID\r\nLookupKey"	
-		String itemId = intent.getStringExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_POS);		
-		Log.d(TAG, "item position: "+ itemId);		
-		String[] ids = itemId.split("\r\n");		
-		Log.d(TAG, "itemIDs count:" + ids == null ? "NULL" : String.valueOf(ids.length));
+		Uri uri = Uri.parse(intent.getStringExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_POS));
 			
 		int viewId = intent.getIntExtra(LauncherIntent.Extra.EXTRA_VIEW_ID, -1);
 		Log.d(TAG, "viewId: "+viewId);
@@ -175,24 +167,15 @@ public abstract class ContactWidget extends AppWidgetProvider {
 			Log.d(TAG, "displaysizerect: "+r);
 		}
 		try
-		{
-			
-			Log.d(TAG, "building URI");		
-			Uri uri = ContactsContract.Contacts.CONTENT_LOOKUP_URI.buildUpon().appendPath(ids[1]).appendPath(ids[0]).build();
-			
-			Log.d(TAG, "lookup URI: "+uri);
+		{			
 			QuickContact.showQuickContact(context,r , 
 					uri, 
 					Preferences.getQuickContactSize(context, appWidgetId), null);
 			Log.d(TAG, "quickcontact should now be visible!");
 		}
 		catch(ActivityNotFoundException expt)
-		{ // 2.1 is foobar...
-			Log.w(TAG, "QuickContact failed!");
-
-			Uri uri = ContactsContract.Contacts.CONTENT_URI.buildUpon().appendEncodedPath(ids[0]).build();	
-			Log.d(TAG, "alternative lookupuri: "+uri);			
-
+		{ // 2.1 is foobar...		
+			Log.d(TAG, "no activity found: " + expt.getMessage());
 			Intent launch = new Intent(Intent.ACTION_VIEW, uri);
 			launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			Log.d(TAG, "will start contact activity");
@@ -294,7 +277,7 @@ public abstract class ContactWidget extends AppWidgetProvider {
 		int iItem = 0;
 		
 		intent.putExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_ACTION_VIEW_URI_INDEX, 
-				DataProvider.DataProviderColumns.lookupkey.ordinal());
+				DataProvider.DataProviderColumns.contacturi.ordinal());
 		
 		cursorIndices[iItem] = DataProvider.DataProviderColumns.photo.ordinal();
 		viewTypes[iItem] = LauncherIntent.Extra.Scroll.Types.IMAGEBLOB;
