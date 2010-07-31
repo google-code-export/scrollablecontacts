@@ -1,5 +1,12 @@
 package com.boombuler.widgets.contacts;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.boombuler.widgets.contacts.sizes.*;
+
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -63,5 +70,32 @@ public class Preferences {
 			edit.remove(Preferences.get(Preferences.DISPLAY_LABEL, appWId));
 		}
 		edit.commit();
+    }
+    
+    public static int[] getAllWidgetIds(Context context) {
+    	AppWidgetManager awm = AppWidgetManager.getInstance(context);
+    	List<int[]> result = new ArrayList<int[]>();
+    	
+    	result.add(awm.getAppWidgetIds(new ComponentName(context, ContactWidget_1_2.class)));
+    	result.add(awm.getAppWidgetIds(new ComponentName(context, ContactWidget_1_3.class)));
+    	result.add(awm.getAppWidgetIds(new ComponentName(context, ContactWidget_1_4.class)));
+    	result.add(awm.getAppWidgetIds(new ComponentName(context, ContactWidget_2_2.class)));
+    	result.add(awm.getAppWidgetIds(new ComponentName(context, ContactWidget_2_3.class)));
+    	result.add(awm.getAppWidgetIds(new ComponentName(context, ContactWidget_2_4.class)));
+    	result.add(awm.getAppWidgetIds(new ComponentName(context, ContactWidget_4_4.class)));
+    	
+    	int i = 0;
+    	for(int[] arr : result)
+    	  i += arr.length;
+    	
+    	int[] res = new int[i];
+    	i = 0;
+    	for (int[] arr : result) {
+    		for (int id : arr) {
+    			res[i++] = id;
+    		}
+    	}
+    	
+    	return res;
     }
 }
