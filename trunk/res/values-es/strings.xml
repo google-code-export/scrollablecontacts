@@ -31,6 +31,7 @@
     <string name="save">Guardar</string>
     <string name="select_contact_group">Grupo de Contactos</string>
     <string name="allcontacts">Todos los Contactos</string>
+    <string name="starred">Favoritos *</string>    
     <string name="facebook">Mis amigos de Facebook</string>
     <string name="quickcontactsize">Tamaño QuickContact</string>
     <string name="qcsLarge">Grande</string>
