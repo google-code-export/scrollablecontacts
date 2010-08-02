@@ -40,7 +40,8 @@ public class AdressFilter {
 					ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE, 
 					String.valueOf(aGroupId)
 				}, null);		
-		
+		if (resC == null)
+			return;
 		fParams = new String[resC.getCount()];
 		resC.moveToFirst();
 		int i = 0;
