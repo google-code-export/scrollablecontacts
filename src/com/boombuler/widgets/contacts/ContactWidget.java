@@ -97,6 +97,8 @@ public abstract class ContactWidget extends AppWidgetProvider {
 	protected abstract int getListEntryLayoutId(Context aContext, int aAppWidgetId);
 	
 	protected int getListViewLayoutId(Context aContext, int aAppWidgetId) {
+		if (Preferences.getBGImage(aContext, aAppWidgetId) == Preferences.BG_TRANS)
+			return R.layout.listview_no_div;
 		return R.layout.listview;
 	}
 	
