@@ -1,0 +1,13 @@
+#summary Facebook contacts
+
+=Facebook=
+
+http://www.listware.net/201005/android-developers/40927-android-developers-questions-about-isrestricted.html
+
+Restricted contacts are created by the Facebook sync adapter. These
+contacts are accessible to a whitelist of applications, which is specified
+and enforced by Facebook.
+The restricted contact API is private and I haven't heard of any plans to
+open it up, which means that nobody (with the exception of Facebook) should
+be using it at this point. In any case, the way it is implemented only
+allows for a single restricted account.
