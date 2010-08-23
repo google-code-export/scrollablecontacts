@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  <PreferenceCategory android:title="@string/pref_grp_data">
+	  <ListPreference 
+	  		android:key="GroupId-%d"
+	  		android:summary="@string/allcontacts"
+	  		android:defaultValue="0"
+	  		android:title="@string/select_contact_group" />
+  		
+  </PreferenceCategory>
+  <PreferenceCategory android:title="@string/pref_grp_layout">		
+  		
+	  <ListPreference
+	  		android:key="QCBarSize-%d"
+	  		android:summary="@string/qcsLarge"
+	  		android:title="@string/quickcontactsize" />
+	  		
+	  <ListPreference
+	  		android:key="BGImage-%d"
+	  		android:summary="@string/black"
+	  		android:title="@string/background" />
+	
+	  <CheckBoxPreference android:key="ShowName-%d"
+	  		android:title="@string/showName"
+	  		android:defaultValue="true" />
+	  <ListPreference
+	  		android:key="NameKind-%d"
+	  		android:summary="@string/displayname"
+	  		android:title="@string/namekind"
+	  		/>
+	  		
+	  <EditTextPreference android:key="DisplayLabel-%d"
+	  		android:title="@string/displayLabel" 
+	  		android:defaultValue=""/>
+  </PreferenceCategory>
+  		  	
+  <PreferenceCategory android:title="@string/pref_grp_general">
+  		<Preference android:title="@string/save" android:key="SAVE"/>
+		<Preference android:title="@string/help" android:summary="@string/help_summary" android:key="HELP" />
+		<Preference android:title="@string/about" android:key="ABOUT" />  		
+  </PreferenceCategory>
+
+</PreferenceScreen>

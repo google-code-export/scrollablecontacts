@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+ Copyright (C) 2010 Florian Sundermann
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="com.boombuler.widgets.contacts"
+      android:versionCode="16"
+      android:versionName="0.1.6">
+    <application android:icon="@drawable/icon" android:label="@string/app_name">
+   		<provider
+   		  android:name=".DataProvider"
+            android:authorities="com.boombuler.widgets.contacts.provider"
+            android:multiprocess="true"
+            android:grantUriPermissions="true"
+            />
+		<!-- Broadcast Receiver that will process AppWidget updates -->
+		
+		<receiver android:name=".sizes.ContactWidget_1_2" android:label="@string/widget1x2">
+			<intent-filter>
+				<action   
+					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+			<meta-data android:name="android.appwidget.provider"
+				android:resource="@xml/contact_widget_provider1x2" />
+		</receiver>
+		
+		<receiver android:name=".sizes.ContactWidget_1_3" android:label="@string/widget1x3">
+			<intent-filter>
+				<action   
+					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+			<meta-data android:name="android.appwidget.provider"
+				android:resource="@xml/contact_widget_provider1x3" />
+		</receiver>	
+		
+		<receiver android:name=".sizes.ContactWidget_1_4" android:label="@string/widget1x4">
+			<intent-filter>
+				<action   
+					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+			<meta-data android:name="android.appwidget.provider"
+				android:resource="@xml/contact_widget_provider1x4" />
+		</receiver>
+
+
+		<receiver android:name=".sizes.ContactWidget_2_2" android:label="@string/widget2x2">
+			<intent-filter>
+				<action   
+					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+			<meta-data android:name="android.appwidget.provider"
+				android:resource="@xml/contact_widget_provider2x2" />
+		</receiver>
+		
+		<receiver android:name=".sizes.ContactWidget_2_3" android:label="@string/widget2x3">
+			<intent-filter>
+				<action   
+					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+			<meta-data android:name="android.appwidget.provider"
+				android:resource="@xml/contact_widget_provider2x3" />
+		</receiver>
+				
+		<receiver android:name=".sizes.ContactWidget_2_4" android:label="@string/widget2x4">
+			<intent-filter>
+				<action   
+					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+			<meta-data android:name="android.appwidget.provider"
+				android:resource="@xml/contact_widget_provider2x4" />
+		</receiver>		
+
+		<!--receiver android:name=".sizes.ContactWidget_4_4" android:label="@string/widget4x4">
+			<intent-filter>
+				<action   
+					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+			<meta-data android:name="android.appwidget.provider"
+				android:resource="@xml/contact_widget_provider4x4" />
+			<meta-data android:name="mobi.intuitit.android.api.requiredversion"
+				android:value="2" />
+		</receiver-->		
+		
+		<activity android:name=".ConfigurationActivity">
+			<intent-filter>
+				<action android:name="com.boombuler.widgets.contacts.PREFS" />
+			</intent-filter>
+		</activity>
+		
+    </application>
+    <uses-sdk android:minSdkVersion="7" />
+
+
+	<uses-permission android:name="android.permission.READ_CONTACTS"></uses-permission>
+</manifest> 
