@@ -94,12 +94,18 @@ public abstract class ContactWidget extends AppWidgetProvider {
 	/**
 	 * Gets the layout resource id for the list entries
 	 */
-	protected abstract int getListEntryLayoutId(Context aContext, int aAppWidgetId);
+	protected int getListEntryLayoutId(Context aContext, int aAppWidgetId) {
+		if (Preferences.getShowName(aContext, aAppWidgetId)) {
+			if (Preferences.getBGImage(aContext, aAppWidgetId) == Preferences.BG_BLACK || Preferences.getBGImage(aContext, aAppWidgetId) == Preferences.BG_TRANS)
+				return R.layout.entry_black;
+			else
+				return R.layout.entry_white;
+		}		
+		return R.layout.entry_noname;
+	}
 	
-	protected int getListViewLayoutId(Context aContext, int aAppWidgetId) {
-		if (Preferences.getBGImage(aContext, aAppWidgetId) == Preferences.BG_TRANS)
-			return R.layout.listview_no_div;
-		return R.layout.listview;
+	protected int getListViewLayoutId(Context aContext, int aAppWidgetId) {		
+		return R.layout.gridview;
 	}
 	
 	@Override

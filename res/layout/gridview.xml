@@ -24,15 +24,13 @@
     android:scrollingCache="true"
     android:alwaysDrawnWithCache="true"
     android:persistentDrawingCache="scrolling"
-    android:divider="@drawable/divider_horizontal_bright"
-    android:fadingEdge="none"
-    
+    android:fadingEdge="vertical"
+    android:stretchMode="columnWidth" 
     android:horizontalSpacing="5dip"
     android:verticalSpacing="15dip"
-    android:numColumns="4"
+    android:numColumns="2"
     
     android:addStatesFromChildren="false"
     android:choiceMode="singleChoice" 
 	android:duplicateParentState="true"
-    >
-</GridView>
+    />

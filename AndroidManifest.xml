@@ -16,8 +16,8 @@
  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.boombuler.widgets.contacts"
-      android:versionCode="14"
-      android:versionName="0.1.4">
+      android:versionCode="16"
+      android:versionName="0.1.6">
     <application android:icon="@drawable/icon" android:label="@string/app_name">
    		<provider
    		  android:name=".DataProvider"
@@ -89,6 +89,8 @@
 			</intent-filter>
 			<meta-data android:name="android.appwidget.provider"
 				android:resource="@xml/contact_widget_provider4x4" />
+			<meta-data android:name="mobi.intuitit.android.api.requiredversion"
+				android:value="2" />
 		</receiver-->		
 		
 		<activity android:name=".ConfigurationActivity">

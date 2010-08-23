@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:local="com.boombuler.widgets.contacts.views"
+	android:orientation="vertical"
+	android:layout_width="fill_parent" 		
+	android:layout_height="fill_parent">
+	<ImageView android:id="@+id/photo"   
+		android:scaleType="centerCrop"
+		android:adjustViewBounds="true"
+		android:src="@drawable/icon"
+		
+		android:layout_width="99dip" 
+		android:layout_height="99dip" />
+	<TextView
+		android:id="@+id/displayname"
+		android:layout_height="fill_parent"
+		android:layout_width="fill_parent"
+		android:layout_centerHorizontal="true"
+		android:textColor="#f0f0f0" 
+		android:gravity="center_horizontal|bottom" 		 
+		android:minLines="1" 
+		android:maxLines="3" 
+		android:text="contact name" 
+		android:textStyle="bold" 
+		android:textSize="12dp" 
+		android:focusable="false" 
+		android:layout_marginLeft="1dp" 
+		android:layout_marginRight="1dp"/>
+</LinearLayout>
