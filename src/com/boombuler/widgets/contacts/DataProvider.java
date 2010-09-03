@@ -220,8 +220,10 @@ public class DataProvider extends ContentProvider {
 		}
 		finally
 		{
-			nameResolver.close();
-			cur.close();
+			if (nameResolver != null)
+				nameResolver.close();
+			if (cur != null)
+				cur.close();
 		}
         Log.d(TAG, "... loading data complete");
 		return ret;
