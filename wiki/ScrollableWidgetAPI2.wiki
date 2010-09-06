@@ -5,7 +5,7 @@
 
 Hi there everyone,
 
-I've worked the last week on a new scrollable widget API which is much more flexible then the previous one. This document might help you all to use these changes.
+I've worked the last week on a new scrollable widget API which is much more flexible then the previous one. Let me say that the old API is fully compatible! This document might help you all to use these changes.
 Here some things that are new:
 
 === Metadata requirements ===
@@ -34,4 +34,103 @@ So please read the changes I've done in the Launcher.java try to understand them
 
 = For widget devs =
 
+=== Metadata requirements ===
 
+you can now tell the launcher what you need for your widget and the launcher will decide if it can provide that requirements or not... That will reduce the number of "dumb support requests".
+
+See this sample of AndroidManifest.xml :
+
+{{{
+  <receiver android:name="SampleWidget" android:label="@string/SampleWidget">
+    <intent-filter>
+      <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+    </intent-filter>
+    <meta-data android:name="android.appwidget.provider"
+               android:resource="@xml/contact_widget_provider4x4" />
+
+    <!-- Here is the new code: -->
+
+    <!-- require at least api version 2 -->
+    <meta-data android:name="LauncherMetadata.Requirements.APIVersion" 
+               android:value="2" />
+
+    <!-- require scrollable support -->
+    <meta-data android:name="LauncherMetadata.Requirements.Scrollable"
+               android:value="true" />
+
+    <!-- require animation support -->
+    <meta-data android:name="LauncherMetadata.Requirements.Animation"
+               android:value="true" />
+  </receiver>
+
+}}}
+
+=== RemoteViews ===
+
+I hope you will love this as much as I do ;)
+I have added a possibility to use a RemoteViews like class to tell the launcher how the ListViews and the Items shall look like.
+
+Lets start with the ListView/GridView. Instead of passing the layout resource id within the intent (EXTRA_LISTVIEW_LAYOUT_ID) you can now pass an instance of "SimpleRemoteViews"
+Let me show you a sample to make this more clear. Imagine you have a GridView and want to set the number of columns based on your settings. Previously you had to have a layout for each variation now you can to it this way:
+{{{
+    // Create a new instance of SimpleRemoteViews and pass the "base layout"
+    SimpleRemoteViews gridView = new SimpleRemoteViews(R.layout.gridview);
+    // now tell the launcher to set the columns to colCount
+    gridView.setInt(R.id.my_gridview, "setNumColumns", colCount);
+    // pass it to the launcher within the ACTION_SCROLL_WIDGET_START intent
+    result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_LISTVIEW_REMOTEVIEWS, gridViews);
+}}}
+
+For the ListViewItems you could use a similar way (instead of passing the EXTRA_ITEM_LAYOUT_ID):
+
+{{{
+  // Create a BoundRemoteViews instance for the entry_small_black layout
+  BoundRemoteViews itemViews = new BoundRemoteViews(R.layout.entry_small_black);
+
+  // Now "bind" the text of the DataProviders name column to the text of 
+  // the R.id.displayname which is a TextView
+  itemViews.setBoundCharSequence(R.id.displayname, "setText", 
+                                 DataProvider.DataProviderColumns.name.ordinal(),
+                                 0); // <-- 0 = default resource id 'none'
+
+  // "bind" the bitmap in the photo column of the DataProvider to the ImageView
+  // and use R.drawable.no_image as fallback value.
+  itemViews.setBoundBitmap(R.id.photo, "setImageBitmap",
+                           DataProvider.DataProviderColumns.photo.ordinal(),
+                           R.drawable.no_image);
+}}}
+
+even the click events for the items are more flexible. Cause you can setup a sample intent for the clicking: 
+
+{{{
+  // Create the sample intent:
+  Intent intent = new Intent(LauncherIntent.Action.ACTION_VIEW_CLICK);
+
+  // put the appWidgetId to the sample intent
+  // you could also put other extras to that!
+  intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+		
+  // Now set the sample intent to to the onClick of R.id.photo
+  itemViews.SetBoundOnClickIntent(R.id.photo, intent, 
+           // and put the DataProviders contacturi-column value to
+           // the extra name EXTRA_ITEM_POS
+                                  LauncherIntent.Extra.Scroll.EXTRA_ITEM_POS,
+                                  DataProvider.DataProviderColumns.contacturi.ordinal());
+}}}
+
+I know this sometimes is more coding but this brings so much more flexibility ;)
+
+Oh and you dont have to pass the following extras if you use this new method:
+  * EXTRA_LISTVIEW_LAYOUT_ID
+  * EXTRA_ITEM_LAYOUT_ID
+  * EXTRA_ITEM_CHILDREN_CLICKABLE
+  * EXTRA_VIEW_IDS
+  * EXTRA_VIEW_TYPES
+  * EXTRA_VIEW_CLICKABLE
+  * EXTRA_CURSOR_INDICES
+  * EXTRA_DEFAULT_RESOURCES
+
+If there are any questions left just ask me ;)
+
+Regards
+Florian
