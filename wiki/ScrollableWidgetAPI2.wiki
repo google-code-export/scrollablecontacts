@@ -130,6 +130,10 @@ Oh and you dont have to pass the following extras if you use this new method:
   * EXTRA_CURSOR_INDICES
   * EXTRA_DEFAULT_RESOURCES
 
+
+You now also get an additional extra within the ACTION_READY intent:
+LauncherIntent.Extra.EXTRA_API_VERSION which contains the maximum API version the launcher  can provide. If the extra is not specified the Version is 1 (the one before this patch)
+
 If there are any questions left just ask me ;)
 
 Regards
