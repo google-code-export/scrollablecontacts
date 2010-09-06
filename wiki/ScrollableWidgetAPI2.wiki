@@ -1,0 +1,37 @@
+#summary launcher- and widget-developer guide to API version 2
+#labels Deprecated,Phase-Implementation
+
+= Introduction =
+
+Hi there everyone,
+
+I've worked the last week on a new scrollable widget API which is much more flexible then the previous one. This document might help you all to use these changes.
+Here some things that are new:
+
+=== Metadata requirements ===
+
+As a widget dev you can now add some nodes to your AndroidManifest.xml to tell the launcher that you need a specific API version or that your widget needs to be scrollable or animated. Read more about it in the two dev sections ;)
+
+=== RemoteViews ===
+
+The ListViews / GridViews and its content can now be described by two variants of RemoteViews which brings much more flexibility to the widget development. More about it in the widget dev section!
+
+= For launcher devs =
+
+As you see in the Launcher.java from the L+ code I have added some "meta-data-checks" in the addAppWidget method.
+
+There currently is only the check for the API version. 
+But in the new LauncherMetadata.java are some other "metadata names" defined.
+You should check them too if they are relevant for your launcher!
+
+For example:
+If you have a setting to enable/disable scrollable widget support then you might check the
+LauncherMetadata.Requirements.Scrollable meta-data too. If that meta-data is set to true the widget needs scrollable support. You might ask the user if he / she wants to enable that setting if it is disabled or also drop the widget.
+
+Please do us widget devs a favor and tell the user why you don't add a widget. This would reduce the amount of unnecessary support requests we have to answer ;)
+
+So please read the changes I've done in the Launcher.java try to understand them and do what you have to do ;)
+
+= For widget devs =
+
+
