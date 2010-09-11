@@ -2,13 +2,13 @@ package com.boombuler.widgets.contacts.sizes;
 
 import com.boombuler.widgets.contacts.ContactWidget;
 
-public class ContactWidget_4_X extends ContactWidget {
-
+public class ContactWidget_3_X extends ContactWidget {
+		
 	@Override
 	protected int getWidth(boolean horizontal) {
 		if (horizontal)
-			return 424;
+			return 318;
 		else
-			return 320;
+			return 240;
 	}
 }

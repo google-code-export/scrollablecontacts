@@ -24,6 +24,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
@@ -61,16 +62,34 @@ public class ConfigurationActivity extends PreferenceActivity {
         // prepare the GUI components
         prepareDisplayLabel();
         prepareContactGroups();
-		prepareQCBSizes();
+        prepareColumnCount();
 		prepareShowName();
 		prepareNameKinds();
 		
 		prepareBGImage();
+		prepareBackgroundAlpha();
 		prepareSaveBtn();
 		prepareHelpBtn();
 		prepareAboutBtn();
-		
+	}
 
+	private void prepareBackgroundAlpha() {
+		DialogSeekBarPreference backgroundAlpha = (DialogSeekBarPreference)findPreference(Preferences.BACKGROUND_ALPHA);
+		if (Integer.parseInt(Build.VERSION.SDK) <= Build.VERSION_CODES.ECLAIR_MR1) {
+			backgroundAlpha.setEnabled(false);
+			backgroundAlpha.setSummary(getString(R.string.needs_froyo));
+		} else {
+			backgroundAlpha.setKey(Preferences.get(Preferences.BACKGROUND_ALPHA, appWidgetId));
+			backgroundAlpha.setOnPreferenceChangeListener(new SetCurValue(null, null));
+		}
+	}
+	
+	private void prepareColumnCount() {
+		DialogSeekBarPreference columnCount = (DialogSeekBarPreference)findPreference(Preferences.COLUMN_COUNT);
+		columnCount.setKey(Preferences.get(Preferences.COLUMN_COUNT, appWidgetId));
+		columnCount.setMin(1);
+		columnCount.setMax(6);
+		columnCount.setOnPreferenceChangeListener(new SetCurValue(null, null));
 	}
 
 	private void prepareShowName() {
@@ -158,33 +177,15 @@ public class ConfigurationActivity extends PreferenceActivity {
 		selectGroup.setEntryValues(Values);
 	}
 
-	private void prepareQCBSizes(){
-		// Find control and set the right preference-key for the AppWidgetId
-		ListPreference qcbSizes = (ListPreference)findPreference(Preferences.QUICKCONTACT_SIZE);
-		qcbSizes.setKey(Preferences.get(Preferences.QUICKCONTACT_SIZE, appWidgetId));
-		// Add the options for "large" and "medium"
-		CharSequence[] Titles = new CharSequence[] { getString(R.string.qcsLarge), getString(R.string.qcsMedium) };
-		CharSequence[] Values = new CharSequence[] { String.valueOf(ContactsContract.QuickContact.MODE_LARGE), 
-				String.valueOf(ContactsContract.QuickContact.MODE_MEDIUM) };
-		// set summary on value change
-		qcbSizes.setOnPreferenceChangeListener(new SetCurValue(Titles, Values));
-		
-		qcbSizes.setEntries(Titles);
-		qcbSizes.setEntryValues(Values);
-		qcbSizes.setValue(String.valueOf(ContactsContract.QuickContact.MODE_LARGE));
-	}
-
 	private void prepareBGImage() {
 		ListPreference bgimage = (ListPreference)findPreference(Preferences.BGIMAGE);
 		bgimage.setKey(Preferences.get(Preferences.BGIMAGE, appWidgetId));
 		CharSequence[] Titles = new CharSequence[] { 
 				getString(R.string.black), 
-				getString(R.string.white),
-				getString(R.string.transparent)};
+				getString(R.string.white)};
 		CharSequence[] Values = new CharSequence[] { 
 				String.valueOf(Preferences.BG_BLACK), 
-				String.valueOf(Preferences.BG_WHITE),
-				String.valueOf(Preferences.BG_TRANS)};
+				String.valueOf(Preferences.BG_WHITE)};
 		bgimage.setOnPreferenceChangeListener(new SetCurValue(Titles, Values));
 		
 		bgimage.setEntries(Titles);
@@ -268,6 +269,9 @@ public class ConfigurationActivity extends PreferenceActivity {
 				}								
 			}
 			else if (preference instanceof EditTextPreference) {
+				curVal = newValue.toString();
+			}
+			else if (preference instanceof DialogSeekBarPreference) {
 				curVal = newValue.toString();
 			}
 			preference.setSummary(curVal);

@@ -14,21 +14,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  -->
-<ListView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:cacheColorHint="#00000000"
-    android:scrollbarStyle="outsideOverlay"
-    android:scrollbars="vertical"
-    android:scrollingCache="true"
-    android:alwaysDrawnWithCache="true"
-    android:persistentDrawingCache="scrolling"
-    android:divider="@drawable/divider_horizontal_bright"
-    android:fadingEdge="none"
-    
-    android:addStatesFromChildren="false"
-    android:choiceMode="singleChoice" 
-	android:duplicateParentState="true"
-    >
-</ListView>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+	android:minWidth="198dip"
+	android:minHeight="213dip"
+	android:initialLayout="@layout/main"
+	android:configure="com.boombuler.widgets.contacts.ConfigurationActivity"
+	android:updatePeriodMillis="86400000"/>

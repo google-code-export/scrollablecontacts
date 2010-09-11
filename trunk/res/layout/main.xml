@@ -59,6 +59,7 @@
 	        >
 	        <TextView android:text="@string/loading" 
 	                  android:layout_width="fill_parent"
+	                  android:id="@+id/loading"
 	                  android:gravity="center_vertical|center_horizontal" 
 	        android:layout_height="fill_parent"/>
 		</LinearLayout>

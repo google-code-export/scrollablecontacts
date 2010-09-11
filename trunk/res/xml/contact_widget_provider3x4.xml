@@ -14,17 +14,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  -->
-<RelativeLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="fill_parent"
-  android:layout_height="wrap_content">
-  
-	<ImageView
-       android:id="@+id/photo"
-       android:layout_width="50dip"
-       android:layout_height="50dip"
-       android:layout_margin="3dip"
-       android:scaleType="centerCrop"
-       android:layout_centerHorizontal="true"
-		/>  
-</RelativeLayout>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+	android:minWidth="198dip"
+	android:minHeight="284dip"
+	android:initialLayout="@layout/main"
+	android:configure="com.boombuler.widgets.contacts.ConfigurationActivity"
+	android:updatePeriodMillis="86400000"/>
