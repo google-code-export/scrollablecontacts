@@ -10,16 +10,22 @@
   		
   </PreferenceCategory>
   <PreferenceCategory android:title="@string/pref_grp_layout">		
-  		
-	  <ListPreference
-	  		android:key="QCBarSize-%d"
-	  		android:summary="@string/qcsLarge"
-	  		android:title="@string/quickcontactsize" />
+  	  <com.boombuler.widgets.contacts.DialogSeekBarPreference
+  	  		android:key="CoulumnCount-%d"
+  	  		android:title="@string/columncount"
+  	  		android:defaultValue="1" 
+  	  		android:summary="1"/>	
 	  		
 	  <ListPreference
 	  		android:key="BGImage-%d"
 	  		android:summary="@string/black"
 	  		android:title="@string/background" />
+	  <com.boombuler.widgets.contacts.DialogSeekBarPreference
+	  		android:key="BackgroundAlpha-%d"
+	  		android:title="@string/background_alpha"
+	  		android:defaultValue="255"
+	  		android:summary="255" 
+	  		android:max="255"/>
 	
 	  <CheckBoxPreference android:key="ShowName-%d"
 	  		android:title="@string/showName"

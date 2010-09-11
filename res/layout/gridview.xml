@@ -27,8 +27,10 @@
     android:divider="@drawable/divider_horizontal_bright"
     android:fadingEdge="none"
     
+    android:id="@+id/my_gridview"
+    
     android:horizontalSpacing="5dip"
-    android:verticalSpacing="15dip"
+    android:verticalSpacing="10dip"
     android:numColumns="4"
     
     android:addStatesFromChildren="false"
