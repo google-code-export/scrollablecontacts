@@ -37,22 +37,22 @@ public class AppWidgetPickerActivity extends Activity {
 	private PackageManager fPManager = null;
 	private AppWidgetManager fAppWManager = null;
 	private ArrayList<SubItem> fItems;
-	private int fAppWidgetId;	
-		
+	private int fAppWidgetId;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setTitle("");
-		
+
 		fIntent = getIntent();
-		
+
 		final Intent intent = getIntent();
         if (intent.hasExtra(AppWidgetManager.EXTRA_APPWIDGET_ID)) {
             fAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                     AppWidgetManager.INVALID_APPWIDGET_ID);
             fPManager = getPackageManager();
-    		fAppWManager = AppWidgetManager.getInstance(this);		
-    		
+    		fAppWManager = AppWidgetManager.getInstance(this);
+
     		fItems = new ArrayList<SubItem>();
     		AddAppWidgetProviderInfos();
     		AddCustomAppWidgets();
@@ -62,19 +62,19 @@ public class AppWidgetPickerActivity extends Activity {
 				public int compare(SubItem object1, SubItem object2) {
 					return object1.getName().compareTo(object2.getName());
 				}
-    			
+
     		});
     		new PickWidgetDialog(this).showDialog(null);
         } else {
             finish();
         }
 	}
-	
+
 	public ArrayList<SubItem> getItems() {
 		return fItems;
 	}
-	
-	
+
+
 	public void finishOk(SubItem item) {
         int result;
         if (item.getExtra() != null) {
@@ -97,7 +97,7 @@ public class AppWidgetPickerActivity extends Activity {
         }
         finish();
 	}
-	
+
 	/**
      * Build the {@link Intent} described by this item. If this item
      * can't create a valid {@link ComponentName}, it will return
@@ -108,11 +108,11 @@ public class AppWidgetPickerActivity extends Activity {
         Parcelable parcel = fIntent.getParcelableExtra(Intent.EXTRA_INTENT);
         if (parcel instanceof Intent) {
             intent = new Intent((Intent) parcel);
-        } else {        	
+        } else {
             intent = new Intent(Intent.ACTION_MAIN, null);
             intent.addCategory(Intent.CATEGORY_DEFAULT);
         }
-    	
+
         if (itm.getProvider() != null) {
             // Valid package and class, so fill details as normal intent
             intent.setClassName(itm.getProvider().getPackageName(), itm.getProvider().getClassName());
@@ -123,7 +123,7 @@ public class AppWidgetPickerActivity extends Activity {
         }
         if (itm.getExtra() != null) {
             intent.putExtras(itm.getExtra());
-        }        
+        }
         return intent;
     }
 
@@ -144,17 +144,17 @@ public class AppWidgetPickerActivity extends Activity {
 			CharSequence str = fPManager.getApplicationLabel(appInfo);
 			Item newItm = new Item(str.toString(), appIcon);
 			newItm.setPackageName(packName);
-			fItems.add(newItm);			
-			return newItm;			
+			fItems.add(newItm);
+			return newItm;
 		}
 		catch(PackageManager.NameNotFoundException expt) {
 		}
 		return null;
 	}
-	
+
 	private void AddAppWidgetProviderInfos() {
 		List<AppWidgetProviderInfo> infos = fAppWManager.getInstalledProviders();
-				
+
 		for(AppWidgetProviderInfo info : infos) {
 			try
 			{
@@ -162,22 +162,22 @@ public class AppWidgetPickerActivity extends Activity {
 				SubItem itm = new SubItem(info.label,  fPManager.getDrawable(info.provider.getPackageName(), info.icon, appInfo));
 				itm.setProvider(info.provider);
 				Item mainItm = getPackageItem(info);
-				mainItm.getItems().add(itm);				
+				mainItm.getItems().add(itm);
 			}
 			catch(PackageManager.NameNotFoundException expt) {
-			}			
+			}
 		}
 	}
-	
+
     private void AddCustomAppWidgets() {
         final Bundle extras = fIntent.getExtras();
-        
+
         // get and validate the extras they gave us
         ArrayList<AppWidgetProviderInfo> customInfo = null;
         ArrayList<Bundle> customExtras = null;
         try_custom_items: {
             customInfo = extras.getParcelableArrayList(AppWidgetManager.EXTRA_CUSTOM_INFO);
-            
+
             if (customInfo == null || customInfo.size() == 0) {
                 break try_custom_items;
             }
@@ -211,29 +211,31 @@ public class AppWidgetPickerActivity extends Activity {
         }
         putAppWidgetItems(customInfo, customExtras);
     }
-	
+
     private void putAppWidgetItems(List<AppWidgetProviderInfo> appWidgets, List<Bundle> customExtras) {
+    	if (appWidgets == null)
+    		return;
         final int size = appWidgets.size();
         for (int i = 0; i < size; i++) {
             AppWidgetProviderInfo info = appWidgets.get(i);
-            
+
             String label = info.label.toString();
             Drawable icon = null;
 
             if (info.icon != 0) {
                 icon = fPManager.getDrawable(info.provider.getPackageName(), info.icon, null);
             }
-            
+
             Item item = new Item(label, icon);
-            SubItem subItem = new SubItem(label, icon); 
+            SubItem subItem = new SubItem(label, icon);
             item.getItems().add(subItem);
 
             item.setPackageName(info.provider.getPackageName());
             if (customExtras != null) {
             	subItem.setExtra(customExtras.get(i));
             }
-            
+
             fItems.add(item);
         }
-    }        
+    }
 }
