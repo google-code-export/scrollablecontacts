@@ -18,39 +18,34 @@ package com.boombuler.system.appwidgetpicker;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class PickWidgetDialog {
 
-	private class ClickListener implements OnItemClickListener {
+	AlertDialog fDialog;
+	private final AppWidgetPickerActivity fOwner;
 
-		AlertDialog fDialog;
-		
-		public ClickListener(AlertDialog dlg) {
-			fDialog = dlg;
+	private class ClickListener implements DialogInterface.OnClickListener {
+
+		public ClickListener() {
 		}
-		
+
 		@Override
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-				long arg3) {
-			SubItem subItem = (SubItem)arg1.getTag();
-			fDialog.dismiss();
-			
+		public void onClick(DialogInterface dialog, int which) {
+			SubItem subItem = PickWidgetDialog.this.fItemAdapter.getItem(which);
+			PickWidgetDialog.this.fDialog.dismiss();
+
 			PickWidgetDialog.this.showDialog(subItem);
 		}
-		
+
 	}
-	
+
 	private class CancelListener implements OnCancelListener {
-		private boolean fCancelOwner;
-		
+		private final boolean fCancelOwner;
+
 		public CancelListener(boolean cancelOwner) {
 			fCancelOwner = cancelOwner;
 		}
-		
+
 		@Override
 		public void onCancel(DialogInterface dialog) {
 			if (fCancelOwner) {
@@ -61,37 +56,39 @@ public class PickWidgetDialog {
 			}
 		}
 	}
-	
-	private AppWidgetPickerActivity fOwner;
-	
+
+
+
 	public PickWidgetDialog(AppWidgetPickerActivity owner) {
 		fOwner = owner;
-	}	
-	
+	}
+
+	ItemAdapter fItemAdapter;
+
 	public void showDialog(SubItem subItem) {
 		if (subItem == null || subItem instanceof Item) {
 			AlertDialog.Builder ab = new AlertDialog.Builder(fOwner);
-			ListView lv = new ListView(fOwner);
+
 			if (subItem == null) {
 				ab.setTitle(fOwner.getString(R.string.widget_picker_title));
-				lv.setAdapter(new ItemAdapter(fOwner, 0, fOwner.getItems()));
+				fItemAdapter = new ItemAdapter(fOwner, 0, fOwner.getItems());
+				ab.setAdapter(fItemAdapter, new ClickListener());
 			}
 			else {
 				Item itm = (Item)subItem;
 				if (itm.getItems().size() == 1) {
 					fOwner.finishOk(itm.getItems().get(0));
 					return;
-				}				
-				
+				}
+
 				ab.setTitle(subItem.getName());
-				lv.setAdapter(new ItemAdapter(fOwner, 0, itm.getItems()));
+				fItemAdapter = new ItemAdapter(fOwner, 0, itm.getItems());
+				ab.setAdapter(fItemAdapter, new ClickListener());
 			}
-			
-			ab.setView(lv);
+
 			ab.setOnCancelListener(new CancelListener(subItem == null));
-			AlertDialog dlg = ab.create();
-			lv.setOnItemClickListener(new ClickListener(dlg));
-			dlg.show();
+			fDialog =  ab.create();
+			fDialog.show();
 		}
 		else
 			fOwner.finishOk(subItem);

@@ -30,6 +30,7 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.view.Window;
 
 public class AppWidgetPickerActivity extends Activity {
 
@@ -43,6 +44,7 @@ public class AppWidgetPickerActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setTitle("");
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		fIntent = getIntent();
 
