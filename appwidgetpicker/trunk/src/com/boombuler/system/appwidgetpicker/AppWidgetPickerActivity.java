@@ -62,7 +62,7 @@ public class AppWidgetPickerActivity extends Activity {
 
 				@Override
 				public int compare(SubItem object1, SubItem object2) {
-					return object1.getName().compareTo(object2.getName());
+					return object1.getName().compareToIgnoreCase(object2.getName());
 				}
 
     		});
