@@ -66,6 +66,11 @@ public class AppWidgetPickerActivity extends Activity {
 				}
 
     		});
+    		for(SubItem itm : fItems) {
+    			if (itm instanceof Item) {
+    				((Item)itm).sort();
+    			}
+    		}
     		new PickWidgetDialog(this).showDialog(null);
         } else {
             finish();

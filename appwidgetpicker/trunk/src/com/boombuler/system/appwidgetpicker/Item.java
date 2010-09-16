@@ -16,13 +16,15 @@
 package com.boombuler.system.appwidgetpicker;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import android.graphics.drawable.Drawable;
 
 public class Item extends SubItem {
-	private ArrayList<SubItem> fItems = new ArrayList<SubItem>();	
-	private String fPackageName;	
-	
+	private final ArrayList<SubItem> fItems = new ArrayList<SubItem>();
+	private String fPackageName;
+
 	public Item(String name, Drawable image) {
 		super(name, image);
 	}
@@ -30,7 +32,7 @@ public class Item extends SubItem {
 	public ArrayList<SubItem> getItems() {
 		return fItems;
 	}
-	
+
 	@Override
 	public String getName() {
 		if (fItems.size() == 1)
@@ -38,7 +40,7 @@ public class Item extends SubItem {
 		else
 			return super.getName();
 	}
-	
+
 	@Override
 	public Drawable getImage() {
 		if (fItems.size() == 1)
@@ -50,9 +52,19 @@ public class Item extends SubItem {
 	public void setPackageName(String aValue) {
 		fPackageName = aValue;
 	}
-	
+
 	public String getPackageName() {
 		return fPackageName;
 	}
 
+	public void sort() {
+		Collections.sort(fItems, new Comparator<SubItem>() {
+
+			@Override
+			public int compare(SubItem object1, SubItem object2) {
+				return object1.getName().compareToIgnoreCase(object2.getName());
+			}
+
+		});
+	}
 }
