@@ -10,13 +10,28 @@
   				android:layout_marginLeft="10dip"
   		        android:layout_marginTop="2dip"
   		        android:layout_marginBottom="2dip"
+  		        android:src="@drawable/icon"
   		        android:layout_width="48dip" android:layout_height="48dip" />
-  		<TextView android:id="@+id/appwidgetpicker_textview"
-  				android:layout_marginLeft="10dip"
+  		<LinearLayout 
+  				android:layout_width="fill_parent" 
+  				android:layout_height="wrap_content"
+  				android:layout_toRightOf="@id/appwidgetpicker_imageview" 
+  				android:layout_centerVertical="true"
+				android:layout_marginLeft="10dip"
   		        android:layout_marginTop="2dip"
   		        android:layout_marginBottom="2dip"
-  		        android:textColor="#000"
-  				android:layout_width="fill_parent" android:layout_height="wrap_content"
-  				android:layout_toRightOf="@id/appwidgetpicker_imageview" 
-  				android:layout_centerVertical="true"/>
+  				android:orientation="vertical">
+  				<TextView android:id="@+id/appwidgetpicker_textview"
+  				  		android:layout_width="fill_parent" 
+  						android:layout_height="wrap_content"
+  		        		android:textColor="#000"
+  		        		android:textSize="20dip"
+  		        		android:text="Foowidget" />
+  				<TextView android:id="@+id/appwidgetpicker_count"
+  				  		android:layout_width="fill_parent" 
+  						android:layout_height="wrap_content"
+  						android:textSize="13dip"
+  		        		android:text="(4 widgets)"
+  		        		android:textColor="#000" />
+  		</LinearLayout>
 </RelativeLayout>

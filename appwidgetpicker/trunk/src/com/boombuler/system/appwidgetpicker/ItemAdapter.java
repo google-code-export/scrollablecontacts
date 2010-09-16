@@ -27,17 +27,17 @@ import android.widget.TextView;
 
 
 public class ItemAdapter extends ArrayAdapter<SubItem> {
-	private ArrayList<SubItem> items;
-	private Context fContext;
-	
+	private final ArrayList<SubItem> items;
+	private final Context fContext;
+
 	public ItemAdapter(Context context, int textViewResourceId, ArrayList<SubItem> items) {
         super(context, textViewResourceId, items);
         this.items = items;
         fContext = context;
 	}
-		
+
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {		
+	public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
         if (v == null) {
             LayoutInflater vi = (LayoutInflater)fContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -47,9 +47,24 @@ public class ItemAdapter extends ArrayAdapter<SubItem> {
         v.setTag(o);
         if (o != null) {
             TextView tv = (TextView) v.findViewById(R.id.appwidgetpicker_textview);
+            TextView count_view = (TextView) v.findViewById(R.id.appwidgetpicker_count);
             ImageView iv = (ImageView) v.findViewById(R.id.appwidgetpicker_imageview);
             if (tv != null) {
-                  tv.setText(o.getName());                            
+                  tv.setText(o.getName());
+            }
+            if (count_view != null) {
+            	if (o instanceof Item)
+            	{
+            		int cnt = ((Item)o).getItems().size();
+            		if (cnt > 1) {
+            			count_view.setText(String.format(fContext.getString(R.string.widget_count), cnt));
+            			count_view.setVisibility(View.VISIBLE);
+            		}
+            		else
+            			count_view.setVisibility(View.GONE);
+            	}
+            	else
+            		count_view.setVisibility(View.GONE);
             }
             if(iv != null){
             	iv.setImageDrawable(o.getImage());
