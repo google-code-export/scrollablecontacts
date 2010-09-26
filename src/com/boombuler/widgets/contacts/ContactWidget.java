@@ -273,11 +273,6 @@ public abstract class ContactWidget extends AppWidgetProvider {
 		String widgeturi = DataProvider.CONTENT_URI_MESSAGES.buildUpon().appendEncodedPath(
 				Integer.toString(appWidgetId)).toString();
 
-		/*Intent clearIntent = new Intent(LauncherIntent.Action.ACTION_SCROLL_WIDGET_CLOSE);
-		clearIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-		clearIntent.putExtra(LauncherIntent.Extra.Scroll.EXTRA_DATA_URI, widgeturi);
-		context.sendBroadcast(clearIntent);*/
-
 		Log.d(TAG, "creating ACTION_SCROLL_WIDGET_START intent");
 		Intent result = new Intent(LauncherIntent.Action.ACTION_SCROLL_WIDGET_START);
 

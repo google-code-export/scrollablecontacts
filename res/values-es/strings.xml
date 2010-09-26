@@ -70,4 +70,11 @@ Código:\n
 	<string name="background_alpha">Transparencia del fondo</string>
 	<string name="launcher_too_old">Lo siento, su launcher es demasiado viejo, por favor actualice su launcher!</string>
 	<string name="needs_froyo">Esta prestación solo está disponible para android 2.2 o superior</string>
+	
+	<string name="behavior">Comportamiento</string>
+	
+	<string name="quickcontactbar">mostrar la barra QuickContact</string>
+	<string name="directdial">marcación directa</string>
+	<string name="showcontact">mostrar contacto</string>
+	<string name="onclick">Acción al pulsar</string>
 </resources>
