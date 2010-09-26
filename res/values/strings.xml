@@ -70,4 +70,11 @@ Coding:\n
 	<string name="background_alpha">Background alpha</string>
 	<string name="launcher_too_old">Sorry, your launcher is to old, please update it!</string>
 	<string name="needs_froyo">This feature is only available on android 2.2 and above</string>
+	
+	<string name="behavior">Behavior</string>
+	
+	<string name="quickcontactbar">show QuickContactBar</string>
+	<string name="directdial">direct dial</string>
+	<string name="showcontact">show contact</string>
+	<string name="onclick">Click action</string>
 </resources>

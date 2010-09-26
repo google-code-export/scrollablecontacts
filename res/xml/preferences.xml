@@ -9,6 +9,13 @@
 	  		android:title="@string/select_contact_group" />
   		
   </PreferenceCategory>
+  <PreferenceCategory android:title="@string/behavior">
+  	  <ListPreference
+  	        android:key="onClick-%d"
+  	        android:summary="@string/quickcontactbar"
+  	        android:defaultValue="0"
+  	        android:title="@string/onclick" />
+  </PreferenceCategory>
   <PreferenceCategory android:title="@string/pref_grp_layout">		
   	  <com.boombuler.widgets.contacts.DialogSeekBarPreference
   	  		android:key="CoulumnCount-%d"

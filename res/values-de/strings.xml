@@ -70,4 +70,10 @@ Coding:\n
 	<string name="background_alpha">Hintergrundtransparenz</string>
 	<string name="launcher_too_old">Ihr Launcher ist zu alt, bitte aktualisieren sie den Launcher!</string>
 	<string name="needs_froyo">Dieses Feature ist nur auf Android 2.2 und höher verfügbar</string>
+	
+	<string name="behavior">Verhalten</string>
+	<string name="quickcontactbar">QuickContactBar anzeigen</string>
+	<string name="directdial">Anrufen</string>
+	<string name="showcontact">Kontakt anzeigen</string>
+	<string name="onclick">Aktion</string>
 </resources>
