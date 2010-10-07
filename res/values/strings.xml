@@ -44,6 +44,7 @@
     <string name="displayLabel">Widget label</string>
     <string name="black">Black</string>
     <string name="white">White</string>
+    <string name="transparent">Transparent</string>
     <string name="background">Background</string>
     <string name="showName">Show contact name</string>
     <string name="pref_grp_data">Data</string>

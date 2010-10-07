@@ -44,6 +44,7 @@
     <string name="displayLabel">Etiqueta del Widget</string>
     <string name="black">Negro</string>
     <string name="white">Blanco</string>
+    <string name="transparent">Transparente</string>
     <string name="background">Fondo</string>
     <string name="showName">Mostrar nombre del contacto</string>
     <string name="pref_grp_data">Datos</string>
