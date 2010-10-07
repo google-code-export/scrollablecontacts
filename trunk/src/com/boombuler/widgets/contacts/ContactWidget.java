@@ -73,11 +73,14 @@ public abstract class ContactWidget extends AppWidgetProvider {
         if (Preferences.getBGImage(context, appWidgetId) == Preferences.BG_BLACK) {
             views.setImageViewResource(R.id.backgroundImg, withHeader ? R.drawable.background_dark_header : R.drawable.background_dark);
             views.setTextColor(R.id.group_caption, Color.WHITE);
-        }
-        else {
+        } else if (Preferences.getBGImage(context, appWidgetId) == Preferences.BG_WHITE) {
         	views.setImageViewResource(R.id.backgroundImg, withHeader ? R.drawable.background_light_header : R.drawable.background_light);
         	views.setTextColor(R.id.group_caption, Color.BLACK);
+        } else {
+        	views.setImageViewResource(R.id.backgroundImg, Color.TRANSPARENT);
+            views.setTextColor(R.id.group_caption, Color.WHITE);
         }
+
         // First set the display label
         views.setTextViewText(R.id.group_caption, text);
         // and if it is empty hide it

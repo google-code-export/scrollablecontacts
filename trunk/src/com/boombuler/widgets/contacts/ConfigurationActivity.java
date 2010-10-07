@@ -37,8 +37,8 @@ import android.provider.ContactsContract;
 
 public class ConfigurationActivity extends PreferenceActivity {
 
-
     private int appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
+    private final boolean mIsFroyo = Integer.parseInt(Build.VERSION.SDK) > Build.VERSION_CODES.ECLAIR_MR1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,13 +76,14 @@ public class ConfigurationActivity extends PreferenceActivity {
 
 	private void prepareBackgroundAlpha() {
 		DialogSeekBarPreference backgroundAlpha = (DialogSeekBarPreference)findPreference(Preferences.BACKGROUND_ALPHA);
-		if (Integer.parseInt(Build.VERSION.SDK) <= Build.VERSION_CODES.ECLAIR_MR1) {
+		if (!mIsFroyo) {
 			backgroundAlpha.setEnabled(false);
 			backgroundAlpha.setSummary(getString(R.string.needs_froyo));
 		} else {
 			backgroundAlpha.setKey(Preferences.get(Preferences.BACKGROUND_ALPHA, appWidgetId));
 			backgroundAlpha.setOnPreferenceChangeListener(new SetCurValue(null, null));
 		}
+		backgroundAlpha.setValue(Preferences.getBackgroundAlpha(this, appWidgetId));
 	}
 
 	private void prepareColumnCount() {
@@ -91,12 +92,14 @@ public class ConfigurationActivity extends PreferenceActivity {
 		columnCount.setMin(1);
 		columnCount.setMax(6);
 		columnCount.setOnPreferenceChangeListener(new SetCurValue(null, null));
+		columnCount.setValue(Preferences.getColumnCount(this, appWidgetId));
 	}
 
 	private void prepareShowName() {
 		// Find control and set the right preference-key for the AppWidgetId
 		CheckBoxPreference showName = (CheckBoxPreference)findPreference(Preferences.SHOW_NAME);
 		showName.setKey(Preferences.get(Preferences.SHOW_NAME, appWidgetId));
+		showName.setChecked(Preferences.getShowName(this, appWidgetId));
 	}
 
 	private void prepareNameKinds() {
@@ -116,7 +119,7 @@ public class ConfigurationActivity extends PreferenceActivity {
 
 		nameKinds.setEntries(Titles);
 		nameKinds.setEntryValues(Values);
-		nameKinds.setValue(String.valueOf(Preferences.NAME_DISPLAY_NAME));
+		nameKinds.setValue(String.valueOf(Preferences.getNameKind(this, appWidgetId)));
 	}
 
 	private void prepareOnClick() {
@@ -135,7 +138,7 @@ public class ConfigurationActivity extends PreferenceActivity {
 
 		onClick.setEntries(Titles);
 		onClick.setEntryValues(Values);
-		onClick.setValue(String.valueOf(Preferences.CLICK_QCB));
+		onClick.setValue(String.valueOf(Preferences.getOnClickAction(this, appWidgetId)));
 	}
 
 	private void prepareDisplayLabel() {
@@ -144,6 +147,8 @@ public class ConfigurationActivity extends PreferenceActivity {
 		displayLabel.setKey(Preferences.get(Preferences.DISPLAY_LABEL, appWidgetId));
 		// Set summary on value changed
 		displayLabel.setOnPreferenceChangeListener(new SetCurValue(null, null));
+
+		displayLabel.setText(Preferences.getDisplayLabel(this, appWidgetId));
 	}
 
 	private void prepareContactGroups() {
@@ -195,22 +200,37 @@ public class ConfigurationActivity extends PreferenceActivity {
 
 		selectGroup.setEntries(Titles);
 		selectGroup.setEntryValues(Values);
+		selectGroup.setValue(String.valueOf(Preferences.getGroupId(this, appWidgetId)));
 	}
 
 	private void prepareBGImage() {
 		ListPreference bgimage = (ListPreference)findPreference(Preferences.BGIMAGE);
 		bgimage.setKey(Preferences.get(Preferences.BGIMAGE, appWidgetId));
-		CharSequence[] Titles = new CharSequence[] {
-				getString(R.string.black),
-				getString(R.string.white)};
-		CharSequence[] Values = new CharSequence[] {
-				String.valueOf(Preferences.BG_BLACK),
-				String.valueOf(Preferences.BG_WHITE)};
+		final CharSequence[] Titles, Values;
+		if (mIsFroyo) {
+			Titles = new CharSequence[] {
+					getString(R.string.black),
+					getString(R.string.white)};
+			Values = new CharSequence[] {
+					String.valueOf(Preferences.BG_BLACK),
+					String.valueOf(Preferences.BG_WHITE)};
+		}
+		else
+		{
+			Titles = new CharSequence[] {
+					getString(R.string.black),
+					getString(R.string.white),
+					getString(R.string.transparent)};
+			Values = new CharSequence[] {
+					String.valueOf(Preferences.BG_BLACK),
+					String.valueOf(Preferences.BG_WHITE),
+					String.valueOf(Preferences.BG_TRANS)};
+		}
 		bgimage.setOnPreferenceChangeListener(new SetCurValue(Titles, Values));
 
 		bgimage.setEntries(Titles);
 		bgimage.setEntryValues(Values);
-		bgimage.setValue(String.valueOf(Preferences.BG_BLACK));
+		bgimage.setValue(String.valueOf(Preferences.getBGImage(this, appWidgetId)));
 	}
 
 	private void prepareHelpBtn() {
