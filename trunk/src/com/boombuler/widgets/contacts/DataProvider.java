@@ -187,7 +187,7 @@ public class DataProvider extends ContentProvider {
         String needsPhone = withPhone ? ContactsContract.Contacts.HAS_PHONE_NUMBER + " = 1 AND " : "";
 
         Cursor cur = ctx.getContentResolver().query(uri, src_projection, needsPhone + flt.getFilter(), flt.getFilterParams(), src_sortOrder);
-		if (cur == null) {
+		if (cur == null || nameResolver == null) {
 			return ret;
 		}
         cur.moveToFirst();
