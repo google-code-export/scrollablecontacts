@@ -193,7 +193,7 @@ public abstract class ContactWidget extends AppWidgetProvider {
             if (act == Preferences.CLICK_QCB) {
 			    QuickContact.showQuickContact(context,r ,
 					uri, QuickContact.MODE_LARGE, null);
-            } else if (act == Preferences.CLICK_SHWCONTACT) {
+            } else if (act == Preferences.CLICK_SHWCONTACT || act == Preferences.CLICK_SMS) {
             	Intent launch = new Intent(Intent.ACTION_VIEW, uri);
     			launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     			context.startActivity(launch);

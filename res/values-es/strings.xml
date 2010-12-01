@@ -78,4 +78,5 @@ Código:\n
 	<string name="directdial">marcación directa</string>
 	<string name="showcontact">mostrar contacto</string>
 	<string name="onclick">Acción al pulsar</string>
+	<string name="sendsms">Enviar SMS</string>
 </resources>
