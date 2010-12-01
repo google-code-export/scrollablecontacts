@@ -129,11 +129,13 @@ public class ConfigurationActivity extends PreferenceActivity {
 		CharSequence[] Titles = new CharSequence[] {
 				getString(R.string.quickcontactbar),
 				getString(R.string.directdial),
-				getString(R.string.showcontact)};
+				getString(R.string.showcontact),
+				getString(R.string.sendsms)};
 		CharSequence[] Values = new CharSequence[] {
 				String.valueOf(Preferences.CLICK_QCB),
 				String.valueOf(Preferences.CLICK_DIAL),
-				String.valueOf(Preferences.CLICK_SHWCONTACT)};
+				String.valueOf(Preferences.CLICK_SHWCONTACT),
+				String.valueOf(Preferences.CLICK_SMS)};
 		onClick.setOnPreferenceChangeListener(new SetCurValue(Titles, Values));
 
 		onClick.setEntries(Titles);

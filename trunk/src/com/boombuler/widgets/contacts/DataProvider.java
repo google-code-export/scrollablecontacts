@@ -116,14 +116,14 @@ public class DataProvider extends ContentProvider {
 				int appWId = Integer.parseInt(pathSegs.get(pathSegs.size() - 1));
 				long GroupId = Preferences.getGroupId(ctx, appWId);
 				int NameKind = Preferences.getNameKind(ctx, appWId);
-				boolean withPhone = Preferences.getOnClickAction(ctx, appWId) == Preferences.CLICK_DIAL;
+				int clickActn = Preferences.getOnClickAction(ctx, appWId);
 				if (GroupId == Preferences.GROUP_FACEBOOK){
 					if (FacebookPluginBridge.IsFacebookPluginInstalled(ctx))
 						return cloneCursorAndClose(ctx.getContentResolver().query(FacebookPluginBridge.CONTENTURI, projection, selection, selectionArgs, sortOrder));
 					else
 						GroupId = 0;
 				}
-				return loadNewData(this, projection, GroupId, NameKind, withPhone);
+				return loadNewData(this, projection, GroupId, NameKind, clickActn);
 			default:
 				throw new IllegalStateException("Unrecognized URI:" + uri);
 		}
@@ -168,7 +168,7 @@ public class DataProvider extends ContentProvider {
 	}
 
 
-	public static ExtMatrixCursor loadNewData(ContentProvider mcp, String[] projection, long GroupId, int NameKind, boolean withPhone) {
+	public static ExtMatrixCursor loadNewData(ContentProvider mcp, String[] projection, long GroupId, int NameKind, int clickActn) {
 		ExtMatrixCursor ret = new ExtMatrixCursor(projection);
 
 		Log.d(TAG, "... loading data");
@@ -184,6 +184,8 @@ public class DataProvider extends ContentProvider {
 
         AdressFilter.NameResolver nameResolver = flt.getNameResolver();
 
+		boolean withPhone = clickActn == Preferences.CLICK_DIAL ||
+                            clickActn == Preferences.CLICK_SMS;
         String needsPhone = withPhone ? ContactsContract.Contacts.HAS_PHONE_NUMBER + " = 1 AND " : "";
 
         Cursor cur = ctx.getContentResolver().query(uri, src_projection, needsPhone + flt.getFilter(), flt.getFilterParams(), src_sortOrder);
@@ -210,7 +212,7 @@ public class DataProvider extends ContentProvider {
 						values[i] = getImg(id);
 					} else if (DataProviderColumns.contacturi.toString().equals(column)) {
 						if (withPhone) {
-							values[i] = getPhoneUri(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY)));
+							values[i] = getPhoneUri(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY)), clickActn);
 							if (values[i] == null) {
 								skip = true;
 								break;
@@ -238,16 +240,16 @@ public class DataProvider extends ContentProvider {
 		return ret;
 	}
 
-	private static Uri getPhoneUri(String lookupKey) {
-		Uri result = realGetPhoneUri(lookupKey, " AND " +ContactsContract.Data.IS_SUPER_PRIMARY + "= '1'");
+	private static Uri getPhoneUri(String lookupKey, int clickActn) {
+		Uri result = realGetPhoneUri(lookupKey, " AND " +ContactsContract.Data.IS_SUPER_PRIMARY + "= '1'", clickActn);
 		if (result == null)
-			result = realGetPhoneUri(lookupKey, " AND " +ContactsContract.Data.IS_PRIMARY + "= '1'");
+			result = realGetPhoneUri(lookupKey, " AND " +ContactsContract.Data.IS_PRIMARY + "= '1'", clickActn);
 		if (result == null)
-			result = realGetPhoneUri(lookupKey, "");
+			result = realGetPhoneUri(lookupKey, "", clickActn);
 		return result;
 	}
 
-	private static Uri realGetPhoneUri(String lookupKey, String aPrimaryFilter) {
+	private static Uri realGetPhoneUri(String lookupKey, String aPrimaryFilter, int clickActn) {
 		Uri result = null;
 		Cursor c = ctx.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
 		          new String[] { ContactsContract.CommonDataKinds.Phone.NUMBER },
@@ -257,28 +259,30 @@ public class DataProvider extends ContentProvider {
 		          new String[] {String.valueOf(lookupKey)}, null);
 		if (c.getCount() > 0) {
 			c.moveToFirst();
-			result = Uri.parse("tel:"+c.getString(0));
+			if (clickActn == Preferences.CLICK_SMS)
+				result = Uri.parse("sms:"+c.getString(0));
+			else
+				result = Uri.parse("tel:"+c.getString(0));
 		}
 		c.close();
 		return result;
 	}
 
 	public static byte[] getImg(long aId) {
-		Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, aId);
+        Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, aId);
         InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(ctx.getContentResolver(), uri);
         if (input == null) {
         	return null;
+        }
+		try
+		{
+	        byte[] res = new byte[input.available()];
+	        input.read(res);
+	        input.close();
+	        return res;
 		}
-        try
-        {
-        	byte[] res = new byte[input.available()];
-        	input.read(res);
-        	input.close();
-        	return res;
-        }
-        catch(IOException expt) {
-        }
+		catch(IOException expt) {
+		}
 		return null;
 	}
-
 }

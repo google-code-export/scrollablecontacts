@@ -77,4 +77,5 @@ Coding:\n
 	<string name="directdial">Anrufen</string>
 	<string name="showcontact">Kontakt anzeigen</string>
 	<string name="onclick">Aktion</string>
+	<string name="sendsms">SMS senden</string>
 </resources>
