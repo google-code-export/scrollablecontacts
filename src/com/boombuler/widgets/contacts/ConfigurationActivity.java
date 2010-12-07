@@ -64,6 +64,7 @@ public class ConfigurationActivity extends PreferenceActivity {
         prepareContactGroups();
         prepareColumnCount();
 		prepareShowName();
+		prepareTextAlignment();
 		prepareNameKinds();
 
 		prepareBGImage();
@@ -120,6 +121,31 @@ public class ConfigurationActivity extends PreferenceActivity {
 		nameKinds.setEntries(Titles);
 		nameKinds.setEntryValues(Values);
 		nameKinds.setValue(String.valueOf(Preferences.getNameKind(this, appWidgetId)));
+	}
+
+	private void prepareTextAlignment() {
+		ListPreference txtAlign = (ListPreference)findPreference(Preferences.TEXT_ALIGN);
+		txtAlign.setKey(Preferences.get(Preferences.TEXT_ALIGN, appWidgetId));
+		txtAlign.setDependency(Preferences.get(Preferences.SHOW_NAME, appWidgetId));
+
+		CharSequence[] Titles = new CharSequence[] {
+				getString(R.string.align_left),
+				getString(R.string.align_center),
+				getString(R.string.align_right)};
+		CharSequence[] Values = new CharSequence[] {
+				String.valueOf(Preferences.ALIGN_LEFT),
+				String.valueOf(Preferences.ALIGN_CENTER),
+				String.valueOf(Preferences.ALIGN_RIGHT)};
+
+		SetCurValue changelist = new SetCurValue(Titles, Values);
+		txtAlign.setOnPreferenceChangeListener(changelist);
+
+		txtAlign.setEntries(Titles);
+		txtAlign.setEntryValues(Values);
+
+		String value = String.valueOf(Preferences.getTextAlign(this, appWidgetId));
+		txtAlign.setValue(value);
+		changelist.onPreferenceChange(txtAlign, value);
 	}
 
 	private void prepareOnClick() {
