@@ -79,4 +79,9 @@ Coding:\n
 	<string name="showcontact">show contact</string>
 	<string name="onclick">Click action</string>
 	<string name="sendsms">Send SMS</string>
+	
+	<string name="textalign">Text alignment</string>
+	<string name="align_center">Center</string>
+	<string name="align_left">Left</string>
+	<string name="align_right">Right</string>
 </resources>

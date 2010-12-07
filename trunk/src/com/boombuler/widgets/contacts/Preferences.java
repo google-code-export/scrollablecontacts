@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
+import android.view.Gravity;
 
 import com.boombuler.widgets.contacts.sizes.ContactWidget_1_2;
 import com.boombuler.widgets.contacts.sizes.ContactWidget_1_3;
@@ -43,6 +44,7 @@ public class Preferences {
     public static final String BACKGROUND_ALPHA = "BackgroundAlpha-%d";
 
     public static final String COLUMN_COUNT = "CoulumnCount-%d";
+    public static final String TEXT_ALIGN = "TextAlign-%d";
 
     public static final String ON_CLICK = "onClick-%d";
     public static final int CLICK_QCB = 0;
@@ -54,6 +56,10 @@ public class Preferences {
     public static final int BG_BLACK = 0;
     public static final int BG_WHITE = 1;
     public static final int BG_TRANS = 2;
+
+    public static final int ALIGN_LEFT = Gravity.LEFT | Gravity.CENTER_VERTICAL;
+    public static final int ALIGN_CENTER = Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL;
+    public static final int ALIGN_RIGHT = Gravity.RIGHT | Gravity.CENTER_VERTICAL;
 
     public static String get(String aPref, int aAppWidgetId) {
     	return String.format(aPref, aAppWidgetId);
@@ -111,6 +117,11 @@ public class Preferences {
 		edit.commit();
     }
 
+    public static int getTextAlign(Context context, int aAppWidgetId) {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		return Integer.parseInt(prefs.getString(Preferences.get(Preferences.TEXT_ALIGN, aAppWidgetId), String.valueOf(ALIGN_CENTER)));
+    }
+
     public static void DropSettings(Context context, int[] appWidgetIds) {
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		Editor edit = prefs.edit();
@@ -124,6 +135,7 @@ public class Preferences {
 			edit.remove(Preferences.get(Preferences.BACKGROUND_ALPHA, appWId));
 			edit.remove(Preferences.get(Preferences.SPAN_X, appWId));
 			edit.remove(Preferences.get(Preferences.ON_CLICK, appWId));
+			edit.remove(Preferences.get(Preferences.TEXT_ALIGN, appWId));
 		}
 		edit.commit();
     }

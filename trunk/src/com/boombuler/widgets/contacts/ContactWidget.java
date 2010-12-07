@@ -320,12 +320,17 @@ public abstract class ContactWidget extends AppWidgetProvider {
 				LauncherIntent.Extra.Scroll.EXTRA_ITEM_POS,
 				DataProvider.DataProviderColumns.contacturi.ordinal());
 
-		if (Preferences.getBGImage(context, appWidgetId) == Preferences.BG_WHITE) {
-			itemViews.setTextColor(R.id.displayname, Color.BLACK);
-		}
+		int textVisibility = Preferences.getShowName(context, appWidgetId) ?
+				View.VISIBLE : View.GONE;
 
-		itemViews.setViewVisibility(R.id.displayname, Preferences.getShowName(context, appWidgetId) ?
-				View.VISIBLE : View.GONE);
+		itemViews.setViewVisibility(R.id.displayname, textVisibility);
+
+        if (textVisibility == View.VISIBLE) {
+    		if (Preferences.getBGImage(context, appWidgetId) == Preferences.BG_WHITE)
+    			itemViews.setTextColor(R.id.displayname, Color.BLACK);
+
+        	itemViews.setInt(R.id.displayname, "setGravity", Preferences.getTextAlign(context, appWidgetId));
+        }
 
 		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_LAYOUT_REMOTEVIEWS, itemViews);
 
