@@ -80,8 +80,8 @@ Coding:\n
 	<string name="onclick">Click action</string>
 	<string name="sendsms">Send SMS</string>
 	
-	<string name="textalign">Text alignment</string>
-	<string name="align_center">Center</string>
-	<string name="align_left">Left</string>
-	<string name="align_right">Right</string>
+	<string name="textalign">Name position</string>
+	<string name="align_center">Center (below the picture)</string>
+	<string name="align_left">Left of the picture</string>
+	<string name="align_right">Right of the picture</string>
 </resources>

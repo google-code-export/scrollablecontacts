@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
-import android.view.Gravity;
 
 import com.boombuler.widgets.contacts.sizes.ContactWidget_1_2;
 import com.boombuler.widgets.contacts.sizes.ContactWidget_1_3;
@@ -57,9 +56,9 @@ public class Preferences {
     public static final int BG_WHITE = 1;
     public static final int BG_TRANS = 2;
 
-    public static final int ALIGN_LEFT = Gravity.LEFT | Gravity.CENTER_VERTICAL;
-    public static final int ALIGN_CENTER = Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL;
-    public static final int ALIGN_RIGHT = Gravity.RIGHT | Gravity.CENTER_VERTICAL;
+    public static final int ALIGN_LEFT = 1;
+    public static final int ALIGN_CENTER = 0;
+    public static final int ALIGN_RIGHT = 2;
 
     public static String get(String aPref, int aAppWidgetId) {
     	return String.format(aPref, aAppWidgetId);

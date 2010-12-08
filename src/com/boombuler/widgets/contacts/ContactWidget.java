@@ -291,22 +291,43 @@ public abstract class ContactWidget extends AppWidgetProvider {
 		SimpleRemoteViews gridViews = new SimpleRemoteViews(R.layout.gridview);
 		gridViews.setInt(R.id.my_gridview, "setNumColumns", colCount);
 		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_LISTVIEW_REMOTEVIEWS, gridViews);
-		BoundRemoteViews itemViews = new BoundRemoteViews(R.layout.gridviewitem);
 
-		itemViews.setBoundCharSequence(R.id.displayname, "setText",
-				DataProvider.DataProviderColumns.name.ordinal(),0);
+		boolean autosizeImages = true;
+		int itemresid = R.layout.gridviewitem;
+		int textVisibility = Preferences.getShowName(context, appWidgetId) ?
+				View.VISIBLE : View.GONE;
+
+		if (textVisibility == View.VISIBLE) {
+			autosizeImages = false;
+			switch(Preferences.getTextAlign(context, appWidgetId)) {
+				case Preferences.ALIGN_RIGHT:
+					itemresid = R.layout.gridviewitem_txt_right; break;
+				case Preferences.ALIGN_LEFT:
+					itemresid = R.layout.gridviewitem_txt_left; break;
+				case Preferences.ALIGN_CENTER:
+					autosizeImages = true; break;
+			}
+		}
+
+		BoundRemoteViews itemViews = new BoundRemoteViews(itemresid);
+		if (textVisibility == View.VISIBLE) {
+			itemViews.setBoundCharSequence(R.id.displayname, "setText",
+					DataProvider.DataProviderColumns.name.ordinal(),0);
+		}
 		itemViews.setBoundBitmap(R.id.photo, "setImageBitmap",
 				DataProvider.DataProviderColumns.photo.ordinal(), R.drawable.no_image);
 
-		DisplayMetrics dm = context.getResources().getDisplayMetrics();
-		Display display = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-		display.getMetrics(dm);
-		int width = calcWidthPixel((display.getOrientation() % 2) == 1, context, appWidgetId); // get the widget width in dip
-		width = width - (colCount * 5) - 5; // grid view spacing...
-		width = (int)(((width - 24) / colCount) * dm.density);
+		if (autosizeImages) {
+			DisplayMetrics dm = context.getResources().getDisplayMetrics();
+			Display display = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+			display.getMetrics(dm);
+			int width = calcWidthPixel((display.getOrientation() % 2) == 1, context, appWidgetId); // get the widget width in dip
+			width = width - (colCount * 5) - 5; // grid view spacing...
+			width = (int)(((width - 24) / colCount) * dm.density);
 
-		itemViews.setViewWidth(R.id.photo, width);
-		itemViews.setViewHeight(R.id.photo, width);
+			itemViews.setViewWidth(R.id.photo, width);
+			itemViews.setViewHeight(R.id.photo, width);
+		}
 
 		Intent intent = new Intent(context, this.getClass());
 		intent.setAction(LauncherIntent.Action.ACTION_VIEW_CLICK);
@@ -316,20 +337,16 @@ public abstract class ContactWidget extends AppWidgetProvider {
 		itemViews.SetBoundOnClickIntent(R.id.photo, pendingIntent,
 				LauncherIntent.Extra.Scroll.EXTRA_ITEM_POS,
 				DataProvider.DataProviderColumns.contacturi.ordinal());
-		itemViews.SetBoundOnClickIntent(R.id.displayname, pendingIntent,
-				LauncherIntent.Extra.Scroll.EXTRA_ITEM_POS,
-				DataProvider.DataProviderColumns.contacturi.ordinal());
-
-		int textVisibility = Preferences.getShowName(context, appWidgetId) ?
-				View.VISIBLE : View.GONE;
-
+		if (textVisibility == View.VISIBLE) {
+			itemViews.SetBoundOnClickIntent(R.id.displayname, pendingIntent,
+					LauncherIntent.Extra.Scroll.EXTRA_ITEM_POS,
+					DataProvider.DataProviderColumns.contacturi.ordinal());
+		}
 		itemViews.setViewVisibility(R.id.displayname, textVisibility);
 
-        if (textVisibility == View.VISIBLE) {
-    		if (Preferences.getBGImage(context, appWidgetId) == Preferences.BG_WHITE)
+        if (textVisibility == View.VISIBLE &&
+        	Preferences.getBGImage(context, appWidgetId) == Preferences.BG_WHITE) {
     			itemViews.setTextColor(R.id.displayname, Color.BLACK);
-
-        	itemViews.setInt(R.id.displayname, "setGravity", Preferences.getTextAlign(context, appWidgetId));
         }
 
 		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_LAYOUT_REMOTEVIEWS, itemViews);
