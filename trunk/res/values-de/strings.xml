@@ -79,8 +79,8 @@ Coding:\n
 	<string name="onclick">Aktion</string>
 	<string name="sendsms">SMS senden</string>
 	
-	<string name="textalign">Text Ausrichtung</string>
-	<string name="align_center">Zentriert</string>
-	<string name="align_left">Links</string>
-	<string name="align_right">Rechts</string>
+	<string name="textalign">Position des Names</string>
+	<string name="align_center">Zentriert (unter dem Foto)</string>
+	<string name="align_left">Links vom Foto</string>
+	<string name="align_right">Rechts vom Foto</string>
 </resources>

@@ -79,4 +79,9 @@ Código:\n
 	<string name="showcontact">mostrar contacto</string>
 	<string name="onclick">Acción al pulsar</string>
 	<string name="sendsms">Enviar SMS</string>
+	
+	<string name="textalign">Posición del Nombre</string>
+	<string name="align_center">Centrado (Debajo de la Imagen)</string>
+	<string name="align_left">A la Izquierda de la Imagen</string>
+	<string name="align_right">A la Derecha de la Imagen</string>
 </resources>
