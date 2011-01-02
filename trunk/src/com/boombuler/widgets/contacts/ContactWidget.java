@@ -198,7 +198,7 @@ public abstract class ContactWidget extends AppWidgetProvider {
     			launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     			context.startActivity(launch);
             } else if (act == Preferences.CLICK_DIAL) {
-            	Intent launch = new Intent(Intent.ACTION_DIAL, uri);
+            	Intent launch = new Intent(Intent.ACTION_CALL, uri);
     			launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     			context.startActivity(launch);
             }
