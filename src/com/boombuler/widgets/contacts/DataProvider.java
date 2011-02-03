@@ -34,16 +34,16 @@ import android.util.Log;
 
 public class DataProvider extends ContentProvider {
 	public static final String TAG = "boombuler.DataProvider";
-
+	
 	private static final String AUTHORITY_BASE = "com.boombuler.widgets.contacts";
 	public static final String AUTHORITY = AUTHORITY_BASE + ".provider";
-
+	
 	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 	public static final Uri CONTENT_URI_MESSAGES = CONTENT_URI.buildUpon().appendEncodedPath("data").build();
-
+	
 	private static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 	private static final int URI_DATA = 0;
-
+	
 	public enum DataProviderColumns {
 		_id, photo, name, contacturi
 	}
@@ -56,24 +56,25 @@ public class DataProvider extends ContentProvider {
 		public ContObserver() {
 			super(null);
 		}
-
+		
 		@Override
 		public boolean deliverSelfNotifications() {
 			return true;
 		}
-
+		
 		@Override
 		public void onChange(boolean selfChange) {
 			super.onChange(selfChange);
-
+			Log.d("BOOMBULER", "-- Contacts Changed --");
+			
 			int[] appWidgetIds = Preferences.getAllWidgetIds(ctx);
-
+			
 			for (int id : appWidgetIds)
 				notifyDatabaseModification(id);
 		}
-
+		
 	}
-
+	
 	private static Context ctx = null;
 
 	static {
@@ -84,8 +85,8 @@ public class DataProvider extends ContentProvider {
 	public boolean onCreate() {
 		if (ctx == null) {
 			ctx = getContext();
-
-			ctx.getContentResolver().registerContentObserver(RawContacts.CONTENT_URI,
+			
+			ctx.getContentResolver().registerContentObserver(RawContacts.CONTENT_URI, 
 					true, new ContObserver());
 		}
 
@@ -109,49 +110,48 @@ public class DataProvider extends ContentProvider {
 
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-		int match = URI_MATCHER.match(uri);
+		int match = URI_MATCHER.match(uri);		
 		switch (match) {
 			case URI_DATA:
 				List<String> pathSegs = uri.getPathSegments();
 				int appWId = Integer.parseInt(pathSegs.get(pathSegs.size() - 1));
 				long GroupId = Preferences.getGroupId(ctx, appWId);
 				int NameKind = Preferences.getNameKind(ctx, appWId);
-				int clickActn = Preferences.getOnClickAction(ctx, appWId);
 				if (GroupId == Preferences.GROUP_FACEBOOK){
 					if (FacebookPluginBridge.IsFacebookPluginInstalled(ctx))
 						return cloneCursorAndClose(ctx.getContentResolver().query(FacebookPluginBridge.CONTENTURI, projection, selection, selectionArgs, sortOrder));
 					else
 						GroupId = 0;
-				}
-				return loadNewData(this, projection, GroupId, NameKind, clickActn);
+				}	
+				return loadNewData(this, projection, GroupId, NameKind);
 			default:
 				throw new IllegalStateException("Unrecognized URI:" + uri);
 		}
 	}
-
+	
 	private Cursor cloneCursorAndClose(Cursor crs) {
 		String[] colNames = crs.getColumnNames();
 		ExtMatrixCursor result = new ExtMatrixCursor(colNames);
 		crs.moveToFirst();
-
+		
 		while (!crs.isAfterLast()) {
 			Object[] values = new Object[colNames.length];
 			for (int i = 0, count = colNames.length; i < count; i++) {
 				String column = colNames[i];
 				if (DataProviderColumns._id.toString().equals(column)) {
-					values[i] = crs.getInt(i);
+					values[i] = crs.getInt(i); 
 				} else if (DataProviderColumns.name.toString().equals(column)) {
 					values[i] = crs.getString(i);
 				} else if (DataProviderColumns.photo.toString().equals(column)) {
 					values[i] = crs.getBlob(i);
-				} else if (DataProviderColumns.contacturi.toString().equals(column)) {
-					values[i] = crs.getString(i);
+				} else if (DataProviderColumns.contacturi.toString().equals(column)) {	
+					values[i] = crs.getString(i);					
 				}
-			}
+			}  
 			Log.d(TAG, "record copied");
 			result.addRow(values);
 			crs.moveToNext();
-		}
+		}		
 		crs.close();
 		return result;
 	}
@@ -161,73 +161,61 @@ public class DataProvider extends ContentProvider {
 		return 0;
 	}
 
-	public static void notifyDatabaseModification(int widgetId) {
+	public static void notifyDatabaseModification(int widgetId) {		
 		Uri widgetUri = CONTENT_URI_MESSAGES.buildUpon().appendEncodedPath(Integer.toString(widgetId)).build();
 		Log.d(TAG, "notifyDatabaseModification -> UPDATE widgetUri : " + widgetUri);
 		ctx.getContentResolver().notifyChange(widgetUri, null);
 	}
+	
 
-
-	public static ExtMatrixCursor loadNewData(ContentProvider mcp, String[] projection, long GroupId, int NameKind, int clickActn) {
+	public static ExtMatrixCursor loadNewData(ContentProvider mcp, String[] projection, long GroupId, int NameKind) {
 		ExtMatrixCursor ret = new ExtMatrixCursor(projection);
-
+		
 		Log.d(TAG, "... loading data");
-
+		
 		Uri uri = ContactsContract.Contacts.CONTENT_URI;
         String[] src_projection = new String[] {
                 ContactsContract.Contacts._ID,
                 ContactsContract.Contacts.DISPLAY_NAME,
-                ContactsContract.Contacts.LOOKUP_KEY
+                ContactsContract.Contacts.LOOKUP_KEY,
         };
-        AdressFilter flt = new AdressFilter(ctx, GroupId, NameKind);
+        AdressFilter flt = new AdressFilter(ctx, GroupId, NameKind);        
         String src_sortOrder = ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC";
-
+        
         AdressFilter.NameResolver nameResolver = flt.getNameResolver();
 
-		boolean withPhone = clickActn == Preferences.CLICK_DIAL ||
-                            clickActn == Preferences.CLICK_SMS;
-        String needsPhone = withPhone ? ContactsContract.Contacts.HAS_PHONE_NUMBER + " = 1 AND " : "";
-
-        Cursor cur = ctx.getContentResolver().query(uri, src_projection, needsPhone + flt.getFilter(), flt.getFilterParams(), src_sortOrder);
-		if (cur == null || nameResolver == null) {
+        Cursor cur = ctx.getContentResolver().query(uri, src_projection, flt.getFilter(), flt.getFilterParams(), src_sortOrder);
+		if (cur == null) {
+			Log.d(TAG, "can not get the contact cursor!");
 			return ret;
 		}
+		Log.d(TAG, String.format("got cursor with %d records", cur.getCount()));
         cur.moveToFirst();
 		try
 		{
-			while (!cur.isAfterLast()) {
-				boolean skip = false;
+			while (!cur.isAfterLast()) {        	
 				Object[] values = new Object[projection.length];
 				long id = cur.getLong(cur.getColumnIndex(ContactsContract.Contacts._ID));
-
+				
 				for (int i = 0, count = projection.length; i < count; i++) {
 					String column = projection[i];
 					if (DataProviderColumns._id.toString().equals(column)) {
-						values[i] = id;
+						values[i] = id; 
 					} else if (DataProviderColumns.name.toString().equals(column)) {
 						values[i] = nameResolver.updateName(
-								    cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY)),
+								    cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY)), 
 									cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
 					} else if (DataProviderColumns.photo.toString().equals(column)) {
 						values[i] = getImg(id);
 					} else if (DataProviderColumns.contacturi.toString().equals(column)) {
-						if (withPhone) {
-							values[i] = getPhoneUri(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY)), clickActn);
-							if (values[i] == null) {
-								skip = true;
-								break;
-							}
-						}
-						else
-						    values[i] = ContactsContract.Contacts.CONTENT_LOOKUP_URI.buildUpon()
+						values[i] = ContactsContract.Contacts.CONTENT_LOOKUP_URI.buildUpon()
 						                .appendPath(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY)))
 						                .appendPath(cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID)))
 						                .build().toString();
 					}
-				}
-				if (!skip)
-					ret.addRow(values);
-				cur.moveToNext();
+				}        	
+				ret.addRow(values);
+				cur.moveToNext();         	
 			}
 		}
 		finally
@@ -237,52 +225,28 @@ public class DataProvider extends ContentProvider {
 			if (cur != null)
 				cur.close();
 		}
+        Log.d(TAG, "... loading data complete");
 		return ret;
 	}
 
-	private static Uri getPhoneUri(String lookupKey, int clickActn) {
-		Uri result = realGetPhoneUri(lookupKey, " AND " +ContactsContract.Data.IS_SUPER_PRIMARY + "= '1'", clickActn);
-		if (result == null)
-			result = realGetPhoneUri(lookupKey, " AND " +ContactsContract.Data.IS_PRIMARY + "= '1'", clickActn);
-		if (result == null)
-			result = realGetPhoneUri(lookupKey, "", clickActn);
-		return result;
-	}
-
-	private static Uri realGetPhoneUri(String lookupKey, String aPrimaryFilter, int clickActn) {
-		Uri result = null;
-		Cursor c = ctx.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-		          new String[] { ContactsContract.CommonDataKinds.Phone.NUMBER },
-				  ContactsContract.Data.LOOKUP_KEY + "=?" + " AND " +
-		          ContactsContract.Data.MIMETYPE + "='" + ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE + "'" +
-		          aPrimaryFilter,
-		          new String[] {String.valueOf(lookupKey)}, null);
-		if (c.getCount() > 0) {
-			c.moveToFirst();
-			if (clickActn == Preferences.CLICK_SMS)
-				result = Uri.parse("sms:"+c.getString(0));
-			else
-				result = Uri.parse("tel:"+c.getString(0));
-		}
-		c.close();
-		return result;
-	}
-
 	public static byte[] getImg(long aId) {
-        Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, aId);
-        InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(ctx.getContentResolver(), uri);
+		Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, aId);
+        InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(ctx.getContentResolver(), uri);        
         if (input == null) {
+			Log.d(TAG, "No image found for contactId: " + String.valueOf(aId));
         	return null;
+		}
+        try
+        {
+        	byte[] res = new byte[input.available()];
+        	input.read(res);
+        	input.close();
+        	return res;
         }
-		try
-		{
-	        byte[] res = new byte[input.available()];
-	        input.read(res);
-	        input.close();
-	        return res;
-		}
-		catch(IOException expt) {
-		}
+        catch(IOException expt) {
+        	Log.e(TAG, "Failed to get image: " + expt.getMessage());        	
+        }
 		return null;
 	}
+		
 }

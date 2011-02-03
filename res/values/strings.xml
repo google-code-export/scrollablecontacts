@@ -23,11 +23,6 @@
     <string name="widget2x2">Contact Widget 2x2</string>
     <string name="widget2x3">Contact Widget 2x3</string>
     <string name="widget2x4">Contact Widget 2x4</string>
-    <string name="widget3x2">Contact Widget 3x2</string>
-    <string name="widget3x3">Contact Widget 3x3</string>
-    <string name="widget3x4">Contact Widget 3x4</string>
-    <string name="widget4x2">Contact Widget 4x2</string>
-    <string name="widget4x3">Contact Widget 4x3</string>
     <string name="widget4x4">Contact Widget 4x4</string>
     
     <string name="namekind">Name to display</string>
@@ -35,12 +30,16 @@
     <string name="familyname">family name</string>
     <string name="displayname">display name</string>
     
-    <string name="loading">Please check your if launcher supports scrolling (ADW Launcher/Launcher Pro) AND if scrolling is enabled.</string>
+    <string name="loading">Loading...</string>
     <string name="save">Save</string>
     <string name="select_contact_group">Contact group</string>
     <string name="allcontacts">All Contacts *</string>
     <string name="facebook">My Facebook Friends *</string>
     <string name="starred">Favorites *</string>
+    <string name="quickcontactsize">QuickContact size</string>
+    <string name="qcsLarge">Large</string>
+    <string name="qcsMedium">Medium</string>
+    <string name="qcsSmall">Small</string>
     <string name="displayLabel">Widget label</string>
     <string name="black">Black</string>
     <string name="white">White</string>
@@ -67,21 +66,4 @@ Translations:\n
 * \"EAGINsoftware\"\n\n
 Coding:\n
 * ChrBas</string>
-	<string name="columncount">Columns</string>
-	<string name="background_alpha">Background alpha</string>
-	<string name="launcher_too_old">Sorry, your launcher is to old, please update it!</string>
-	<string name="needs_froyo">This feature is only available on android 2.2 and above</string>
-	
-	<string name="behavior">Behavior</string>
-	
-	<string name="quickcontactbar">show QuickContactBar</string>
-	<string name="directdial">direct dial</string>
-	<string name="showcontact">show contact</string>
-	<string name="onclick">Click action</string>
-	<string name="sendsms">Send SMS</string>
-	
-	<string name="textalign">Name position</string>
-	<string name="align_center">Center (below the picture)</string>
-	<string name="align_left">Left of the picture</string>
-	<string name="align_right">Right of the picture</string>
 </resources>

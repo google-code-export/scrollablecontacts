@@ -18,31 +18,24 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="wrap_content"
   android:layout_height="wrap_content">
-      <TextView
-        android:id="@id/displayname"
-        android:layout_width="fill_parent"
-        android:layout_height="60dip"
-        android:layout_marginLeft="5dip"
-        android:layout_marginBottom="5dip"
-        android:layout_marginTop="5dip"
-        android:layout_marginRight="65dip"
-        android:includeFontPadding="true"
-        android:singleLine="false"
-        android:maxLines="3"
-        android:ellipsize="end"        
-        android:textColor="#fff"
-        android:textColorHighlight="#fff"
-        android:textStyle="bold" 
-        android:textSize="12dp"
-        android:gravity="center_vertical|right"    
-        />
-        <ImageView
+  
+	<ImageView
        android:id="@id/photo"
        android:layout_width="60dip"
        android:layout_height="60dip"
-       android:layout_marginLeft="-60dip"
-       android:layout_marginRight="4dip"
+       android:layout_marginLeft="4dip"
        android:layout_marginTop="5dip"
        android:scaleType="centerCrop"
-                />
+		/>  
+	<TextView
+        android:id="@id/displayname"
+        android:layout_width="fill_parent"
+        android:layout_height="60dip"
+        android:includeFontPadding="true"
+    	android:singleLine="false"
+        android:ellipsize="end"        
+        android:layout_margin="5dip"     
+        android:textColor="#000"
+        android:textColorHighlight="#000"           
+        />
 </LinearLayout>

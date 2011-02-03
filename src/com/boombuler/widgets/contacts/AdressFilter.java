@@ -25,13 +25,13 @@ import android.util.Log;
 public class AdressFilter {
 
 	private static final String TAG = "boombuler.AdressFilter";
-
+	
 	private String fFilter;
 	private String[] fParams;
 	private NameResolver fNameResolver = null;
-	private final int fNameKind;
-	private final long fGroupId;
-
+	private int fNameKind;
+	private long fGroupId;
+	
 	public AdressFilter(Context context, long aGroupId, int NameKind) {
 		fNameKind = NameKind;
 		fGroupId = aGroupId;
@@ -48,14 +48,14 @@ public class AdressFilter {
 			return;
 		}
 
-		Cursor resC = context.getContentResolver().query(ContactsContract.Data.CONTENT_URI,
-				new String[] { ContactsContract.Contacts.LOOKUP_KEY },
-				ContactsContract.Data.MIMETYPE + "=? AND " +
+		Cursor resC = context.getContentResolver().query(ContactsContract.Data.CONTENT_URI, 
+				new String[] { ContactsContract.Contacts.LOOKUP_KEY }, 
+				ContactsContract.Data.MIMETYPE + "=? AND " + 
 				ContactsContract.Data.DATA1 + "=?",
-				new String[] {
-					ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE,
+				new String[] { 
+					ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE, 
 					String.valueOf(aGroupId)
-				}, null);
+				}, null);		
 		if (resC == null)
 			return;
 		fParams = new String[resC.getCount()];
@@ -70,61 +70,61 @@ public class AdressFilter {
 			if (i > 0)
 				fFilter += " OR ";
 			fFilter += ContactsContract.Contacts.LOOKUP_KEY + " = ?";
-			fParams[i++] = resC.getString(resC.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY));
+			fParams[i++] = resC.getString(resC.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY));			
 			resC.moveToNext();
 		}
 		fFilter += ")";
 		fNameResolver = new NameResolver(context);
 	}
-
+	
 	public String getFilter()
 	{
-		return ContactsContract.Contacts.IN_VISIBLE_GROUP + " = '1'" + fFilter;
+		return ContactsContract.Contacts.IN_VISIBLE_GROUP + " = '1'" + fFilter;		
 	}
-
+	
 	public String[] getFilterParams() {
 		return fParams;
 	}
-
+	
 	public NameResolver getNameResolver() {
 		return fNameResolver;
 	}
-
+	
 	public class NameResolver {
 		private Cursor fCursor = null;
-
+		
 		private NameResolver(Context context) {
 			if (AdressFilter.this.fNameKind == Preferences.NAME_DISPLAY_NAME)
 				return;
-
-
+				
+			
 			ContentResolver resolver = context.getContentResolver();
-
+			
 			String name = ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME;
 			if (AdressFilter.this.fNameKind == Preferences.NAME_FAMILY_NAME)
 				name = ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME;
-
+			
 			String filter = "";
 			String[] params = null;
 			if (AdressFilter.this.fGroupId > 0) {
 				filter = AdressFilter.this.fFilter;
 				params = AdressFilter.this.fParams;
 			}
-
+			
 			filter = ContactsContract.CommonDataKinds.StructuredName.MIMETYPE + " = '"+ ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE+"' " + filter;
-
-			fCursor = resolver.query(ContactsContract.Data.CONTENT_URI,
+			
+			fCursor = resolver.query(ContactsContract.Data.CONTENT_URI, 
 							 new String[] { ContactsContract.CommonDataKinds.StructuredName.LOOKUP_KEY, name},
 							 filter, params, null);
-
+			
 		}
-
+	
 		public void close() {
 			if (fCursor != null)
 				fCursor.close();
 			fCursor = null;
 		}
-
+	
 		public String updateName(String lookupKey, String DisplayName) {
 			if (AdressFilter.this.fNameKind == Preferences.NAME_DISPLAY_NAME)
 				return DisplayName;
@@ -138,7 +138,7 @@ public class AdressFilter {
 							return DisplayName;
 						return fCursor.getString(1);
 					}
-
+					
 					fCursor.moveToNext();
 				}
 				Log.d(TAG, "will return displayname:" + DisplayName);
@@ -146,5 +146,5 @@ public class AdressFilter {
 			}
 		}
 	}
-
+	
 }

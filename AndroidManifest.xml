@@ -16,8 +16,8 @@
  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.boombuler.widgets.contacts"
-      android:versionCode="22"
-      android:versionName="0.2.2">
+      android:versionCode="16"
+      android:versionName="0.1.6">
     <application android:icon="@drawable/icon" android:label="@string/app_name">
    		<provider
    		  android:name=".DataProvider"
@@ -34,10 +34,6 @@
 			</intent-filter>
 			<meta-data android:name="android.appwidget.provider"
 				android:resource="@xml/contact_widget_provider1x2" />
-			<meta-data android:name="LauncherMetadata.Requirements.APIVersion"
-				android:value="2" />
-			<meta-data android:name="LauncherMetadata.Requirements.Scrollable"
-				android:value="true" />
 		</receiver>
 		
 		<receiver android:name=".sizes.ContactWidget_1_3" android:label="@string/widget1x3">
@@ -47,10 +43,6 @@
 			</intent-filter>
 			<meta-data android:name="android.appwidget.provider"
 				android:resource="@xml/contact_widget_provider1x3" />
-			<meta-data android:name="LauncherMetadata.Requirements.APIVersion"
-				android:value="2" />
-			<meta-data android:name="LauncherMetadata.Requirements.Scrollable"
-				android:value="true" />
 		</receiver>	
 		
 		<receiver android:name=".sizes.ContactWidget_1_4" android:label="@string/widget1x4">
@@ -60,10 +52,6 @@
 			</intent-filter>
 			<meta-data android:name="android.appwidget.provider"
 				android:resource="@xml/contact_widget_provider1x4" />
-			<meta-data android:name="LauncherMetadata.Requirements.APIVersion"
-				android:value="2" />
-			<meta-data android:name="LauncherMetadata.Requirements.Scrollable"
-				android:value="true" />
 		</receiver>
 
 
@@ -74,10 +62,6 @@
 			</intent-filter>
 			<meta-data android:name="android.appwidget.provider"
 				android:resource="@xml/contact_widget_provider2x2" />
-			<meta-data android:name="LauncherMetadata.Requirements.APIVersion"
-				android:value="2" />
-			<meta-data android:name="LauncherMetadata.Requirements.Scrollable"
-				android:value="true" />
 		</receiver>
 		
 		<receiver android:name=".sizes.ContactWidget_2_3" android:label="@string/widget2x3">
@@ -87,10 +71,6 @@
 			</intent-filter>
 			<meta-data android:name="android.appwidget.provider"
 				android:resource="@xml/contact_widget_provider2x3" />
-			<meta-data android:name="LauncherMetadata.Requirements.APIVersion"
-				android:value="2" />
-			<meta-data android:name="LauncherMetadata.Requirements.Scrollable"
-				android:value="true" />
 		</receiver>
 				
 		<receiver android:name=".sizes.ContactWidget_2_4" android:label="@string/widget2x4">
@@ -100,89 +80,16 @@
 			</intent-filter>
 			<meta-data android:name="android.appwidget.provider"
 				android:resource="@xml/contact_widget_provider2x4" />
-			<meta-data android:name="LauncherMetadata.Requirements.APIVersion"
-				android:value="2" />
-			<meta-data android:name="LauncherMetadata.Requirements.Scrollable"
-				android:value="true" />
-		</receiver>
-		
-		<receiver android:name=".sizes.ContactWidget_3_2" android:label="@string/widget3x2">
-			<intent-filter>
-				<action   
-					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-			</intent-filter>
-			<meta-data android:name="android.appwidget.provider"
-				android:resource="@xml/contact_widget_provider3x2" />
-			<meta-data android:name="LauncherMetadata.Requirements.APIVersion"
-				android:value="2" />
-			<meta-data android:name="LauncherMetadata.Requirements.Scrollable"
-				android:value="true" />
-		</receiver>
-		
-		<receiver android:name=".sizes.ContactWidget_3_3" android:label="@string/widget3x3">
-			<intent-filter>
-				<action   
-					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-			</intent-filter>
-			<meta-data android:name="android.appwidget.provider"
-				android:resource="@xml/contact_widget_provider3x3" />
-			<meta-data android:name="LauncherMetadata.Requirements.APIVersion"
-				android:value="2" />
-			<meta-data android:name="LauncherMetadata.Requirements.Scrollable"
-				android:value="true" />
 		</receiver>		
-		
-		<receiver android:name=".sizes.ContactWidget_3_4" android:label="@string/widget3x4">
-			<intent-filter>
-				<action   
-					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-			</intent-filter>
-			<meta-data android:name="android.appwidget.provider"
-				android:resource="@xml/contact_widget_provider3x4" />
-			<meta-data android:name="LauncherMetadata.Requirements.APIVersion"
-				android:value="2" />
-			<meta-data android:name="LauncherMetadata.Requirements.Scrollable"
-				android:value="true" />
-		</receiver>
 
-		<receiver android:name=".sizes.ContactWidget_4_2" android:label="@string/widget4x2">
-			<intent-filter>
-				<action   
-					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-			</intent-filter>
-			<meta-data android:name="android.appwidget.provider"
-				android:resource="@xml/contact_widget_provider4x2" />
-			<meta-data android:name="LauncherMetadata.Requirements.APIVersion"
-				android:value="2" />
-			<meta-data android:name="LauncherMetadata.Requirements.Scrollable"
-				android:value="true" />
-		</receiver>
-		
-		<receiver android:name=".sizes.ContactWidget_4_3" android:label="@string/widget4x3">
-			<intent-filter>
-				<action   
-					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-			</intent-filter>
-			<meta-data android:name="android.appwidget.provider"
-				android:resource="@xml/contact_widget_provider4x3" />
-			<meta-data android:name="LauncherMetadata.Requirements.APIVersion"
-				android:value="2" />
-			<meta-data android:name="LauncherMetadata.Requirements.Scrollable"
-				android:value="true" />
-		</receiver>
-
-		<receiver android:name=".sizes.ContactWidget_4_4" android:label="@string/widget4x4">
+		<!--receiver android:name=".sizes.ContactWidget_4_4" android:label="@string/widget4x4">
 			<intent-filter>
 				<action   
 					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 			</intent-filter>
 			<meta-data android:name="android.appwidget.provider"
 				android:resource="@xml/contact_widget_provider4x4" />
-			<meta-data android:name="LauncherMetadata.Requirements.APIVersion"
-				android:value="2" />
-			<meta-data android:name="LauncherMetadata.Requirements.Scrollable"
-				android:value="true" />
-		</receiver>		
+		</receiver-->		
 		
 		<activity android:name=".ConfigurationActivity">
 			<intent-filter>
@@ -195,6 +102,4 @@
 
 
 	<uses-permission android:name="android.permission.READ_CONTACTS"></uses-permission>
-
-<uses-permission android:name="android.permission.CALL_PHONE"></uses-permission>
 </manifest> 

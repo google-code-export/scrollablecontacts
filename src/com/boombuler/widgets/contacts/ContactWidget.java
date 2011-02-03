@@ -16,122 +16,96 @@
 
 package com.boombuler.widgets.contacts;
 
-import java.util.Set;
-
 import mobi.intuitit.android.content.LauncherIntent;
-import mobi.intuitit.android.widget.BoundRemoteViews;
-import mobi.intuitit.android.widget.SimpleRemoteViews;
-import android.app.PendingIntent;
-import android.appwidget.AppWidgetManager;
-import android.appwidget.AppWidgetProvider;
+import android.appwidget.*;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
 import android.provider.ContactsContract.QuickContact;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.RemoteViews;
 
 
 public abstract class ContactWidget extends AppWidgetProvider {
 	// Tag for logging
 	private static final String TAG = "boombuler.ContactWidget";
-
+	
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-		// If no specific widgets requested, collect list of all
-
+		// If no specific widgets requested, collect list of all		
+		
 		if (appWidgetIds == null) {
 			appWidgetIds = Preferences.getAllWidgetIds(context);
 		}
 		Log.d(TAG, "recieved onUpdate");
-
+        
         final int N = appWidgetIds.length;
         for (int i = 0; i < N; i++) {
             // Construct views
         	int appWidgetId = appWidgetIds[i];
-        	updateGroupTitleAndBackground(context, appWidgetId);
-        }
+        	updateGroupTitleAndBackground(context, appWidgetId);           
+        }	
 	}
-
+	
 	protected void updateGroupTitleAndBackground(Context context, int appWidgetId) {
-
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.main);
+        RemoteViews views = new RemoteViews(context.getPackageName(), getMainLayoutId(context, appWidgetId));
         String text = Preferences.getDisplayLabel(context, appWidgetId);
-
-        boolean withHeader = text != "";
-
-        if (Preferences.getBGImage(context, appWidgetId) == Preferences.BG_BLACK) {
+        
+        boolean withHeader = text != ""; 
+        
+        if (Preferences.getBGImage(context, appWidgetId) == Preferences.BG_BLACK) {        	
             views.setImageViewResource(R.id.backgroundImg, withHeader ? R.drawable.background_dark_header : R.drawable.background_dark);
             views.setTextColor(R.id.group_caption, Color.WHITE);
-        } else if (Preferences.getBGImage(context, appWidgetId) == Preferences.BG_WHITE) {
+        }
+        else if (Preferences.getBGImage(context, appWidgetId) == Preferences.BG_WHITE) { 
         	views.setImageViewResource(R.id.backgroundImg, withHeader ? R.drawable.background_light_header : R.drawable.background_light);
         	views.setTextColor(R.id.group_caption, Color.BLACK);
-        } else {
-        	views.setImageViewResource(R.id.backgroundImg, Color.TRANSPARENT);
-            views.setTextColor(R.id.group_caption, Color.WHITE);
         }
-
+        else {        	
+        	views.setImageViewResource(R.id.backgroundImg, Color.TRANSPARENT);
+        	views.setTextColor(R.id.group_caption, Color.WHITE);
+        }
+        
+        
+        
         // First set the display label
         views.setTextViewText(R.id.group_caption, text);
         // and if it is empty hide it
         views.setViewVisibility(R.id.group_caption, withHeader ? View.VISIBLE : View.GONE);
-        if (Integer.parseInt(Build.VERSION.SDK) > Build.VERSION_CODES.ECLAIR_MR1) {
-        	views.setInt(R.id.backgroundImg, "setAlpha", Preferences.getBackgroundAlpha(context, appWidgetId));
-        }
-
+        
         AppWidgetManager awm = AppWidgetManager.getInstance(context);
-        awm.updateAppWidget(appWidgetId, views);
+        awm.updateAppWidget(appWidgetId, views); 
 	}
-
-	protected abstract int getWidth();
-
-	private void logIntent(Intent intent, boolean extended) {
-		if (extended)
-			Log.d(TAG, "------------Log Intent------------");
-		Log.d(TAG, "Action       : " + intent.getAction());
-		if (!extended)
-			return;
-		Log.d(TAG, "Data         : " + intent.getDataString());
-		Log.d(TAG, "Component    : " + intent.getComponent().toString());
-		Log.d(TAG, "Package      : " + intent.getPackage());
-		Log.d(TAG, "Flags        : " + intent.getFlags());
-		Log.d(TAG, "Scheme       : " + intent.getScheme());
-		Log.d(TAG, "SourceBounds : " + intent.getSourceBounds());
-		Log.d(TAG, "Type         : " + intent.getType());
-		Bundle extras = intent.getExtras();
-		if (extras != null) {
-			Log.d(TAG, "--Extras--");
-
-			for(String key : extras.keySet()) {
-				Log.d(TAG, key + " --> " + extras.get(key));
-			}
-			Log.d(TAG, "----------");
-		}
-		Set<String> cats = intent.getCategories();
-		if (cats != null) {
-			Log.d(TAG, "--Categories--");
-			for(String cat : cats) {
-				Log.d(TAG, " --> " + cat);
-			}
-			Log.d(TAG, "--------------");
-		}
-		Log.d(TAG, "----------------------------------");
+	
+	/**
+	 * Gets the layout resource id for the widget
+	 */
+	protected int getMainLayoutId(Context aContext, int aAppWidgetId)
+	{
+		return R.layout.main;
 	}
-
+	
+	/**
+	 * Gets the layout resource id for the list entries
+	 */
+	protected abstract int getListEntryLayoutId(Context aContext, int aAppWidgetId);
+	
+	protected int getListViewLayoutId(Context aContext, int aAppWidgetId) {
+		if (Preferences.getBGImage(aContext, aAppWidgetId) == Preferences.BG_TRANS)
+			return R.layout.listview_no_div;
+		return R.layout.listview;
+	}
+	
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		final String action = intent.getAction();
-		logIntent(intent, false);
+		Log.d(TAG, "recieved -> " +  action);
 		if (AppWidgetManager.ACTION_APPWIDGET_DELETED.equals(action)) {
 			final int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
 					AppWidgetManager.INVALID_APPWIDGET_ID);
@@ -153,23 +127,20 @@ public abstract class ContactWidget extends AppWidgetProvider {
 		} else if (TextUtils.equals(action, LauncherIntent.Error.ERROR_SCROLL_CURSOR)) {
 			// An error occurred
 		    Log.d(TAG, intent.getStringExtra(LauncherIntent.Extra.EXTRA_ERROR_MESSAGE));
-		} else if (action.equals("com.motorola.blur.home.ACTION_SET_WIDGET_SIZE")) {
-			updateSize(context, intent);
-		} else {
+		} else
 			super.onReceive(context, intent);
-		}
 	}
 
 	/**
-	 * Will be executed when the widget is removed from the homescreen
+	 * Will be executed when the widget is removed from the homescreen 
 	 */
 	@Override
 	public void onDeleted(Context context, int[] appWidgetIds) {
 		super.onDeleted(context, appWidgetIds);
 		// Drop the settings if the widget is deleted
 		Preferences.DropSettings(context, appWidgetIds);
-	}
-
+	}	
+	
 	/**
 	 * On click of a child view in an item
 	 */
@@ -177,57 +148,44 @@ public abstract class ContactWidget extends AppWidgetProvider {
 		Log.d(TAG, "starting onClick");
 		int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 		Log.d(TAG, "got appWidgetId: "+ appWidgetId);
-
+	
 		Uri uri = Uri.parse(intent.getStringExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_POS));
-
+			
+		int viewId = intent.getIntExtra(LauncherIntent.Extra.EXTRA_VIEW_ID, -1);
+		Log.d(TAG, "viewId: "+viewId);
+				
 		Rect r;
 		if (intent.hasExtra(LauncherIntent.Extra.Scroll.EXTRA_SOURCE_BOUNDS)) {
 			Log.d(TAG, "got rect from launcher");
 			r = (Rect)intent.getParcelableExtra(LauncherIntent.Extra.Scroll.EXTRA_SOURCE_BOUNDS);
-		} else {
-		    r = intent.getSourceBounds();
+		} else { // Fallback for older launcher versions			
+			r = new Rect();
+			Log.d(TAG, "determine display size");
+			DisplayMetrics dm = context.getResources().getDisplayMetrics();
+			r.right = dm.widthPixels;
+			r.bottom = dm.heightPixels;
+			r.top = 0;
+			r.left = 0;
+			Log.d(TAG, "displaysizerect: "+r);
 		}
 		try
-		{
-			int act = Preferences.getOnClickAction(context, appWidgetId);
-            if (act == Preferences.CLICK_QCB) {
-			    QuickContact.showQuickContact(context,r ,
-					uri, QuickContact.MODE_LARGE, null);
-            } else if (act == Preferences.CLICK_SHWCONTACT || act == Preferences.CLICK_SMS) {
-            	Intent launch = new Intent(Intent.ACTION_VIEW, uri);
-    			launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    			context.startActivity(launch);
-            } else if (act == Preferences.CLICK_DIAL) {
-            	Intent launch = new Intent(Intent.ACTION_CALL, uri);
-    			launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    			context.startActivity(launch);
-            }
+		{			
+			QuickContact.showQuickContact(context,r , 
+					uri, 
+					Preferences.getQuickContactSize(context, appWidgetId), null);
+			Log.d(TAG, "quickcontact should now be visible!");
 		}
 		catch(ActivityNotFoundException expt)
-		{
-			Log.d(TAG, "FAILED: " + expt.getMessage());
+		{ // 2.1 is foobar...		
+			Log.d(TAG, "no activity found: " + expt.getMessage());
+			Intent launch = new Intent(Intent.ACTION_VIEW, uri);
+			launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			Log.d(TAG, "will start contact activity");
+			context.startActivity(launch);			
+			Log.d(TAG, "contact activity launched");
 		}
 	}
-
-	private void updateSize(Context context, Intent intent) {
-		int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
-				AppWidgetManager.INVALID_APPWIDGET_ID);
-		int spanX = intent.getIntExtra("spanX", this.getWidth());
-		int oldSpanX = Preferences.getSpanX(context, appWidgetId, getWidth());
-		if (spanX != oldSpanX) {
-			Preferences.setSpanX(context, appWidgetId, spanX);
-			context.sendBroadcast(CreateMakeScrollableIntent(context, appWidgetId));
-		}
-	}
-
-	private int calcWidthPixel(boolean horizontal, Context context, int appWidgetId) {
-		int spanx = Preferences.getSpanX(context, appWidgetId, this.getWidth());
-		if (horizontal)
-			return 106 * spanx;
-		else
-			return 80 * spanx;
-	}
-
+		
 	/**
 	 * Receive ready intent from Launcher, prepare scroll view resources
 	 */
@@ -235,47 +193,23 @@ public abstract class ContactWidget extends AppWidgetProvider {
 		if (intent == null)
 			return;
 
-		int APIVersion = intent.getExtras().getInt(LauncherIntent.Extra.EXTRA_API_VERSION, 1);
-		Log.d(TAG, "current launcher API version: " +  APIVersion);
-
 		int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
 				AppWidgetManager.INVALID_APPWIDGET_ID);
 
 		if (appWidgetId < 0) {
 			return;
 		}
-
-		if (APIVersion < 2) {
-			AppWidgetManager awm = AppWidgetManager.getInstance(context);
-			RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.main);
-			views.setTextViewText(R.id.loading, context.getString(R.string.launcher_too_old));
-	        if (Preferences.getBGImage(context, appWidgetId) == Preferences.BG_BLACK) {
-	            views.setImageViewResource(R.id.backgroundImg, R.drawable.background_dark);
-	            views.setTextColor(R.id.loading, Color.WHITE);
-	        }
-	        else {
-	        	views.setImageViewResource(R.id.backgroundImg, R.drawable.background_light);
-	        	views.setTextColor(R.id.loading, Color.BLACK);
-	        }
-
-			awm.updateAppWidget(appWidgetId, views);
-			return;
-		}
-
 		updateGroupTitleAndBackground(context, appWidgetId);
 		Intent replaceDummy = CreateMakeScrollableIntent(context, appWidgetId);
 
 		// Send it out
 		context.sendBroadcast(replaceDummy);
 	}
-
+	
 	/**
 	 * Constructs a Intent that tells the launcher to replace the dummy with the ListView
 	 */
 	public Intent CreateMakeScrollableIntent(Context context, int appWidgetId) {
-		String widgeturi = DataProvider.CONTENT_URI_MESSAGES.buildUpon().appendEncodedPath(
-				Integer.toString(appWidgetId)).toString();
-
 		Log.d(TAG, "creating ACTION_SCROLL_WIDGET_START intent");
 		Intent result = new Intent(LauncherIntent.Action.ACTION_SCROLL_WIDGET_START);
 
@@ -285,73 +219,13 @@ public abstract class ContactWidget extends AppWidgetProvider {
 
 		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_DATA_PROVIDER_ALLOW_REQUERY, true);
 
-		final int colCount = Preferences.getColumnCount(context, appWidgetId);
-
-		// Give a layout resource to be inflated. If this is not given, the launcher will create one
-		SimpleRemoteViews gridViews = new SimpleRemoteViews(R.layout.gridview);
-		gridViews.setInt(R.id.my_gridview, "setNumColumns", colCount);
-		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_LISTVIEW_REMOTEVIEWS, gridViews);
-
-		boolean autosizeImages = true;
-		int itemresid = R.layout.gridviewitem;
-		int textVisibility = Preferences.getShowName(context, appWidgetId) ?
-				View.VISIBLE : View.GONE;
-
-		if (textVisibility == View.VISIBLE) {
-			autosizeImages = false;
-			switch(Preferences.getTextAlign(context, appWidgetId)) {
-				case Preferences.ALIGN_RIGHT:
-					itemresid = R.layout.gridviewitem_txt_right; break;
-				case Preferences.ALIGN_LEFT:
-					itemresid = R.layout.gridviewitem_txt_left; break;
-				case Preferences.ALIGN_CENTER:
-					autosizeImages = true; break;
-			}
-		}
-
-		BoundRemoteViews itemViews = new BoundRemoteViews(itemresid);
-		if (textVisibility == View.VISIBLE) {
-			itemViews.setBoundCharSequence(R.id.displayname, "setText",
-					DataProvider.DataProviderColumns.name.ordinal(),0);
-		}
-		itemViews.setBoundBitmap(R.id.photo, "setImageBitmap",
-				DataProvider.DataProviderColumns.photo.ordinal(), R.drawable.no_image);
-
-		if (autosizeImages) {
-			DisplayMetrics dm = context.getResources().getDisplayMetrics();
-			Display display = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-			display.getMetrics(dm);
-			int width = calcWidthPixel((display.getOrientation() % 2) == 1, context, appWidgetId); // get the widget width in dip
-			width = width - (colCount * 5) - 5; // grid view spacing...
-			width = (int)(((width - 24) / colCount) * dm.density);
-
-			itemViews.setViewWidth(R.id.photo, width);
-			itemViews.setViewHeight(R.id.photo, width);
-		}
-
-		Intent intent = new Intent(context, this.getClass());
-		intent.setAction(LauncherIntent.Action.ACTION_VIEW_CLICK);
-		intent.setData(Uri.parse(widgeturi));
-		intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-		itemViews.SetBoundOnClickIntent(R.id.photo, pendingIntent,
-				LauncherIntent.Extra.Scroll.EXTRA_ITEM_POS,
-				DataProvider.DataProviderColumns.contacturi.ordinal());
-		if (textVisibility == View.VISIBLE) {
-			itemViews.SetBoundOnClickIntent(R.id.displayname, pendingIntent,
-					LauncherIntent.Extra.Scroll.EXTRA_ITEM_POS,
-					DataProvider.DataProviderColumns.contacturi.ordinal());
-		}
-		itemViews.setViewVisibility(R.id.displayname, textVisibility);
-
-        if (textVisibility == View.VISIBLE &&
-        	Preferences.getBGImage(context, appWidgetId) == Preferences.BG_WHITE) {
-    			itemViews.setTextColor(R.id.displayname, Color.BLACK);
-        }
-
-		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_LAYOUT_REMOTEVIEWS, itemViews);
-
-		putProvider(result, widgeturi);
+		// Give a layout resource to be inflated. If this is not given, the launcher will create one		
+		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_LISTVIEW_LAYOUT_ID, getListViewLayoutId(context, appWidgetId));
+		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_LAYOUT_ID, getListEntryLayoutId(context, appWidgetId));
+		
+		putProvider(result, DataProvider.CONTENT_URI_MESSAGES.buildUpon().appendEncodedPath(
+				Integer.toString(appWidgetId)).toString());
+		putMapping(context, appWidgetId, result);
 
 		// Launcher can set onClickListener for each children of an item. Without
 		// explicitly put this
@@ -359,10 +233,10 @@ public abstract class ContactWidget extends AppWidgetProvider {
 		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_CHILDREN_CLICKABLE, true);
 		return result;
 	}
-
+			
 	/**
 	 * Put provider info as extras in the specified intent
-	 *
+	 * 
 	 * @param intent
 	 */
 	protected void putProvider(Intent intent, String widgetUri) {
@@ -384,4 +258,50 @@ public abstract class ContactWidget extends AppWidgetProvider {
 		intent.putExtra(LauncherIntent.Extra.Scroll.EXTRA_SORT_ORDER, orderBy);
 
 	}
+
+	/**
+	 * Put mapping info as extras in intent
+	 */
+	protected void putMapping(Context context, int appWidgetId, Intent intent) {
+		if (intent == null)
+			return;
+
+		int NB_ITEMS_TO_FILL = 2;
+		if (!Preferences.getShowName(context, appWidgetId))
+			NB_ITEMS_TO_FILL = 1;
+
+		int[] cursorIndices = new int[NB_ITEMS_TO_FILL];
+		int[] viewTypes = new int[NB_ITEMS_TO_FILL];
+		int[] layoutIds = new int[NB_ITEMS_TO_FILL];
+		boolean[] clickable = new boolean[NB_ITEMS_TO_FILL];
+		int[] defResources = new int[NB_ITEMS_TO_FILL];
+
+		int iItem = 0;
+		
+		intent.putExtra(LauncherIntent.Extra.Scroll.EXTRA_ITEM_ACTION_VIEW_URI_INDEX, 
+				DataProvider.DataProviderColumns.contacturi.ordinal());
+		
+		cursorIndices[iItem] = DataProvider.DataProviderColumns.photo.ordinal();
+		viewTypes[iItem] = LauncherIntent.Extra.Scroll.Types.IMAGEBLOB;
+		layoutIds[iItem] = R.id.photo;
+		clickable[iItem] = true;
+		defResources[iItem] = R.drawable.no_image;
+
+		if (Preferences.getShowName(context, appWidgetId)) {
+			iItem++;
+			
+			cursorIndices[iItem] = DataProvider.DataProviderColumns.name.ordinal();
+			viewTypes[iItem] = LauncherIntent.Extra.Scroll.Types.TEXTVIEW;
+			layoutIds[iItem] = R.id.displayname;
+			clickable[iItem] = true;
+			defResources[iItem] = 0;
+		}
+
+		intent.putExtra(LauncherIntent.Extra.Scroll.Mapping.EXTRA_VIEW_IDS, layoutIds);
+		intent.putExtra(LauncherIntent.Extra.Scroll.Mapping.EXTRA_VIEW_TYPES, viewTypes);
+		intent.putExtra(LauncherIntent.Extra.Scroll.Mapping.EXTRA_VIEW_CLICKABLE, clickable);
+		intent.putExtra(LauncherIntent.Extra.Scroll.Mapping.EXTRA_CURSOR_INDICES, cursorIndices);
+		intent.putExtra(LauncherIntent.Extra.Scroll.Mapping.EXTRA_DEFAULT_RESOURCES, defResources);
+	}
+    
 }

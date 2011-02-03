@@ -16,31 +16,30 @@
  -->
 <resources>
     <!-- Spanish -->
-    <string name="app_name">Widget Contactos</string>    
+    <string name="app_name">Widget Contactos</string>
     <string name="widget1x2">Widget Contactos 1x2</string>
-	<string name="widget1x3">Widget Contactos 1x3</string>    
-	<string name="widget1x4">Widget Contactos 1x4</string>
+    <string name="widget1x3">Widget Contactos 1x3</string>
+    <string name="widget1x4">Widget Contactos 1x4</string>
     <string name="widget2x2">Widget Contactos 2x2</string>
     <string name="widget2x3">Widget Contactos 2x3</string>
     <string name="widget2x4">Widget Contactos 2x4</string>
-    <string name="widget3x2">Widget Contactos 3x2</string>
-    <string name="widget3x3">Widget Contactos 3x3</string>
-    <string name="widget3x4">Widget Contactos 3x4</string>
-    <string name="widget4x2">Widget Contactos 4x2</string>
-    <string name="widget4x3">Widget Contactos 4x3</string>
-    <string name="widget4x4">Widget Contactos 4x4</string>
-    
+	<string name="widget4x4">Widget Contactos 4x4</string>
+
     <string name="namekind">Nombre a mostrar</string>
     <string name="givenname">Nombre</string>
     <string name="familyname">Apellido</string>
     <string name="displayname">Nombre completo</string>
     
-    <string name="loading">Por favor, asegúrese de que su launcher soporta scroll (ADW Launcher/Launcher Pro) y si está habilitado.</string>
+    <string name="loading">Cargando...</string>
     <string name="save">Guardar</string>
     <string name="select_contact_group">Grupo de Contactos</string>
-    <string name="allcontacts">Todos los contactos *</string>
-    <string name="facebook">Mis amigos de Facebook *</string>
-    <string name="starred">Favoritos *</string>
+    <string name="allcontacts">Todos los Contactos</string>
+    <string name="starred">Favoritos *</string>    
+    <string name="facebook">Mis amigos de Facebook</string>
+    <string name="quickcontactsize">Tamaño QuickContact</string>
+    <string name="qcsLarge">Grande</string>
+    <string name="qcsMedium">Medio</string>
+    <string name="qcsSmall">Pequeño</string>
     <string name="displayLabel">Etiqueta del Widget</string>
     <string name="black">Negro</string>
     <string name="white">Blanco</string>
@@ -53,7 +52,7 @@
     <string name="help">Ayuda</string>
     <string name="help_summary">El Widget no funciona?</string>
     <string name="okbtn">Ok</string>
-<string name="helptext">>Si tiene algún problema con este Widget,
+	<string name="helptext">Si tiene algún problema con este Widget,
 asegúrese de que dispone de un escritorio que soporte widgets con scroll, y de que está usando
 la última actualización de dicho escritorio!\n\n
 Algunos escritorios tienen opciones para desactivar el scroll en los widgets (asegúrese de haber habilitado la opción de scroll en los widgets)\n\n
@@ -64,24 +63,7 @@ Gráficos:\n
 * Danny Hensel\n
 * Ian Grams\n\n
 Traducciones:\n
-* \"EAGIN\"\n\n
+* \"EAGINsoftware\"\n\n
 Código:\n
 * ChrBas</string>
-	<string name="columncount">Columnas</string>
-	<string name="background_alpha">Transparencia del fondo</string>
-	<string name="launcher_too_old">Lo siento, su launcher es demasiado viejo, por favor actualice su launcher!</string>
-	<string name="needs_froyo">Esta prestación solo está disponible para android 2.2 o superior</string>
-	
-	<string name="behavior">Comportamiento</string>
-	
-	<string name="quickcontactbar">mostrar la barra QuickContact</string>
-	<string name="directdial">marcación directa</string>
-	<string name="showcontact">mostrar contacto</string>
-	<string name="onclick">Acción al pulsar</string>
-	<string name="sendsms">Enviar SMS</string>
-	
-	<string name="textalign">Posición del Nombre</string>
-	<string name="align_center">Centrado (Debajo de la Imagen)</string>
-	<string name="align_left">A la Izquierda de la Imagen</string>
-	<string name="align_right">A la Derecha de la Imagen</string>
 </resources>

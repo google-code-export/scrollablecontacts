@@ -23,24 +23,23 @@
     <string name="widget2x2">Kontakt Widget 2x2</string>
     <string name="widget2x3">Kontakt Widget 2x3</string>
     <string name="widget2x4">Kontakt Widget 2x4</string>
-    <string name="widget3x2">Kontakt Widget 3x2</string>
-    <string name="widget3x3">Kontakt Widget 3x3</string>
-    <string name="widget3x4">Kontakt Widget 3x4</string>
-    <string name="widget4x2">Kontakt Widget 4x2</string>
-    <string name="widget4x3">Kontakt Widget 4x3</string>
     <string name="widget4x4">Kontakt Widget 4x4</string>
     
     <string name="namekind">Namen anzeigen</string>
     <string name="givenname">Vornamen</string>
     <string name="familyname">Nachnamen</string>
     <string name="displayname">Anzeigenamen</string>    
-
-    <string name="loading">Bitte prüfen Sie ob ihr launcher scrollable widgets unterstützt (ADW Launcher/Launcher Pro) UND ob scrollable widget aktiviert sind.</string>
+    
+    <string name="loading">Lade...</string>
     <string name="save">Speichern</string>
     <string name="select_contact_group">Kontakt Gruppe</string>
     <string name="allcontacts">Alle Kontakte *</string>
     <string name="facebook">Meine Facebook Freunde *</string>
     <string name="starred">Favoriten *</string>
+    <string name="quickcontactsize">Kontaktleiste</string>
+    <string name="qcsLarge">Groß</string>
+    <string name="qcsMedium">Normal</string>
+    <string name="qcsSmall">Klein</string>
     <string name="displayLabel">Widget Bezeichnung</string>
     <string name="black">Schwarz</string>
     <string name="white">Weiß</string>
@@ -67,20 +66,4 @@ Grafik:\n
 * \"EAGINsoftware\"\n\n
 Coding:\n
 * ChrBas</string>
-	<string name="columncount">Spalten</string>
-	<string name="background_alpha">Hintergrundtransparenz</string>
-	<string name="launcher_too_old">Ihr Launcher ist zu alt, bitte aktualisieren sie den Launcher!</string>
-	<string name="needs_froyo">Dieses Feature ist nur auf Android 2.2 und höher verfügbar</string>
-	
-	<string name="behavior">Verhalten</string>
-	<string name="quickcontactbar">QuickContactBar anzeigen</string>
-	<string name="directdial">Anrufen</string>
-	<string name="showcontact">Kontakt anzeigen</string>
-	<string name="onclick">Aktion</string>
-	<string name="sendsms">SMS senden</string>
-	
-	<string name="textalign">Position des Names</string>
-	<string name="align_center">Zentriert (unter dem Foto)</string>
-	<string name="align_left">Links vom Foto</string>
-	<string name="align_right">Rechts vom Foto</string>
 </resources>

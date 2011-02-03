@@ -70,13 +70,11 @@ public class LauncherIntent extends Intent {
                 + "ACTION_START_TWEEN_ANIMATION";
 
         public static final String ACTION_SCROLL_WIDGET_START = PNAME
-        		+ "ACTION_SCROLL_WIDGET_START";
+                        + "ACTION_SCROLL_WIDGET_START";
         public static final String ACTION_SCROLL_WIDGET_SELECT_ITEM = PNAME
-        		+ "ACTION_SCROLL_WIDGET_SELECT_ITEM";
+                        + "ACTION_SCROLL_WIDGET_SELECT_ITEM";
         public static final String ACTION_SCROLL_WIDGET_CLOSE = PNAME
-        		+ "ACTION_SCROLL_WIDGET_CLOSE";
-        public static final String ACTION_SCROLL_WIDGET_CLEAR_IMAGE_CACHE = PNAME
-				+ "ACTION_SCROLL_WIDGET_CLEAR_IMAGE_CACHE";
+                        + "ACTION_SCROLL_WIDGET_CLOSE";
     }
 
     /**
@@ -118,7 +116,7 @@ public class LauncherIntent extends Intent {
              * - enable requery for SQL database Cursor 
              */
             public static final String EXTRA_DATA_PROVIDER_ALLOW_REQUERY = PNAME 
-            		+ "EXTRA_DATA_PROVIDER_ALLOW_REQUERY";
+                        + "EXTRA_DATA_PROVIDER_ALLOW_REQUERY";
 
             /**
              * Whether Home++ is going to add a onItemClickListener or several onClickListener on
@@ -143,20 +141,9 @@ public class LauncherIntent extends Intent {
                     + "EXTRA_LISTVIEW_LAYOUT_ID";
 
             /**
-             * SimpleRemoteViews instance to inflate the listview
-             */
-            public static final String EXTRA_LISTVIEW_REMOTEVIEWS = PNAME
-                    + "EXTRA_LISTVIEW_REMOTEVIEWS";
-
-            /**
              * The layout resource used to inflate an item in adapter
              */
             public static final String EXTRA_ITEM_LAYOUT_ID = PNAME + "EXTRA_ITEM_LAYOUT_ID";
-
-            /**
-             * BoundRemoteViews instance to inflate an item in adapter
-             */
-            public static final String EXTRA_ITEM_LAYOUT_REMOTEVIEWS = PNAME + "EXTRA_ITEM_LAYOUT_REMOTEVIEWS";
 
             /**
              * Listview id of a click item/view
@@ -169,12 +156,12 @@ public class LauncherIntent extends Intent {
              *   this data is sent with the ACTION_ITEM_CLICK and ACTION_VIEW_CLICK
              */
             public static final String EXTRA_ITEM_POS = PNAME + "EXTRA_ITEM_POS";
-            			
+                                
             /**
              * The position of an clicked item in the on the screen
              *   this data is sent with the ACTION_VIEW_CLICK
              */
-			public static final String EXTRA_SOURCE_BOUNDS = PNAME + "EXTRA_ITEM_SOURCE_BOUNDS";
+                        public static final String EXTRA_SOURCE_BOUNDS = PNAME + "EXTRA_ITEM_SOURCE_BOUNDS";
 
             /**
              * The uri for onItemClickListener
@@ -214,8 +201,7 @@ public class LauncherIntent extends Intent {
             }
 
         }
-        
-        public static final String EXTRA_APPWIDGET_ID = PNAME + "EXTRA_APPWIDGET_ID";
+
         public static final String EXTRA_IMAGEVIEW_ID = PNAME + "EXTRA_IMAGEVIEW_ID";
         public static final String EXTRA_ANIMATION_ID = PNAME + "EXTRA_ANIMATION_ID";
         public static final String EXTRA_VIEW_ID = PNAME + "EXTRA_VIEW_ID";
@@ -224,7 +210,6 @@ public class LauncherIntent extends Intent {
 
         public static final String EXTRA_ERROR_MESSAGE = PNAME + "EXTRA_ERROR_MESSAGE";
 
-        public static final String EXTRA_API_VERSION = PNAME + "EXTRA_API_VERSION";
     }
 
 }
