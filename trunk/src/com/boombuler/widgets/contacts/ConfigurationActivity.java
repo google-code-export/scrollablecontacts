@@ -189,8 +189,13 @@ public class ConfigurationActivity extends PreferenceActivity {
     			ContactsContract.Groups._ID,
     			ContactsContract.Groups.TITLE
     	};
+
+    	// avoid "null-groups"
+    	String selection = "("+ContactsContract.Groups._ID
+    	                 +" is not null) and ("
+    	                 + ContactsContract.Groups.TITLE + " is not null)";
     	// read the ContactGroups
-    	Cursor orgCs = this.managedQuery(uri, projection, null, null, null);
+    	Cursor orgCs = this.managedQuery(uri, projection, selection, null, null);
 
     	boolean facebook = FacebookPluginBridge.IsFacebookPluginInstalled(this);
     	int virtualGroups = facebook ? Preferences.VIRTUAL_GROUP_COUNT : Preferences.VIRTUAL_GROUP_COUNT - 1;
