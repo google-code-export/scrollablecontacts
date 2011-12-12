@@ -38,7 +38,7 @@ import android.provider.ContactsContract;
 public class ConfigurationActivity extends PreferenceActivity {
 
     private int appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
-    private final boolean mIsFroyo = Integer.parseInt(Build.VERSION.SDK) > Build.VERSION_CODES.ECLAIR_MR1;
+    private final boolean mIsFroyo = Build.VERSION.SDK_INT > Build.VERSION_CODES.ECLAIR_MR1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -197,11 +197,8 @@ public class ConfigurationActivity extends PreferenceActivity {
     	// read the ContactGroups
     	Cursor orgCs = this.managedQuery(uri, projection, selection, null, null);
 
-    	boolean facebook = FacebookPluginBridge.IsFacebookPluginInstalled(this);
-    	int virtualGroups = facebook ? Preferences.VIRTUAL_GROUP_COUNT : Preferences.VIRTUAL_GROUP_COUNT - 1;
-
-    	CharSequence[] Titles = new CharSequence[orgCs.getCount()+virtualGroups];
-    	CharSequence[] Values = new CharSequence[orgCs.getCount()+virtualGroups];
+    	CharSequence[] Titles = new CharSequence[orgCs.getCount()+Preferences.VIRTUAL_GROUP_COUNT];
+    	CharSequence[] Values = new CharSequence[orgCs.getCount()+Preferences.VIRTUAL_GROUP_COUNT];
 
     	int pos = 0;
     	// First add the "virtual" group "All Contacts"
@@ -211,13 +208,6 @@ public class ConfigurationActivity extends PreferenceActivity {
     	// First add the "stared" group "All Contacts"
     	Titles[pos] = getString(R.string.starred);
     	Values[pos++] = String.valueOf(Preferences.GROUP_STARRED);
-
-
-    	if (facebook) {
-    		Titles[pos] = getString(R.string.facebook);
-    		Values[pos++] = String.valueOf(Preferences.GROUP_FACEBOOK);
-    	}
-
 
     	orgCs.moveToFirst();
     	while (!orgCs.isAfterLast()) {
@@ -316,6 +306,12 @@ public class ConfigurationActivity extends PreferenceActivity {
 				Intent resultValue = new Intent();
                 resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
                 setResult(RESULT_OK, resultValue);
+				
+				Intent updateWidget = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+				int[] ids = new int[] { appWidgetId };
+                updateWidget.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+                sendBroadcast(updateWidget);
+				
                 finish();
                 return false;
 			}

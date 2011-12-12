@@ -31,6 +31,8 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.RawContacts;
 import android.util.Log;
+import android.appwidget.AppWidgetManager;
+import android.os.Build;
 
 public class DataProvider extends ContentProvider {
 	public static final String TAG = "boombuler.DataProvider";
@@ -117,12 +119,6 @@ public class DataProvider extends ContentProvider {
 				long GroupId = Preferences.getGroupId(ctx, appWId);
 				int NameKind = Preferences.getNameKind(ctx, appWId);
 				int clickActn = Preferences.getOnClickAction(ctx, appWId);
-				if (GroupId == Preferences.GROUP_FACEBOOK){
-					if (FacebookPluginBridge.IsFacebookPluginInstalled(ctx))
-						return cloneCursorAndClose(ctx.getContentResolver().query(FacebookPluginBridge.CONTENTURI, projection, selection, selectionArgs, sortOrder));
-					else
-						GroupId = 0;
-				}
 				return loadNewData(this, projection, GroupId, NameKind, clickActn);
 			default:
 				throw new IllegalStateException("Unrecognized URI:" + uri);
@@ -162,9 +158,13 @@ public class DataProvider extends ContentProvider {
 	}
 
 	public static void notifyDatabaseModification(int widgetId) {
-		Uri widgetUri = CONTENT_URI_MESSAGES.buildUpon().appendEncodedPath(Integer.toString(widgetId)).build();
-		Log.d(TAG, "notifyDatabaseModification -> UPDATE widgetUri : " + widgetUri);
-		ctx.getContentResolver().notifyChange(widgetUri, null);
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+			Uri widgetUri = CONTENT_URI_MESSAGES.buildUpon().appendEncodedPath(Integer.toString(widgetId)).build();
+			Log.d(TAG, "notifyDatabaseModification -> UPDATE widgetUri : " + widgetUri);
+			ctx.getContentResolver().notifyChange(widgetUri, null);
+		} else {
+			AppWidgetManager.getInstance(ctx).notifyAppWidgetViewDataChanged(widgetId, R.id.my_gridview);
+		}
 	}
 
 
