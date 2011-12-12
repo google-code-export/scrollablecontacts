@@ -24,11 +24,10 @@ import com.boombuler.widgets.contacts.sizes.ContactWidget_4_3;
 import com.boombuler.widgets.contacts.sizes.ContactWidget_4_4;
 
 public class Preferences {
-	public static final long GROUP_FACEBOOK = -1;
 	public static final long GROUP_ALLCONTACTS = 0;
 	public static final long GROUP_STARRED = -2;
 
-	public static final int VIRTUAL_GROUP_COUNT = 3;
+	public static final int VIRTUAL_GROUP_COUNT = 2;
 
 	public static final int NAME_DISPLAY_NAME = 0;
 	public static final int NAME_GIVEN_NAME = 1;
