@@ -431,7 +431,7 @@ public class SimpleRemoteViews implements Parcelable {
            }
        }
 
-       @SuppressWarnings("unchecked")
+       @SuppressWarnings("rawtypes")
        private Class getParameterType() {
            switch (this.type) {
                case BOOLEAN:
@@ -465,7 +465,7 @@ public class SimpleRemoteViews implements Parcelable {
            }
        }
 
-       @SuppressWarnings("unchecked")
+       @SuppressWarnings({ "unchecked", "rawtypes" })
        @Override
        public void apply(View root) {
            final View view = root.findViewById(viewId);

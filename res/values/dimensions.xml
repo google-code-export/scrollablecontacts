@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<dimen name="widgetColumnWidth">60dip</dimen>
+    <dimen name="widgetHorizontalSpacing">6dip</dimen>
+    <dimen name="widgetVerticalSpacing">6dip</dimen>
+    <dimen name="widgetThumbnailHeight">94dip</dimen>
+</resources>

@@ -34,6 +34,7 @@
     <string name="givenname">given name</string>
     <string name="familyname">family name</string>
     <string name="displayname">display name</string>
+    <string name="alias">nickname</string>
     
     <string name="loading">Please check your if launcher supports scrolling (ADW Launcher/Launcher Pro) AND if scrolling is enabled.</string>
     <string name="save">Save</string>
@@ -44,7 +45,8 @@
     <string name="black">Black</string>
     <string name="white">White</string>
     <string name="transparent">Transparent</string>
-    <string name="background">Background</string>
+    <string name="ics_style">Ice Cream Sandwich</string>
+    <string name="background">Style</string>
     <string name="showName">Show contact name</string>
     <string name="pref_grp_data">Data</string>
     <string name="pref_grp_layout">Layout</string>

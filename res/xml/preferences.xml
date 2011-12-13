@@ -17,16 +17,17 @@
   	        android:title="@string/onclick" />
   </PreferenceCategory>
   <PreferenceCategory android:title="@string/pref_grp_layout">		
-  	  <com.boombuler.widgets.contacts.DialogSeekBarPreference
-  	  		android:key="CoulumnCount-%d"
-  	  		android:title="@string/columncount"
-  	  		android:defaultValue="1" 
-  	  		android:summary="1"/>	
-	  		
 	  <ListPreference
 	  		android:key="BGImage-%d"
 	  		android:summary="@string/black"
 	  		android:title="@string/background" />
+	  		
+  	  <com.boombuler.widgets.contacts.DialogSeekBarPreference
+  	  		android:key="CoulumnCount-%d"
+  	  		android:title="@string/columncount"
+  	  		android:defaultValue="1" 
+  	  		android:summary="1"/>
+
 	  <com.boombuler.widgets.contacts.DialogSeekBarPreference
 	  		android:key="BackgroundAlpha-%d"
 	  		android:title="@string/background_alpha"

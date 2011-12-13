@@ -34,6 +34,7 @@
     <string name="givenname">Vornamen</string>
     <string name="familyname">Nachnamen</string>
     <string name="displayname">Anzeigenamen</string>    
+    <string name="alias">Alias</string>
 
     <string name="loading">Bitte prüfen Sie ob ihr launcher scrollable widgets unterstützt (ADW Launcher/Launcher Pro) UND ob scrollable widget aktiviert sind.</string>
     <string name="save">Speichern</string>
@@ -44,7 +45,8 @@
     <string name="black">Schwarz</string>
     <string name="white">Weiß</string>
     <string name="transparent">Transparent</string>
-    <string name="background">Hintergrund</string>
+    <string name="ics_style">Ice Cream Sandwich</string>
+    <string name="background">Stil</string>
     <string name="showName">Kontaktnamen anzeigen</string>
     <string name="pref_grp_data">Daten</string>
     <string name="pref_grp_layout">Ansicht</string>

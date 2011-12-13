@@ -29,11 +29,8 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.RemoteViews;
 
 
@@ -49,55 +46,52 @@ public class ImplSWA implements ContactWidget.WidgetImplementation {
 	}
 
 	public void onUpdate(Context context, int appWidgetId) {
-
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.main);
+		final boolean isICS = Preferences.getBGImage(context, appWidgetId) == Preferences.BG_ICS;
+        RemoteViews views = new RemoteViews(context.getPackageName(), isICS ? R.layout.main_swa_ics : R.layout.main);
         String text = Preferences.getDisplayLabel(context, appWidgetId);
 
-        boolean withHeader = text != "";
-
-        if (Preferences.getBGImage(context, appWidgetId) == Preferences.BG_BLACK) {
-            views.setImageViewResource(R.id.backgroundImg, withHeader ? R.drawable.background_dark_header : R.drawable.background_dark);
-            views.setTextColor(R.id.group_caption, Color.WHITE);
-        } else if (Preferences.getBGImage(context, appWidgetId) == Preferences.BG_WHITE) {
-        	views.setImageViewResource(R.id.backgroundImg, withHeader ? R.drawable.background_light_header : R.drawable.background_light);
-        	views.setTextColor(R.id.group_caption, Color.BLACK);
-        } else {
-        	views.setImageViewResource(R.id.backgroundImg, Color.TRANSPARENT);
-            views.setTextColor(R.id.group_caption, Color.WHITE);
+        if (!isICS) {
+	        boolean withHeader = text != "";
+	
+	        if (Preferences.getBGImage(context, appWidgetId) == Preferences.BG_BLACK) {
+	            views.setImageViewResource(R.id.backgroundImg, withHeader ? R.drawable.background_dark_header : R.drawable.background_dark);
+	            views.setTextColor(R.id.group_caption, Color.WHITE);
+	        } else if (Preferences.getBGImage(context, appWidgetId) == Preferences.BG_WHITE) {
+	        	views.setImageViewResource(R.id.backgroundImg, withHeader ? R.drawable.background_light_header : R.drawable.background_light);
+	        	views.setTextColor(R.id.group_caption, Color.BLACK);
+	        } else {
+	        	views.setImageViewResource(R.id.backgroundImg, Color.TRANSPARENT);
+	            views.setTextColor(R.id.group_caption, Color.WHITE);
+	        }
+	
+	        // First set the display label
+	        views.setTextViewText(R.id.group_caption, text);
+	        // and if it is empty hide it 
+	        views.setViewVisibility(R.id.group_caption, withHeader ? View.VISIBLE : View.GONE);
+	        
+	        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ECLAIR_MR1) {
+	        	views.setInt(R.id.backgroundImg, "setAlpha", Preferences.getBackgroundAlpha(context, appWidgetId));
+	        }
         }
-
-        // First set the display label
-        views.setTextViewText(R.id.group_caption, text);
-        // and if it is empty hide it
-        views.setViewVisibility(R.id.group_caption, withHeader ? View.VISIBLE : View.GONE);
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ECLAIR_MR1) {
-        	views.setInt(R.id.backgroundImg, "setAlpha", Preferences.getBackgroundAlpha(context, appWidgetId));
-        }
-
+        
         AppWidgetManager awm = AppWidgetManager.getInstance(context);
         awm.updateAppWidget(appWidgetId, views);
 	}
-
 	
 	public boolean onReceive(Context context, Intent intent) {
 		final String action = intent.getAction();
 		if (TextUtils.equals(action, LauncherIntent.Action.ACTION_READY)) {
-			// Receive ready signal
-			Log.d(TAG, "widget ready");
 			onAppWidgetReady(context, intent);
 			return true;
 		} else if (TextUtils.equals(action, LauncherIntent.Action.ACTION_FINISH)) {
 			return true;
 		} else if (TextUtils.equals(action, LauncherIntent.Action.ACTION_ITEM_CLICK)) {
-			// onItemClickListener
 			onClick(context, intent);
 			return true;
 		} else if (TextUtils.equals(action, LauncherIntent.Action.ACTION_VIEW_CLICK)) {
-			// onClickListener
 			onClick(context, intent);
 			return true;
 		} else if (TextUtils.equals(action, LauncherIntent.Error.ERROR_SCROLL_CURSOR)) {
-			// An error occurred
 		    Log.d(TAG, intent.getStringExtra(LauncherIntent.Extra.EXTRA_ERROR_MESSAGE));
 			return true;
 		} else if (action.equals("com.motorola.blur.home.ACTION_SET_WIDGET_SIZE")) {
@@ -138,7 +132,6 @@ public class ImplSWA implements ContactWidget.WidgetImplementation {
 		}
 	}
 	
-	
 	 /**
 	 * Constructs a Intent that tells the launcher to replace the dummy with the ListView
 	 */
@@ -154,47 +147,46 @@ public class ImplSWA implements ContactWidget.WidgetImplementation {
 		result.putExtra(LauncherIntent.Extra.EXTRA_VIEW_ID, R.id.widget_content);
 
 		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_DATA_PROVIDER_ALLOW_REQUERY, true);
-
+		
+		final boolean isICS = Preferences.getBGImage(context, appWidgetId) == Preferences.BG_ICS;
+		
 		final int colCount = Preferences.getColumnCount(context, appWidgetId);
 
 		// Give a layout resource to be inflated. If this is not given, the launcher will create one
-		SimpleRemoteViews gridViews = new SimpleRemoteViews(R.layout.gridview);
-		gridViews.setInt(R.id.my_gridview, "setNumColumns", colCount);
+		SimpleRemoteViews gridViews = new SimpleRemoteViews( isICS ? R.layout.gridview_ics : R.layout.gridview);
+		if (!isICS)
+			gridViews.setInt(R.id.my_gridview, "setNumColumns", colCount);
 		result.putExtra(LauncherIntent.Extra.Scroll.EXTRA_LISTVIEW_REMOTEVIEWS, gridViews);
 
 		boolean autosizeImages = true;
-		int itemresid = R.layout.gridviewitem;
+		int itemresid = isICS ? R.layout.gridviewitem_ics : R.layout.gridviewitem;
 		int textVisibility = Preferences.getShowName(context, appWidgetId) ?
 				View.VISIBLE : View.GONE;
 
 		if (textVisibility == View.VISIBLE) {
 			autosizeImages = false;
-			switch(Preferences.getTextAlign(context, appWidgetId)) {
-				case Preferences.ALIGN_RIGHT:
-					itemresid = R.layout.gridviewitem_txt_right; break;
-				case Preferences.ALIGN_LEFT:
-					itemresid = R.layout.gridviewitem_txt_left; break;
-				case Preferences.ALIGN_CENTER:
-					autosizeImages = true; break;
+			if (!isICS) {
+				switch(Preferences.getTextAlign(context, appWidgetId)) {
+					case Preferences.ALIGN_RIGHT:
+						itemresid = R.layout.gridviewitem_txt_right; break;
+					case Preferences.ALIGN_LEFT:
+						itemresid = R.layout.gridviewitem_txt_left; break;
+					case Preferences.ALIGN_CENTER:
+						autosizeImages = true; break;
+				}
 			}
-		}
+		} 
 
 		BoundRemoteViews itemViews = new BoundRemoteViews(itemresid);
 		if (textVisibility == View.VISIBLE) {
 			itemViews.setBoundCharSequence(R.id.displayname, "setText",
 					DataProvider.DataProviderColumns.name.ordinal(),0);
-		}
+		} 
 		itemViews.setBoundBitmap(R.id.photo, "setImageBitmap",
 				DataProvider.DataProviderColumns.photo.ordinal(), R.drawable.no_image);
 
 		if (autosizeImages) {
-			DisplayMetrics dm = context.getResources().getDisplayMetrics();
-			Display display = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-			display.getMetrics(dm);
-			int width = ContactWidget.calcWidthPixel((display.getOrientation() % 2) == 1, context, appWidgetId, mWidget.getWidth()); // get the widget width in dip
-			width = width - (colCount * 5) - 5; // grid view spacing...
-			width = (int)(((width - 24) / colCount) * dm.density);
-
+			int width = ContactWidget.calcWidthPixel(context, appWidgetId, mWidget.getWidth()); // get the widget width in dip
 			itemViews.setViewWidth(R.id.photo, width);
 			itemViews.setViewHeight(R.id.photo, width);
 		}
@@ -213,8 +205,9 @@ public class ImplSWA implements ContactWidget.WidgetImplementation {
 					DataProvider.DataProviderColumns.contacturi.ordinal());
 		}
 		itemViews.setViewVisibility(R.id.displayname, textVisibility);
-
-        if (textVisibility == View.VISIBLE &&
+		if (isICS)
+			itemViews.setViewVisibility(R.id.label_overlay, textVisibility);
+		else if (textVisibility == View.VISIBLE &&
         	Preferences.getBGImage(context, appWidgetId) == Preferences.BG_WHITE) {
     			itemViews.setTextColor(R.id.displayname, Color.BLACK);
         }
@@ -249,13 +242,15 @@ public class ImplSWA implements ContactWidget.WidgetImplementation {
 
 		if (APIVersion < 2) {
 			AppWidgetManager awm = AppWidgetManager.getInstance(context);
-			RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.main);
+			final boolean isICS = Preferences.getBGImage(context, appWidgetId) == Preferences.BG_ICS;
+			
+			RemoteViews views = new RemoteViews(context.getPackageName(), isICS ? R.layout.main_swa_ics : R.layout.main);
 			views.setTextViewText(R.id.loading, context.getString(R.string.launcher_too_old));
 	        if (Preferences.getBGImage(context, appWidgetId) == Preferences.BG_BLACK) {
 	            views.setImageViewResource(R.id.backgroundImg, R.drawable.background_dark);
 	            views.setTextColor(R.id.loading, Color.WHITE);
 	        }
-	        else {
+	        else if (!isICS){
 	        	views.setImageViewResource(R.id.backgroundImg, R.drawable.background_light);
 	        	views.setTextColor(R.id.loading, Color.BLACK);
 	        }
