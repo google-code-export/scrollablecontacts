@@ -22,10 +22,10 @@
         android:layout_width="fill_parent"              
         android:layout_height="fill_parent">
         <ImageView android:id="@+id/photo"   
-                android:scaleType="centerCrop"
                 android:adjustViewBounds="true"
                 android:src="@drawable/icon"
-                
+                android:scaleType="fitXY"
+
                 android:layout_gravity="center_horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" />

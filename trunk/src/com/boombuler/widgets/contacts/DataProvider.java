@@ -125,33 +125,6 @@ public class DataProvider extends ContentProvider {
 		}
 	}
 
-	private Cursor cloneCursorAndClose(Cursor crs) {
-		String[] colNames = crs.getColumnNames();
-		ExtMatrixCursor result = new ExtMatrixCursor(colNames);
-		crs.moveToFirst();
-
-		while (!crs.isAfterLast()) {
-			Object[] values = new Object[colNames.length];
-			for (int i = 0, count = colNames.length; i < count; i++) {
-				String column = colNames[i];
-				if (DataProviderColumns._id.toString().equals(column)) {
-					values[i] = crs.getInt(i);
-				} else if (DataProviderColumns.name.toString().equals(column)) {
-					values[i] = crs.getString(i);
-				} else if (DataProviderColumns.photo.toString().equals(column)) {
-					values[i] = crs.getBlob(i);
-				} else if (DataProviderColumns.contacturi.toString().equals(column)) {
-					values[i] = crs.getString(i);
-				}
-			}
-			Log.d(TAG, "record copied");
-			result.addRow(values);
-			crs.moveToNext();
-		}
-		crs.close();
-		return result;
-	}
-
 	@Override
 	public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
 		return 0;

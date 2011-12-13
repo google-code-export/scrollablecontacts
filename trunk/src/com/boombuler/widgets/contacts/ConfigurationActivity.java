@@ -38,8 +38,14 @@ import android.provider.ContactsContract;
 public class ConfigurationActivity extends PreferenceActivity {
 
     private int appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
-    private final boolean mIsFroyo = Build.VERSION.SDK_INT > Build.VERSION_CODES.ECLAIR_MR1;
+    private static final boolean mIsFroyo = Build.VERSION.SDK_INT > Build.VERSION_CODES.ECLAIR_MR1;
 
+    private ListPreference bgimage;
+    private DialogSeekBarPreference columnCount;
+    private EditTextPreference displayLabel;
+    private DialogSeekBarPreference backgroundAlpha;
+    private ListPreference txtAlign;
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -67,16 +73,17 @@ public class ConfigurationActivity extends PreferenceActivity {
 		prepareTextAlignment();
 		prepareNameKinds();
 
-		prepareBGImage();
 		prepareOnClick();
 		prepareBackgroundAlpha();
 		prepareSaveBtn();
 		prepareHelpBtn();
 		prepareAboutBtn();
+		
+		prepareBGImage();
 	}
 
 	private void prepareBackgroundAlpha() {
-		DialogSeekBarPreference backgroundAlpha = (DialogSeekBarPreference)findPreference(Preferences.BACKGROUND_ALPHA);
+		backgroundAlpha = (DialogSeekBarPreference)findPreference(Preferences.BACKGROUND_ALPHA);
 		if (!mIsFroyo) {
 			backgroundAlpha.setEnabled(false);
 			backgroundAlpha.setSummary(getString(R.string.needs_froyo));
@@ -88,7 +95,7 @@ public class ConfigurationActivity extends PreferenceActivity {
 	}
 
 	private void prepareColumnCount() {
-		DialogSeekBarPreference columnCount = (DialogSeekBarPreference)findPreference(Preferences.COLUMN_COUNT);
+		columnCount = (DialogSeekBarPreference)findPreference(Preferences.COLUMN_COUNT);
 		columnCount.setKey(Preferences.get(Preferences.COLUMN_COUNT, appWidgetId));
 		columnCount.setMin(1);
 		columnCount.setMax(6);
@@ -111,11 +118,13 @@ public class ConfigurationActivity extends PreferenceActivity {
 		CharSequence[] Titles = new CharSequence[] {
 				getString(R.string.displayname),
 				getString(R.string.givenname),
-				getString(R.string.familyname)};
+				getString(R.string.familyname),
+				getString(R.string.alias)};
 		CharSequence[] Values = new CharSequence[] {
 				String.valueOf(Preferences.NAME_DISPLAY_NAME),
 				String.valueOf(Preferences.NAME_GIVEN_NAME),
-				String.valueOf(Preferences.NAME_FAMILY_NAME)};
+				String.valueOf(Preferences.NAME_FAMILY_NAME),
+				String.valueOf(Preferences.NAME_ALIAS)};
 		nameKinds.setOnPreferenceChangeListener(new SetCurValue(Titles, Values));
 
 		nameKinds.setEntries(Titles);
@@ -124,7 +133,7 @@ public class ConfigurationActivity extends PreferenceActivity {
 	}
 
 	private void prepareTextAlignment() {
-		ListPreference txtAlign = (ListPreference)findPreference(Preferences.TEXT_ALIGN);
+		txtAlign = (ListPreference)findPreference(Preferences.TEXT_ALIGN);
 		txtAlign.setKey(Preferences.get(Preferences.TEXT_ALIGN, appWidgetId));
 		txtAlign.setDependency(Preferences.get(Preferences.SHOW_NAME, appWidgetId));
 
@@ -171,7 +180,7 @@ public class ConfigurationActivity extends PreferenceActivity {
 
 	private void prepareDisplayLabel() {
 		// Find control and set the right preference-key for the AppWidgetId
-		EditTextPreference displayLabel = (EditTextPreference)findPreference(Preferences.DISPLAY_LABEL);
+		displayLabel = (EditTextPreference)findPreference(Preferences.DISPLAY_LABEL);
 		displayLabel.setKey(Preferences.get(Preferences.DISPLAY_LABEL, appWidgetId));
 		// Set summary on value changed
 		displayLabel.setOnPreferenceChangeListener(new SetCurValue(null, null));
@@ -227,14 +236,16 @@ public class ConfigurationActivity extends PreferenceActivity {
 	}
 
 	private void prepareBGImage() {
-		ListPreference bgimage = (ListPreference)findPreference(Preferences.BGIMAGE);
+		bgimage = (ListPreference)findPreference(Preferences.BGIMAGE);
 		bgimage.setKey(Preferences.get(Preferences.BGIMAGE, appWidgetId));
 		final CharSequence[] Titles, Values;
 		if (mIsFroyo) {
 			Titles = new CharSequence[] {
+					getString(R.string.ics_style),
 					getString(R.string.black),
 					getString(R.string.white)};
 			Values = new CharSequence[] {
+					String.valueOf(Preferences.BG_ICS),
 					String.valueOf(Preferences.BG_BLACK),
 					String.valueOf(Preferences.BG_WHITE)};
 		}
@@ -249,11 +260,14 @@ public class ConfigurationActivity extends PreferenceActivity {
 					String.valueOf(Preferences.BG_WHITE),
 					String.valueOf(Preferences.BG_TRANS)};
 		}
-		bgimage.setOnPreferenceChangeListener(new SetCurValue(Titles, Values));
+		SetCurValue vcl = new SetCurValue(Titles, Values);
+		bgimage.setOnPreferenceChangeListener(vcl);
 
 		bgimage.setEntries(Titles);
 		bgimage.setEntryValues(Values);
-		bgimage.setValue(String.valueOf(Preferences.getBGImage(this, appWidgetId)));
+		String value = String.valueOf(Preferences.getBGImage(this, appWidgetId));
+		bgimage.setValue(value);
+		vcl.onPreferenceChange(bgimage, value);
 	}
 
 	private void prepareHelpBtn() {
@@ -343,6 +357,15 @@ public class ConfigurationActivity extends PreferenceActivity {
 			else if (preference instanceof DialogSeekBarPreference) {
 				curVal = newValue.toString();
 			}
+			if (preference == bgimage) {
+				boolean isICSStyle = newValue.toString().equals(String.valueOf(Preferences.BG_ICS));
+				
+				columnCount.setEnabled(!isICSStyle);
+				txtAlign.setEnabled(!isICSStyle);
+				displayLabel.setEnabled(!isICSStyle);				
+				backgroundAlpha.setEnabled(!isICSStyle && mIsFroyo);
+			}
+			
 			preference.setSummary(curVal);
 			return true;
 		}

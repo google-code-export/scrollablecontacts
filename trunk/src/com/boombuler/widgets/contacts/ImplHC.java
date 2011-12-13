@@ -53,15 +53,21 @@ public class ImplHC implements ContactWidget.WidgetImplementation {
 		intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 		
 		final int mainlayout;
-		switch(Preferences.getColumnCount(context, appWidgetId)) {
-			case 6: mainlayout = R.layout.main_hc6; break;
-			case 5: mainlayout = R.layout.main_hc5; break;
-			case 4: mainlayout = R.layout.main_hc4; break;
-			case 3: mainlayout = R.layout.main_hc3; break;
-			case 2: mainlayout = R.layout.main_hc2; break;
-			case 1: mainlayout = R.layout.main_hc1; break;
-			default: mainlayout = R.layout.main_hc1; break;
-		}		
+		boolean layoutICS = false;
+		if (Preferences.getBGImage(context, appWidgetId) == Preferences.BG_ICS) {
+			mainlayout = R.layout.main_ics;
+			layoutICS = true;
+		} else {
+			switch(Preferences.getColumnCount(context, appWidgetId)) {
+				case 6: mainlayout = R.layout.main_hc6; break;
+				case 5: mainlayout = R.layout.main_hc5; break;
+				case 4: mainlayout = R.layout.main_hc4; break;
+				case 3: mainlayout = R.layout.main_hc3; break;
+				case 2: mainlayout = R.layout.main_hc2; break;
+				case 1: mainlayout = R.layout.main_hc1; break;
+				default: mainlayout = R.layout.main_hc1; break;
+			}
+		}
 			
 		RemoteViews rv = new RemoteViews(context.getPackageName(), mainlayout);
 		
@@ -69,21 +75,21 @@ public class ImplHC implements ContactWidget.WidgetImplementation {
 		String text = Preferences.getDisplayLabel(context, appWidgetId);
 
         boolean withHeader = text != "";
-		
-        if (Preferences.getBGImage(context, appWidgetId) == Preferences.BG_BLACK) {
-            rv.setImageViewResource(R.id.backgroundImg, withHeader ? R.drawable.background_dark_header : R.drawable.background_dark);
-            rv.setTextColor(R.id.group_caption, Color.WHITE);
-        } else if (Preferences.getBGImage(context, appWidgetId) == Preferences.BG_WHITE) {
-        	rv.setImageViewResource(R.id.backgroundImg, withHeader ? R.drawable.background_light_header : R.drawable.background_light);
-        	rv.setTextColor(R.id.group_caption, Color.BLACK);
-        } else {
-        	rv.setImageViewResource(R.id.backgroundImg, Color.TRANSPARENT);
-            rv.setTextColor(R.id.group_caption, Color.WHITE);
-        }
-		rv.setTextViewText(R.id.group_caption, text);
-		rv.setViewVisibility(R.id.group_caption, withHeader ? View.VISIBLE : View.GONE);
-     	rv.setInt(R.id.backgroundImg, "setAlpha", Preferences.getBackgroundAlpha(context, appWidgetId));
-
+		if (!layoutICS) {
+	        if (Preferences.getBGImage(context, appWidgetId) == Preferences.BG_BLACK) {
+	            rv.setImageViewResource(R.id.backgroundImg, withHeader ? R.drawable.background_dark_header : R.drawable.background_dark);
+	            rv.setTextColor(R.id.group_caption, Color.WHITE);
+	        } else if (Preferences.getBGImage(context, appWidgetId) == Preferences.BG_WHITE) {
+	        	rv.setImageViewResource(R.id.backgroundImg, withHeader ? R.drawable.background_light_header : R.drawable.background_light);
+	        	rv.setTextColor(R.id.group_caption, Color.BLACK);
+	        } else {
+	        	rv.setImageViewResource(R.id.backgroundImg, Color.TRANSPARENT);
+	            rv.setTextColor(R.id.group_caption, Color.WHITE);
+	        }
+			rv.setTextViewText(R.id.group_caption, text);
+			rv.setViewVisibility(R.id.group_caption, withHeader ? View.VISIBLE : View.GONE);
+	     	rv.setInt(R.id.backgroundImg, "setAlpha", Preferences.getBackgroundAlpha(context, appWidgetId));
+		}
 		rv.setRemoteAdapter(appWidgetId, R.id.my_gridview, intent);
 
 

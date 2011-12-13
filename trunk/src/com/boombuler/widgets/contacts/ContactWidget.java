@@ -18,7 +18,6 @@ package com.boombuler.widgets.contacts;
 
 import java.util.Set;
 
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ActivityNotFoundException;
@@ -27,12 +26,11 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract.QuickContact;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.WindowManager;
 
 
@@ -116,7 +114,7 @@ public abstract class ContactWidget extends AppWidgetProvider {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		final String action = intent.getAction();
-		logIntent(intent, false);
+		logIntent(intent, true);
 		if (AppWidgetManager.ACTION_APPWIDGET_DELETED.equals(action)) {
 			final int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
 					AppWidgetManager.INVALID_APPWIDGET_ID);
@@ -163,12 +161,24 @@ public abstract class ContactWidget extends AppWidgetProvider {
 		}
 	}
 
-
-	public static int calcWidthPixel(boolean horizontal, Context context, int appWidgetId, int width) {
+	public static int getICSWidth(Context context) {
+		return (int)context.getResources().getDimensionPixelSize(R.dimen.widgetColumnWidth);
+	}
+	
+	public static int calcWidthPixel(Context context, int appWidgetId, int width) {
+		DisplayMetrics dm = context.getResources().getDisplayMetrics();
+		Display display = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+		display.getMetrics(dm);
+		boolean horizontal = (display.getOrientation() % 2) == 1;
+		
 		int spanx = Preferences.getSpanX(context, appWidgetId, width);
 		if (horizontal)
-			return 106 * spanx;
+			width = 106 * spanx;
 		else
-			return 80 * spanx;
+			width = 80 * spanx;
+		final int colCount = Preferences.getColumnCount(context, appWidgetId);
+		width = width - (colCount * 5) - 5; // grid view spacing...
+		width = (int)(((width - 24) / colCount) * dm.density);
+		return width;
 	}
 }
