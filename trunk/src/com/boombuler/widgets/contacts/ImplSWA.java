@@ -191,7 +191,7 @@ public class ImplSWA implements ContactWidget.WidgetImplementation {
 			itemViews.setViewHeight(R.id.photo, width);
 		}
 
-		Intent intent = new Intent(context, this.getClass());
+		Intent intent = new Intent(context, mWidget.getClass());
 		intent.setAction(LauncherIntent.Action.ACTION_VIEW_CLICK);
 		intent.setData(Uri.parse(widgeturi));
 		intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
