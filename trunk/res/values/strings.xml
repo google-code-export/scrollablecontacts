@@ -37,7 +37,6 @@
     <string name="alias">nickname</string>
     
     <string name="loading">Please check your if launcher supports scrolling (ADW Launcher/Launcher Pro) AND if scrolling is enabled.</string>
-    <string name="save">Save</string>
     <string name="select_contact_group">Contact group</string>
     <string name="allcontacts">All Contacts *</string>
     <string name="starred">Favorites *</string>

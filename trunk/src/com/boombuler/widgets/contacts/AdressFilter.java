@@ -79,7 +79,7 @@ public class AdressFilter {
 
 	public String getFilter()
 	{
-		return ContactsContract.Contacts.IN_VISIBLE_GROUP + " = '1'" + fFilter;
+		return ContactsContract.Contacts.IN_VISIBLE_GROUP + " = 1" + fFilter;
 	}
 
 	public String[] getFilterParams() {

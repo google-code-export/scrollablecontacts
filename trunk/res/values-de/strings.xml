@@ -37,7 +37,6 @@
     <string name="alias">Alias</string>
 
     <string name="loading">Bitte prüfen Sie ob ihr launcher scrollable widgets unterstützt (ADW Launcher/Launcher Pro) UND ob scrollable widget aktiviert sind.</string>
-    <string name="save">Speichern</string>
     <string name="select_contact_group">Kontakt Gruppe</string>
     <string name="allcontacts">Alle Kontakte *</string>
     <string name="starred">Favoriten *</string>

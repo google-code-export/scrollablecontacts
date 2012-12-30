@@ -16,8 +16,8 @@
  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.boombuler.widgets.contacts"
-      android:versionCode="50"
-      android:versionName="0.5.0">
+      android:versionCode="102"
+      android:versionName="1.0.2">
     <application android:icon="@drawable/icon" android:label="@string/app_name">
    		<provider
    		    android:name=".DataProvider"
@@ -27,8 +27,19 @@
             />
 		<!-- Broadcast Receiver that will process AppWidget updates -->
 		
+		<receiver android:name=".sizes.ContactWidget_HC" 
+		          android:label="@string/app_name"
+		          android:enabled="@bool/honeycombOrAbove">
+			<intent-filter>
+				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+			<meta-data android:name="android.appwidget.provider"
+				android:resource="@xml/contact_widget_provider1x2" />
+		</receiver>
+		
 		<receiver android:name=".sizes.ContactWidget_1_2" 
-		          android:label="@string/widget1x2">
+		          android:label="@string/widget1x2"
+		          android:enabled="@bool/belowHoneycomb">
 			<intent-filter>
 				<action   
 					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -41,7 +52,9 @@
 				android:value="true" />
 		</receiver>
 		
-		<receiver android:name=".sizes.ContactWidget_1_3" android:label="@string/widget1x3">
+		<receiver android:name=".sizes.ContactWidget_1_3" 
+		    	  android:label="@string/widget1x3"
+		    	  android:enabled="@bool/belowHoneycomb">
 			<intent-filter>
 				<action   
 					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -54,7 +67,9 @@
 				android:value="true" />
 		</receiver>	
 		
-		<receiver android:name=".sizes.ContactWidget_1_4" android:label="@string/widget1x4">
+		<receiver android:name=".sizes.ContactWidget_1_4" 
+		          android:label="@string/widget1x4"
+		          android:enabled="@bool/belowHoneycomb">
 			<intent-filter>
 				<action   
 					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -67,8 +82,9 @@
 				android:value="true" />
 		</receiver>
 
-
-		<receiver android:name=".sizes.ContactWidget_2_2" android:label="@string/widget2x2">
+		<receiver android:name=".sizes.ContactWidget_2_2" 
+		          android:label="@string/widget2x2"
+		          android:enabled="@bool/belowHoneycomb">
 			<intent-filter>
 				<action   
 					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -81,7 +97,9 @@
 				android:value="true" />
 		</receiver>
 		
-		<receiver android:name=".sizes.ContactWidget_2_3" android:label="@string/widget2x3">
+		<receiver android:name=".sizes.ContactWidget_2_3" 
+		          android:label="@string/widget2x3"
+		          android:enabled="@bool/belowHoneycomb">
 			<intent-filter>
 				<action   
 					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -94,7 +112,9 @@
 				android:value="true" />
 		</receiver>
 				
-		<receiver android:name=".sizes.ContactWidget_2_4" android:label="@string/widget2x4">
+		<receiver android:name=".sizes.ContactWidget_2_4" 
+		          android:label="@string/widget2x4"
+		          android:enabled="@bool/belowHoneycomb">
 			<intent-filter>
 				<action   
 					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -107,7 +127,9 @@
 				android:value="true" />
 		</receiver>
 		
-		<receiver android:name=".sizes.ContactWidget_3_2" android:label="@string/widget3x2">
+		<receiver android:name=".sizes.ContactWidget_3_2" 
+		          android:label="@string/widget3x2"
+		          android:enabled="@bool/belowHoneycomb">
 			<intent-filter>
 				<action   
 					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -120,7 +142,9 @@
 				android:value="true" />
 		</receiver>
 		
-		<receiver android:name=".sizes.ContactWidget_3_3" android:label="@string/widget3x3">
+		<receiver android:name=".sizes.ContactWidget_3_3" 
+		          android:label="@string/widget3x3"
+		          android:enabled="@bool/belowHoneycomb">
 			<intent-filter>
 				<action   
 					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -133,7 +157,9 @@
 				android:value="true" />
 		</receiver>		
 		
-		<receiver android:name=".sizes.ContactWidget_3_4" android:label="@string/widget3x4">
+		<receiver android:name=".sizes.ContactWidget_3_4" 
+		          android:label="@string/widget3x4"
+		          android:enabled="@bool/belowHoneycomb">
 			<intent-filter>
 				<action   
 					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -146,7 +172,9 @@
 				android:value="true" />
 		</receiver>
 
-		<receiver android:name=".sizes.ContactWidget_4_2" android:label="@string/widget4x2">
+		<receiver android:name=".sizes.ContactWidget_4_2" 
+		          android:label="@string/widget4x2"
+		          android:enabled="@bool/belowHoneycomb">
 			<intent-filter>
 				<action   
 					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -159,7 +187,9 @@
 				android:value="true" />
 		</receiver>
 		
-		<receiver android:name=".sizes.ContactWidget_4_3" android:label="@string/widget4x3">
+		<receiver android:name=".sizes.ContactWidget_4_3" 
+		          android:label="@string/widget4x3"
+		          android:enabled="@bool/belowHoneycomb">
 			<intent-filter>
 				<action   
 					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -172,7 +202,9 @@
 				android:value="true" />
 		</receiver>
 
-		<receiver android:name=".sizes.ContactWidget_4_4" android:label="@string/widget4x4">
+		<receiver android:name=".sizes.ContactWidget_4_4" 
+		          android:label="@string/widget4x4"
+		          android:enabled="@bool/belowHoneycomb">
 			<intent-filter>
 				<action   
 					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -193,7 +225,8 @@
 		
 		<service android:name="ContactWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS"
-            android:exported="false" />
+            android:exported="false"
+            android:enabled="@bool/honeycombOrAbove" />
 		
     </application>
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="12" />
