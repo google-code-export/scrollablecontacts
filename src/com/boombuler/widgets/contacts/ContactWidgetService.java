@@ -48,7 +48,6 @@ class ContactRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory
     private Context mContext;
     private int mAppWidgetId;
 	private List<ContactData> mData = null;
-	private int mDefWidth;
 	private Bitmap mFallbackImage;
 
     public ContactRemoteViewsFactory(Context context, Intent intent) {
@@ -56,7 +55,6 @@ class ContactRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory
         mContext = context;
         mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
-        mDefWidth = intent.getIntExtra(ImplHC.EXTRA_DEFAULT_WIDTH, 1);
     }
 
     public void onCreate() {    	
@@ -77,7 +75,9 @@ class ContactRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory
     }
 
     public int getCount() {
-		return mData.size();
+	if (mData == null)
+		return 0;
+	return mData.size();
     }
 
     public RemoteViews getViewAt(int position) {
@@ -85,31 +85,17 @@ class ContactRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory
         // position will always range from 0 to getCount() - 1.
 		ContactData item = mData.get(position);
 		
-		boolean isICS = Preferences.getBGImage(mContext, mAppWidgetId) == Preferences.BG_ICS;
 		int textVisibility = Preferences.getShowName(mContext, mAppWidgetId) ? View.VISIBLE : View.GONE;		
-		int itemresid = R.layout.gridviewitem_hc;
-		if (isICS) {
-			itemresid = R.layout.gridviewitem_ics;
-		} else {
-			if (textVisibility == View.VISIBLE) {
-				switch(Preferences.getTextAlign(mContext, mAppWidgetId)) {
-					case Preferences.ALIGN_RIGHT:
-						itemresid = R.layout.gridviewitem_txt_right; break;
-					case Preferences.ALIGN_LEFT:
-						itemresid = R.layout.gridviewitem_txt_left; break;
-				}
-			}
-		}
+
 		// We construct a remote views item based on our widget item xml file, and set the
         // text based on the position.
-        RemoteViews rv = new RemoteViews(mContext.getPackageName(), itemresid);
+        RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.gridviewitem_ics);
 		
 		if (textVisibility == View.VISIBLE) {
 			rv.setTextViewText(R.id.displayname, item.Name);			
 		} else {
 			rv.setViewVisibility(R.id.displayname, textVisibility);
-			if (isICS) 
-				rv.setViewVisibility(R.id.label_overlay, textVisibility);
+			rv.setViewVisibility(R.id.label_overlay, textVisibility);
 		}
 		
 		rv.setImageViewBitmap(R.id.photo, item.Photo);
@@ -154,25 +140,13 @@ class ContactRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory
 		Cursor cursor = prov.query(dataUri, DataProvider.PROJECTION_APPWIDGETS, null, null, null);
 
 		Log.d(TAG, "Found: "+cursor.getCount());
-		final boolean isICS = Preferences.getBGImage(mContext, mAppWidgetId) == Preferences.BG_ICS;
-		boolean autosizeImages = !isICS;
-		if(autosizeImages && Preferences.getShowName(mContext, mAppWidgetId)) {
-			autosizeImages = false;
-			if (Preferences.getTextAlign(mContext, mAppWidgetId) == Preferences.ALIGN_CENTER)
-				autosizeImages = true;
-		}
+	
 		Options options = new Options();
         options.inPreferredConfig = Config.ARGB_8888;
         
         mFallbackImage = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.no_image, options);
-		if (autosizeImages) {
-			final int width = ContactWidget.calcWidthPixel(mContext, mAppWidgetId, mDefWidth);
-			mFallbackImage = ThumbnailUtils.extractThumbnail(mFallbackImage, width, width, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
-		}
-		else if (isICS) {
-			final int width = ContactWidget.getICSWidth(mContext);
-			mFallbackImage = ThumbnailUtils.extractThumbnail(mFallbackImage, width, width, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
-		}
+		final int width = ContactWidget.getICSWidth(mContext);
+		mFallbackImage = ThumbnailUtils.extractThumbnail(mFallbackImage, width, width, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
         
         LinkedList<ContactData> contacts = new LinkedList<ContactData>();
         if (cursor.moveToFirst()) {
@@ -190,9 +164,7 @@ class ContactRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory
 				}
 				if (item.Photo == null) {
 					item.Photo = mFallbackImage;
-				} else if (autosizeImages || isICS) {
-					final int width = isICS ? ContactWidget.getICSWidth(mContext) : 
-						ContactWidget.calcWidthPixel(mContext, mAppWidgetId, mDefWidth);
+				} else {
 					item.Photo = ThumbnailUtils.extractThumbnail(item.Photo, width, width, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
 				}
 				cursor.moveToNext();

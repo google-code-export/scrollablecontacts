@@ -33,16 +33,17 @@
     <string name="namekind">Nombre a mostrar</string>
     <string name="givenname">Nombre</string>
     <string name="familyname">Apellido</string>
+    <string name="alias">apodo</string>
     <string name="displayname">Nombre completo</string>
     
     <string name="loading">Por favor, asegúrese de que su launcher soporta scroll (ADW Launcher/Launcher Pro) y si está habilitado.</string>
-    <string name="save">Guardar</string>
     <string name="select_contact_group">Grupo de Contactos</string>
     <string name="allcontacts">Todos los contactos *</string>
     <string name="starred">Favoritos *</string>
     <string name="displayLabel">Etiqueta del Widget</string>
     <string name="black">Negro</string>
     <string name="white">Blanco</string>
+    <string name="ics_style">Ice Cream Sandwich</string>
     <string name="transparent">Transparente</string>
     <string name="background">Fondo</string>
     <string name="showName">Mostrar nombre del contacto</string>
